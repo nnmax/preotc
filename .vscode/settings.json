@@ -19,5 +19,11 @@
     "panelClassName",
     "floatingClassName"
   ],
-  "cSpell.words": ["signin"]
+  "cSpell.words": ["arbitrum", "sepolia", "signin", "Wagmi", "zora"],
+  "eslint.rules.customizations": [
+    {
+      "rule": "prettier/prettier",
+      "severity": "off"
+    }
+  ]
 }
