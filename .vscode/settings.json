@@ -13,17 +13,18 @@
   "typescript.tsdk": "./node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "css.validate": false,
-  "tailwindCSS.classAttributes": [
-    "class",
-    "className",
-    "panelClassName",
-    "floatingClassName"
+  "tailwindCSS.classAttributes": ["class", "className", "tablistClassName"],
+  "tailwindCSS.experimental.classRegex": [
+    "clsx[`]([\\s\\S][^`]*)[`]",
+    ["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
+    "(?:\\b(?:const|let|var)\\s+)?[\\w$_]*(?:[Ss]tyles|[Cc]lasses|[Cc]lassnames)[\\w\\d]*\\s*(?:=|\\+=)\\s*['\"]([^'\"]*)['\"]"
   ],
-  "cSpell.words": ["arbitrum", "sepolia", "signin", "Wagmi", "zora"],
+  "cSpell.words": ["arbitrum", "daisyui", "sepolia", "signin", "Wagmi", "zora"],
   "eslint.rules.customizations": [
     {
       "rule": "prettier/prettier",
       "severity": "off"
     }
-  ]
+  ],
+  "svg.preview.background": "dark-transparent"
 }

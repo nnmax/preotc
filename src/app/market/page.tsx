@@ -1,7 +1,9 @@
+import Tabs from './_components/Tabs'
+
 export default function Market() {
   return (
-    <div>
-      <h2>{'Market'}</h2>
+    <div className={'flex flex-col px-[60px]'}>
+      <Tabs />
     </div>
   )
 }

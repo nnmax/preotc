@@ -5,7 +5,7 @@ import NavTabs from '@/components/NavTabs'
 export default function AppBar() {
   return (
     <header
-      className={'flex h-16 flex-row items-center bg-[#030303] px-16 py-4'}
+      className={'flex h-16 flex-row items-center bg-[#030303] px-[60px] py-4'}
     >
       <h1 className={'mr-20 text-[28px] leading-8 text-[#FFC300]'}>
         {'PREOTC'}

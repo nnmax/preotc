@@ -16,7 +16,7 @@ export default function LinkTab(props: React.ComponentProps<typeof Link>) {
       aria-selected={isSelected}
       aria-current={isSelected ? 'page' : undefined}
       className={clsx('relative', {
-        'before:absolute before:left-1/2 before:top-full before:h-1.5 before:w-9 before:-translate-x-1/2 before:translate-y-[6px] before:rounded-md before:bg-[#ffc300] before:content-[""]':
+        'before:absolute before:left-1/2 before:top-full before:h-1.5 before:w-9 before:-translate-x-1/2 before:translate-y-[2px] before:rounded-md before:bg-[#ffc300] before:content-[""]':
           isSelected,
       })}
       {...restProps}
