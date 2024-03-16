@@ -14,10 +14,10 @@ export default function Tabs() {
   return (
     <div>
       <Tab.Group>
-        <div className={'relative flex justify-end py-6'}>
+        <div className={'relative flex py-6 2xl:justify-center'}>
           <Tab.List
             className={
-              'mx-auto flex h-[42px] w-full max-w-[900px] justify-center divide-x divide-[#aaa] rounded border border-solid border-[#aaa] text-sm text-[#7E7E7E]'
+              'flex h-[42px] w-full max-w-[900px] justify-center divide-x divide-[#aaa] rounded border border-solid border-[#aaa] text-sm text-[#7E7E7E]'
             }
           >
             <Tab className={tabClasses}>{'To Be Delivered'}</Tab>
@@ -25,7 +25,7 @@ export default function Tabs() {
             <Tab className={tabClasses}>{'Deals Completed'}</Tab>
           </Tab.List>
 
-          <div className={'flex h-[42px]'}>
+          <div className={'absolute right-0 flex h-[42px]'}>
             <TelegramAlertButton />
           </div>
         </div>

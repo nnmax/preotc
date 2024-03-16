@@ -32,9 +32,10 @@
 }
 
 body {
-  background: #1e1e1e;
+  background: var(--body-background-color);
 }
 
 :root {
   color: white;
+  --body-background-color: #1e1e1e;
 }

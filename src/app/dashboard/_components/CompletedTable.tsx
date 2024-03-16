@@ -1,7 +1,9 @@
 import Image from 'next/image'
 import clsx from 'clsx'
+import { useState } from 'react'
 import USDTSvg from '@/images/USDT.svg'
 import { tdClasses, thClasses } from '../classes'
+import TablePagination from './TablePagination/TablePagination'
 
 interface Data {
   id: number
@@ -15,13 +17,30 @@ interface Data {
 const data: Data[] = Array.from({ length: 10 }, (_, i) => ({
   id: i + 1,
   token: 'KKKK',
-  time: new Date().toLocaleString(),
+  time: '2024/3/17 00:27:53',
   value: 2000 + i,
   amount: 10000 + i,
   type: i % 2 === 0 ? 'buy' : 'sell',
 }))
 
 export default function CompletedTable() {
+  const [page, setPage] = useState(0)
+  const [rowsPerPage, setRowsPerPage] = useState(10)
+
+  const handleChangePage = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number,
+  ) => {
+    setPage(newPage)
+  }
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10))
+    setPage(0)
+  }
+
   return (
     <table className={'table bg-[#2A3037]'}>
       {/* head */}
@@ -65,6 +84,19 @@ export default function CompletedTable() {
           </tr>
         ))}
       </tbody>
+      <tfoot className={'bg-[var(--body-background-color)]'}>
+        <tr>
+          <TablePagination
+            toolbarClassName={'ml-auto'}
+            count={100}
+            colSpan={7}
+            onPageChange={handleChangePage}
+            page={page}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </tr>
+      </tfoot>
     </table>
   )
 }

@@ -35,25 +35,23 @@ export default function TelegramAlertButton() {
         </Popover.Button>
         <Popover.Panel
           className={clsx`
-      absolute
-      right-0
-      top-full
-      w-[460px]
-      translate-y-2
-      rounded-md
-      border
-      border-solid
-      border-[#aaa]
-      bg-[#1e1e1e]
-      text-xs
-      leading-6
-    `}
+            absolute
+            right-0
+            top-full
+            z-10
+            w-[460px]
+            translate-y-2
+            rounded-md
+            border
+            border-solid
+            border-[#aaa]
+            bg-[#1e1e1e]
+            p-4
+            text-xs
+            leading-6
+          `}
         >
-          <p>
-            {'Please connect your telegram to ensure that you can receive'}
-            {'timely alerts such as delivery notifications and successful'}
-            {'deals!'}
-          </p>
+          <p>{info}</p>
         </Popover.Panel>
       </Popover>
     </>
