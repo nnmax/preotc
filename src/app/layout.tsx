@@ -22,11 +22,13 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang={'en'}>
+    <html lang={'en'} data-theme={'dark'}>
       <body className={localPixelify.className}>
         <Providers>
           <AppBar />
-          <main>{children}</main>
+          <main className={'flex min-h-[calc(100vh-64px)] flex-col px-[60px]'}>
+            {children}
+          </main>
         </Providers>
       </body>
     </html>
