@@ -26,5 +26,8 @@
       "severity": "off"
     }
   ],
-  "svg.preview.background": "dark-transparent"
+  "svg.preview.background": "dark-transparent",
+  "[dockerfile]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  }
 }
