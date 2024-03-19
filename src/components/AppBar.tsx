@@ -12,7 +12,7 @@ export default function AppBar() {
       </h1>
 
       <NavTabs>
-        <LinkTab href={'/market'}>{'Market'}</LinkTab>
+        <LinkTab href={'/market/buy'}>{'Market'}</LinkTab>
         <LinkTab href={'/dashboard'}>{'Dashboard'}</LinkTab>
       </NavTabs>
 

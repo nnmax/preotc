@@ -2,15 +2,27 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import Image from 'next/image'
 import clsx from 'clsx'
-// import { Popover, Transition } from '@headlessui/react'
 import { forwardRef } from 'react'
+import {
+  useAccountEffect,
+  useSignMessage,
+  useVerifyMessage,
+  useAccount,
+} from 'wagmi'
+import { useMutation } from '@tanstack/react-query'
 import WalletSvg from '@/images/wallet.svg'
 import EthDarkSvg from '@/images/eth-dark.svg'
 import ArrowDownSvg from '@/images/arrow-down.svg'
 import USDTSvg from '@/images/USDT.svg'
+import { fetchConnectWalletUrl, ConnectWalletUrl } from '@/api'
+import { SignatureLocalStorageKey } from '@/constant'
+import type { ConnectWalletParams } from '@/api'
+// import { Popover, Transition } from '@headlessui/react'
 // import LogoutSvg from '@/images/logout.svg'
 
 export default function ConnectWalletToolbar() {
+  useSign()
+
   return (
     <ConnectButton.Custom>
       {({ openConnectModal, openAccountModal, account }) => {
@@ -129,6 +141,45 @@ export default function ConnectWalletToolbar() {
       }}
     </ConnectButton.Custom>
   )
+
+  function useSign() {
+    const { address } = useAccount()
+    const { mutateAsync } = useMutation({
+      mutationKey: [ConnectWalletUrl],
+      mutationFn: (params: ConnectWalletParams) => {
+        return fetchConnectWalletUrl(params)
+      },
+    })
+    const { signMessageAsync } = useSignMessage()
+    const verifyMessage = useVerifyMessage({
+      address,
+      chainId: 1,
+      signature: window.localStorage.getItem(
+        SignatureLocalStorageKey,
+      ) as `0x${string}`,
+      message: 'default message',
+    })
+
+    useAccountEffect({
+      async onConnect({ address: _address }) {
+        if (verifyMessage.data) return
+
+        const signature = await signMessageAsync({
+          message: 'default message',
+          account: _address,
+        })
+
+        window.localStorage.setItem(SignatureLocalStorageKey, signature)
+
+        mutateAsync({
+          address: _address,
+          chainId: 1,
+          signature,
+          message: signature,
+        })
+      },
+    })
+  }
 }
 
 const Box = forwardRef<

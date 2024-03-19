@@ -2,15 +2,17 @@
 import { Tab } from '@headlessui/react'
 import clsx from 'clsx'
 import Image from 'next/image'
+import { usePathname } from 'next/navigation'
+import Link from 'next/link'
 import OneSVG from '@/images/1.svg'
 import TelegramAlertButton from '@/components/TelegramAlertButton'
-import Card from './Card'
 
-const gridData = Array.from({ length: 20 }, (_, i) => i)
+export default function Tabs({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname()
+  const defaultIndex = pathname === '/market/sell' ? 1 : 0
 
-export default function Tabs() {
   return (
-    <Tab.Group>
+    <Tab.Group defaultIndex={defaultIndex}>
       <div className={'flex justify-between py-6'}>
         <div className={'flex gap-x-12'}>
           <Tab.List
@@ -18,8 +20,12 @@ export default function Tabs() {
               'flex h-[42px] rounded border border-solid border-[#aaa] text-center text-sm text-[#9e9e9e]'
             }
           >
-            <Tab className={tabClasses}>{'Buy'}</Tab>
-            <Tab className={tabClasses}>{'Sell'}</Tab>
+            <Tab className={tabClasses} as={Link} href={'/market/buy'}>
+              {'Buy'}
+            </Tab>
+            <Tab className={tabClasses} as={Link} href={'/market/sell'}>
+              {'Sell'}
+            </Tab>
           </Tab.List>
 
           <Filter />
@@ -28,19 +34,11 @@ export default function Tabs() {
         <TabsRightActions />
       </div>
       <Tab.Panels>
-        <Tab.Panel>
-          <div className={tabPanelClasses}>
-            {gridData.map((item) => (
-              <Card key={item} type={'buy'} />
-            ))}
-          </div>
+        <Tab.Panel className={tabPanelClasses}>
+          {pathname === '/market/buy' && children}
         </Tab.Panel>
-        <Tab.Panel>
-          <div className={tabPanelClasses}>
-            {gridData.map((item) => (
-              <Card key={item} type={'sell'} />
-            ))}
-          </div>
+        <Tab.Panel className={tabPanelClasses}>
+          {pathname === '/market/sell' && children}
         </Tab.Panel>
       </Tab.Panels>
     </Tab.Group>
@@ -48,7 +46,10 @@ export default function Tabs() {
 }
 
 function tabClasses({ selected }: { selected: boolean }) {
-  return clsx('w-24', selected && 'bg-[#FFC300] text-black')
+  return clsx(
+    'flex w-24 items-center justify-center',
+    selected && 'bg-[#FFC300] text-black',
+  )
 }
 
 const tabPanelClasses =

@@ -3,10 +3,14 @@ import clsx from 'clsx'
 import USDTSvg from '@/images/USDT.svg'
 import OneSVG from '@/images/1.svg'
 import RightSVG from '@/images/right.svg'
+import type { SearchMarketOrderResponse } from '@/api'
 
-export default function Card(props: { type: 'buy' | 'sell' }) {
-  const { type } = props
-
+export default function Card(props: {
+  type: 'buy' | 'sell'
+  data: SearchMarketOrderResponse
+}) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { type, data } = props
   return (
     <div
       className={
