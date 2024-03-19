@@ -8,8 +8,8 @@ import type { Metadata, Viewport } from 'next'
 const localPixelify = localFont({ src: '../fonts/pixelmix.ttf' })
 
 export const metadata: Metadata = {
-  title: 'Preotc',
-  description: 'Preotc',
+  title: 'PreOTC: A Better Market For Advance Trading',
+  description: 'A Better Market For Advance Trading',
 }
 
 export const viewport: Viewport = {

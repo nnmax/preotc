@@ -1,7 +1,12 @@
 /** @type {import('eslint').Linter.Config} */
 const config = {
   root: true,
-  extends: ['next', '@nnmax/eslint-config-react', 'prettier'],
+  extends: [
+    'next',
+    'plugin:@tanstack/eslint-plugin-query/recommended',
+    '@nnmax/eslint-config-react',
+    'prettier',
+  ],
   rules: {
     'react-hooks/exhaustive-deps': [
       'error',

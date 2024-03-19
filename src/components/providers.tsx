@@ -21,6 +21,7 @@ import {
 } from 'wagmi/chains'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
+import { ReactQueryStreamedHydration } from '@tanstack/react-query-next-experimental'
 
 const { wallets } = getDefaultWallets()
 
@@ -46,13 +47,30 @@ const config = getDefaultConfig({
   ssr: true,
 })
 
-const queryClient = new QueryClient()
+function makeQueryClient() {
+  return new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 5 * 1000,
+      },
+    },
+  })
+}
+
+let browserQueryClient: QueryClient | undefined = undefined
+
+function getQueryClient() {
+  if (typeof window === 'undefined') return makeQueryClient()
+  return (browserQueryClient ??= makeQueryClient())
+}
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <WagmiProvider config={config}>
-      <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider>{children}</RainbowKitProvider>
+      <QueryClientProvider client={getQueryClient()}>
+        <ReactQueryStreamedHydration>
+          <RainbowKitProvider>{children}</RainbowKitProvider>
+        </ReactQueryStreamedHydration>
       </QueryClientProvider>
     </WagmiProvider>
   )
