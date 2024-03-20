@@ -6,7 +6,7 @@ export interface ConnectWalletParams {
   chainId: number
   address: string
   message?: string | null
-  signature: string
+  signature?: string | null
 }
 
 export interface ConnectWalletResponse {
@@ -14,6 +14,7 @@ export interface ConnectWalletResponse {
   chatId: number | null
   createTime: string
   token: string
+  message: string
 }
 
 export const fetchConnectWalletUrl = (params: ConnectWalletParams) => {
