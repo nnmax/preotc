@@ -16,20 +16,6 @@ const config = {
       },
     ],
     'react/no-unknown-property': ['error', { ignore: ['jsx', 'global'] }],
-    'react/jsx-curly-brace-presence': [
-      'error',
-      { props: 'always', children: 'always', propElementValues: 'always' },
-    ],
-    'jsx-a11y/label-has-associated-control': [
-      'error',
-      {
-        labelComponents: [],
-        labelAttributes: [],
-        controlComponents: [],
-        assert: 'either',
-        depth: 25,
-      },
-    ],
   },
   parserOptions: {
     project: './tsconfig.json',
