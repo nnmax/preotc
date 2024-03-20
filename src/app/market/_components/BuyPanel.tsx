@@ -1,9 +1,9 @@
 'use client'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { fetchSearchMarketOrder, SearchMarketOrderUrl } from '@/api'
-import Card from '../_components/Card'
+import Card from './Card'
 
-export default function BuyPage() {
+export default function BuyPanel() {
   const { data } = useSuspenseQuery({
     queryKey: [
       SearchMarketOrderUrl,

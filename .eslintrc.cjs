@@ -20,6 +20,16 @@ const config = {
       'error',
       { props: 'always', children: 'always', propElementValues: 'always' },
     ],
+    'jsx-a11y/label-has-associated-control': [
+      'error',
+      {
+        labelComponents: [],
+        labelAttributes: [],
+        controlComponents: [],
+        assert: 'either',
+        depth: 25,
+      },
+    ],
   },
   parserOptions: {
     project: './tsconfig.json',

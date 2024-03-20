@@ -2,14 +2,16 @@
 import { Tab } from '@headlessui/react'
 import clsx from 'clsx'
 import Image from 'next/image'
-import { usePathname } from 'next/navigation'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import OneSVG from '@/images/1.svg'
 import TelegramAlertButton from '@/components/TelegramAlertButton'
+import BuyPanel from '@/app/market/_components/BuyPanel'
+import SellPanel from '@/app/market/_components/SellPanel'
 
-export default function Tabs({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname()
-  const defaultIndex = pathname === '/market/sell' ? 1 : 0
+export default function Tabs() {
+  const searchParams = useSearchParams()
+  const defaultIndex = searchParams.get('tab') === 'sell' ? 1 : 0
 
   return (
     <Tab.Group defaultIndex={defaultIndex}>
@@ -20,10 +22,10 @@ export default function Tabs({ children }: { children: React.ReactNode }) {
               'flex h-[42px] rounded border border-solid border-[#aaa] text-center text-sm text-[#9e9e9e]'
             }
           >
-            <Tab className={tabClasses} as={Link} href={'/market/buy'}>
+            <Tab className={tabClasses} as={Link} href={'/market?tab=buy'}>
               {'Buy'}
             </Tab>
-            <Tab className={tabClasses} as={Link} href={'/market/sell'}>
+            <Tab className={tabClasses} as={Link} href={'/market?tab=sell'}>
               {'Sell'}
             </Tab>
           </Tab.List>
@@ -35,10 +37,10 @@ export default function Tabs({ children }: { children: React.ReactNode }) {
       </div>
       <Tab.Panels>
         <Tab.Panel className={tabPanelClasses}>
-          {pathname === '/market/buy' && children}
+          <BuyPanel />
         </Tab.Panel>
         <Tab.Panel className={tabPanelClasses}>
-          {pathname === '/market/sell' && children}
+          <SellPanel />
         </Tab.Panel>
       </Tab.Panels>
     </Tab.Group>
@@ -76,9 +78,12 @@ function Filter() {
 function TabsRightActions() {
   return (
     <div className={'flex'}>
-      <button type={'button'} className={'mr-8 rounded bg-[#EB2F96] px-5'}>
+      <Link
+        href={'/market/offer'}
+        className={'mr-8 flex items-center rounded bg-[#EB2F96] px-5'}
+      >
         {'Create Offer'}
-      </button>
+      </Link>
       <TelegramAlertButton />
     </div>
   )

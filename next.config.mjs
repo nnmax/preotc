@@ -23,7 +23,7 @@ const nextConfig = {
     return [
       {
         source: '/',
-        destination: '/market/buy',
+        destination: '/market',
         permanent: false,
       },
     ]
