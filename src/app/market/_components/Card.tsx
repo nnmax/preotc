@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import clsx from 'clsx'
+import Link from 'next/link'
 import USDTSvg from '@/images/USDT.svg'
 import OneSVG from '@/images/1.svg'
 import RightSVG from '@/images/right.svg'
@@ -56,15 +57,15 @@ export default function Card(props: {
 
       <div className={'flex items-center justify-between pt-2.5'}>
         <span className={'text-xs'}>{'7 Days Ago'}</span>
-        <button
-          type={'button'}
+        <Link
+          href={type === 'sell' ? '/market/offer/sell' : '/market/offer/buy'}
           className={clsx(
-            'h-7 rounded px-5 text-sm',
+            'flex h-7 items-center rounded px-5 text-sm',
             type === 'buy' ? 'bg-[#004DFF]' : 'bg-[#EB2F96]',
           )}
         >
           {type === 'buy' ? 'BUY' : 'SELL'}
-        </button>
+        </Link>
       </div>
     </div>
   )
