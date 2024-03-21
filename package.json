@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "eslint": "eslint . --ext js,ts,tsx,cjs,mjs --cache --max-warnings 0",
-    "postinstall": "husky install"
+    "postinstall": "husky install",
+    "prettier": "prettier --write .",
+    "prettier:ci": "prettier --check ."
   },
   "resolutions": {
     "eslint-plugin-react-hooks": "next"
