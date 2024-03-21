@@ -12,6 +12,7 @@ export async function POST(request: Request) {
       address,
       chatId,
       createTime: new Date().toUTCString(),
+      message: 'default message',
       token:
         'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIweDQxQ2QzQjJmYkY1OEVCMzk0NDBGN0ZkNzI3MTRlMjQ5RDAzNTQyRUIiLCJpYXQiOjE3MTA2ODE4MjYsImV4cCI6MTcxMDc2ODIyNn0.VcA4pHZYavJrzj534_obhP_nLAXOJK86IkpM3ah0TDHUWEALQ7vw4_DVB39BWSokzHJQdkZF6xA2nKhJkJUlpA',
     },
