@@ -1,26 +1,118 @@
+'use client'
+
 import clsx from 'clsx'
 import { Popover } from '@headlessui/react'
 import Image from 'next/image'
+import { useAccount } from 'wagmi'
+import { useAccountModal } from '@rainbow-me/rainbowkit'
+import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query'
+import { useState } from 'react'
 import TelegramSVG from '@/images/telegram.svg'
 import InfoSVG from '@/images/info.svg'
+import TelegramSvg from '@/images/telegram.svg'
+import {
+  fetchGenerateTelegramInvitationLink,
+  fetchGetTelegramInvitationInfo,
+  generateTelegramInvitationLinkUrl,
+  getTelegramInvitationInfoUrl,
+} from '@/api'
+import {
+  fetchGetCurrentLoginUser,
+  getCurrentLoginUser,
+} from '@/api/get-current-login-user'
 
 const info =
   'Please connect your telegram to ensure that you can receive timely alerts such as delivery notifications and successful deals!'
 
-export default function TelegramAlertButton() {
+export default function TelegramAlertButton({ type }: { type?: 1 | 2 }) {
+  const { address } = useAccount()
+  const { openAccountModal } = useAccountModal()
+  const [code, setCode] = useState<string>('')
+  const { data: userInfo } = useSuspenseQuery({
+    queryKey: [getCurrentLoginUser],
+    queryFn: () => {
+      return fetchGetCurrentLoginUser()
+    },
+  })
+  const { mutateAsync: fetchLink } = useMutation({
+    mutationKey: [generateTelegramInvitationLinkUrl],
+    mutationFn: () => {
+      return fetchGenerateTelegramInvitationLink()
+    },
+  })
+
+  // useQuery 返回的 isRefetching 不满足要求
+  const [isRefetching, setIsRefetching] = useState(false)
+  const { data: status } = useQuery({
+    gcTime: 0,
+    enabled: Boolean(code),
+    queryKey: [getTelegramInvitationInfoUrl, code],
+    queryFn: () => {
+      return fetchGetTelegramInvitationInfo(code)
+    },
+    refetchInterval(query) {
+      if (query.state.data) {
+        setIsRefetching(false)
+        setCode('')
+        return false
+      }
+      return 1000
+    },
+  })
+
+  const handleClick = async () => {
+    if (!address) {
+      openAccountModal?.()
+      return
+    }
+
+    const response = await fetchLink()
+
+    if (response?.invitationLink) {
+      setIsRefetching(true)
+      // cSpell:disable-next-line
+      setCode(response.invitaitonCode)
+      window.open(response.invitationLink)
+    }
+  }
+
+  if (userInfo?.chatId || status) {
+    return null
+  }
+
+  if (type === 2) {
+    return (
+      <div className={'flex items-center gap-5'}>
+        <Image src={TelegramSvg} alt={'telegram'} width={'32'} />
+        <button
+          type={'button'}
+          className={
+            'flex h-[42px] items-center gap-3 rounded-[5px] bg-[#0698D8] px-[38px] text-base'
+          }
+          onClick={handleClick}
+          disabled={isRefetching}
+        >
+          {isRefetching && <span className={'loading loading-spinner'} />}
+          {'Connect'}
+        </button>
+      </div>
+    )
+  }
+
   return (
     <>
       {' '}
       <button
         type={'button'}
-        className={'mr-2.5 flex items-center rounded bg-[#0698D8] px-5'}
+        className={'mr-2.5 flex items-center gap-3 rounded bg-[#0698D8] px-5'}
+        onClick={handleClick}
+        disabled={isRefetching}
       >
-        <Image
-          src={TelegramSVG}
-          width={'24'}
-          className={'mr-3'}
-          alt={'telegram'}
-        />
+        {isRefetching ? (
+          <span className={'loading loading-spinner'} />
+        ) : (
+          <Image src={TelegramSVG} width={'24'} alt={'telegram'} />
+        )}
         <span>{'Set Alert'}</span>
       </button>
       <Popover className={'relative flex items-center'}>

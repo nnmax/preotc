@@ -11,6 +11,11 @@ export default function fetcher<ResponseData = unknown>(
       ...init?.headers,
     },
   })
-    .then<CommonResponse<ResponseData | null>>((response) => response.json())
-    .then((data) => data.data)
+    .then<CommonResponse<ResponseData | null> | null>((response) => {
+      if (response.ok) {
+        return response.json()
+      }
+      return null
+    })
+    .then((data) => data?.data ?? null)
 }

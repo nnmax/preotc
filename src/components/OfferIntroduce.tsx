@@ -1,13 +1,12 @@
 import clsx from 'clsx'
-import Image from 'next/image'
-import TelegramSvg from '@/images/telegram.svg'
+import TelegramAlertButton from '@/components/TelegramAlertButton'
 
 export default function OfferIntroduce({ className }: { className?: string }) {
   return (
     <div
       className={clsx(
         className,
-        'flex flex-col gap-5 text-xs leading-[30px] text-white [&_span]:text-[#FFC300]',
+        'flex flex-col gap-5 text-xs leading-[30px] text-white [&>p>span]:text-[#FFC300]',
       )}
     >
       <p>
@@ -38,15 +37,7 @@ export default function OfferIntroduce({ className }: { className?: string }) {
           '3. Please connect your telegram to ensure that you can receive timely alerts such as delivery notifications, confirmation notifications and deals completion!'
         }
       </p>
-      <div className={'flex items-center gap-5'}>
-        <Image src={TelegramSvg} alt={'telegram'} width={'32'} />
-        <button
-          type={'button'}
-          className={'h-[42px] rounded-[5px] bg-[#0698D8] px-[38px] text-base'}
-        >
-          {'Connect'}
-        </button>
-      </div>
+      <TelegramAlertButton type={2} />
     </div>
   )
 }
