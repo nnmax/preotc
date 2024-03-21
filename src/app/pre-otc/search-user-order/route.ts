@@ -29,9 +29,11 @@ const body: CommonResponse<SearchUserOrderResponse[]> = {
 }
 
 export async function POST() {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(NextResponse.json(body))
-    }, 1000)
-  })
+  return new Promise<NextResponse<CommonResponse<SearchUserOrderResponse[]>>>(
+    (resolve) => {
+      setTimeout(() => {
+        resolve(NextResponse.json(body))
+      }, 1000)
+    },
+  )
 }

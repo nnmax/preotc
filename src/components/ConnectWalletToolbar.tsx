@@ -153,9 +153,12 @@ function useSign() {
   const verifyMessage = useVerifyMessage({
     address,
     chainId: 1,
-    signature: window.localStorage.getItem(
-      SignatureLocalStorageKey,
-    ) as `0x${string}`,
+    signature:
+      typeof window === 'undefined'
+        ? undefined
+        : (window.localStorage.getItem(
+            SignatureLocalStorageKey,
+          ) as `0x${string}`),
     message: defaultMessage,
   })
 

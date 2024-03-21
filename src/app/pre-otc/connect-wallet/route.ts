@@ -18,9 +18,11 @@ export async function POST(request: Request) {
     },
   }
 
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(NextResponse.json(body))
-    }, 1000)
-  })
+  return new Promise<NextResponse<CommonResponse<ConnectWalletResponse>>>(
+    (resolve) => {
+      setTimeout(() => {
+        resolve(NextResponse.json(body))
+      }, 1000)
+    },
+  )
 }
