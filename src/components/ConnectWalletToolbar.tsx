@@ -3,14 +3,16 @@ import { ConnectButton } from '@rainbow-me/rainbowkit'
 import Image from 'next/image'
 import clsx from 'clsx'
 import { forwardRef, useEffect } from 'react'
-import { useSignMessage, useVerifyMessage, useAccount } from 'wagmi'
+import { useSignMessage, useAccount, useConfig } from 'wagmi'
 import { useMutation } from '@tanstack/react-query'
+import { verifyMessage } from 'wagmi/actions'
 import WalletSvg from '@/images/wallet.svg'
 import EthDarkSvg from '@/images/eth-dark.svg'
 import ArrowDownSvg from '@/images/arrow-down.svg'
 import USDTSvg from '@/images/USDT.svg'
 import { fetchConnectWalletUrl, ConnectWalletUrl } from '@/api'
-import { SignatureLocalStorageKey } from '@/constant'
+import { MessageLocalStorageKey, SignatureLocalStorageKey } from '@/constant'
+import type { Hex } from 'viem'
 import type { ConnectWalletParams } from '@/api'
 // import { Popover, Transition } from '@headlessui/react'
 // import LogoutSvg from '@/images/logout.svg'
@@ -138,8 +140,6 @@ export default function ConnectWalletToolbar() {
   )
 }
 
-const defaultMessage = 'default message'
-
 function useSign() {
   const { address } = useAccount()
   const { mutateAsync } = useMutation({
@@ -149,43 +149,46 @@ function useSign() {
     },
   })
   const { signMessageAsync } = useSignMessage()
-
-  const verifyMessage = useVerifyMessage({
-    address,
-    chainId: 1,
-    signature:
-      typeof window === 'undefined'
-        ? undefined
-        : (window.localStorage.getItem(
-            SignatureLocalStorageKey,
-          ) as `0x${string}`),
-    message: defaultMessage,
-  })
+  const config = useConfig()
 
   useEffect(() => {
-    if (!address || verifyMessage.data) return
+    const _signature = window.localStorage.getItem(SignatureLocalStorageKey)
+    const _message = window.localStorage.getItem(MessageLocalStorageKey)
 
-    mutateAsync({
-      address,
-      chainId: 1,
-    })
-      .then((res) => res?.message)
-      .then((message) => {
-        return signMessageAsync({
-          message: message!,
-          account: address,
-        })
-      })
-      .then((signature) => {
-        window.localStorage.setItem(SignatureLocalStorageKey, signature)
-        return mutateAsync({
+    if (!address) return
+
+    const run = async () => {
+      if (_signature && _message) {
+        const verified = await verifyMessage(config, {
           address,
           chainId: 1,
-          signature,
-          message: signature,
+          signature: _signature as Hex,
+          message: _message as Hex,
         })
+
+        if (verified) return
+      }
+
+      const res = await mutateAsync({
+        address,
+        chainId: 1,
       })
-  }, [address, mutateAsync, signMessageAsync, verifyMessage.data])
+      const signature = await signMessageAsync({
+        message: res!.message,
+        account: address,
+      })
+      window.localStorage.setItem(SignatureLocalStorageKey, signature)
+      window.localStorage.setItem(MessageLocalStorageKey, res!.message)
+      mutateAsync({
+        address,
+        chainId: 1,
+        signature,
+        message: res!.message,
+      })
+    }
+
+    run()
+  }, [address, config, mutateAsync, signMessageAsync])
 }
 
 const Box = forwardRef<
