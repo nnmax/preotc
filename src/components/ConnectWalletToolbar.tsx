@@ -3,7 +3,7 @@ import { ConnectButton } from '@rainbow-me/rainbowkit'
 import Image from 'next/image'
 import clsx from 'clsx'
 import { forwardRef, useEffect } from 'react'
-import { useSignMessage, useAccount, useConfig } from 'wagmi'
+import { useSignMessage, useAccount, useConfig, useAccountEffect } from 'wagmi'
 import { useMutation } from '@tanstack/react-query'
 import { verifyMessage } from 'wagmi/actions'
 import WalletSvg from '@/images/wallet.svg'
@@ -12,6 +12,7 @@ import ArrowDownSvg from '@/images/arrow-down.svg'
 import USDTSvg from '@/images/USDT.svg'
 import { fetchConnectWalletUrl, ConnectWalletUrl } from '@/api'
 import { MessageLocalStorageKey, SignatureLocalStorageKey } from '@/constant'
+import logout from '@/utils/logout'
 import type { Hex } from 'viem'
 import type { ConnectWalletParams } from '@/api'
 // import { Popover, Transition } from '@headlessui/react'
@@ -150,6 +151,12 @@ function useSign() {
   })
   const { signMessageAsync } = useSignMessage()
   const config = useConfig()
+
+  useAccountEffect({
+    onDisconnect() {
+      logout()
+    },
+  })
 
   useEffect(() => {
     const _signature = window.localStorage.getItem(SignatureLocalStorageKey)

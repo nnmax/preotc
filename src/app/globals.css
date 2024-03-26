@@ -31,6 +31,18 @@
       cursor: default;
     }
   }
+
+  .reset-input-number {
+    /* FireFox */
+    @supports not selector(: : -webkit-inner-spin-button) {
+      -moz-appearance: textfield !important;
+    }
+
+    /* Chrome */
+    &::-webkit-inner-spin-button {
+      display: none;
+    }
+  }
 }
 
 body {

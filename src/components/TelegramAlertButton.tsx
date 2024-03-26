@@ -4,7 +4,7 @@ import clsx from 'clsx'
 import { Popover } from '@headlessui/react'
 import Image from 'next/image'
 import { useAccount } from 'wagmi'
-import { useAccountModal } from '@rainbow-me/rainbowkit'
+import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import TelegramSVG from '@/images/telegram.svg'
@@ -26,7 +26,7 @@ const info =
 
 export default function TelegramAlertButton({ type }: { type?: 1 | 2 }) {
   const { address } = useAccount()
-  const { openAccountModal } = useAccountModal()
+  const { openConnectModal } = useConnectModal()
   const [code, setCode] = useState<string>('')
   const { data: userInfo } = useSuspenseQuery({
     queryKey: [getCurrentLoginUser],
@@ -62,7 +62,7 @@ export default function TelegramAlertButton({ type }: { type?: 1 | 2 }) {
 
   const handleClick = async () => {
     if (!address) {
-      openAccountModal?.()
+      openConnectModal!()
       return
     }
 

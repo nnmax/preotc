@@ -32,7 +32,7 @@ export const fetchSearchMarketOrder = (params: SearchMarketOrderParams) => {
     method: 'POST',
     body: JSON.stringify(params),
   }).then((res) => {
-    if (res) return res
+    if (res?.length) return res
     return Array.from({ length: 50 }, (_, i) => ({
       id: i + 1,
       projectId: 1,

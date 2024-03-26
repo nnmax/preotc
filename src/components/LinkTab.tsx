@@ -7,7 +7,9 @@ export default function LinkTab(props: React.ComponentProps<typeof Link>) {
   const { className, children, href, ...restProps } = props
   const pathname = usePathname()
   const isSelected =
-    typeof href === 'string' ? pathname === href : href.pathname === pathname
+    typeof href === 'string'
+      ? pathname.startsWith(href)
+      : pathname.startsWith(href.pathname!)
 
   return (
     <Link

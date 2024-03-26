@@ -4,6 +4,8 @@ import clsx from 'clsx'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
+import { useAccount } from 'wagmi'
+import { useConnectModal } from '@rainbow-me/rainbowkit'
 import OneSVG from '@/images/1.svg'
 import TelegramAlertButton from '@/components/TelegramAlertButton'
 import BuyPanel from '@/app/market/_components/BuyPanel'
@@ -76,11 +78,24 @@ function Filter() {
 }
 
 function TabsRightActions() {
+  const { address } = useAccount()
+  const { openConnectModal } = useConnectModal()
+
+  const handleClickLink = (
+    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+  ) => {
+    if (!address) {
+      event.preventDefault()
+      openConnectModal!()
+    }
+  }
+
   return (
     <div className={'flex'}>
       <Link
         href={'/market/offer'}
         className={'mr-8 flex items-center rounded bg-[#EB2F96] px-5'}
+        onClick={handleClickLink}
       >
         {'Create Offer'}
       </Link>

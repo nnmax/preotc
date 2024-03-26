@@ -1,3 +1,5 @@
+import fetcher from '@/api/fetcher'
+
 export const createOrderUrl = '/pre-otc/create-order'
 
 export interface CreateOrderParams {
@@ -25,4 +27,11 @@ export interface CreateOrderResponse {
   status: number
   updateTime: string
   createTime: string
+}
+
+export function createOrder(params: CreateOrderParams) {
+  return fetcher<CreateOrderResponse>(createOrderUrl, {
+    method: 'POST',
+    body: JSON.stringify(params),
+  })
 }
