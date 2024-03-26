@@ -1,3 +1,5 @@
+// @ts-check
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -19,7 +21,16 @@ const nextConfig = {
     config.externals.push('pino-pretty', 'lokijs', 'encoding')
     return config
   },
-  redirects: () => {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'fakeimg.pl',
+      },
+    ],
+  },
+  // eslint-disable-next-line @typescript-eslint/require-await
+  redirects: async () => {
     return [
       {
         source: '/',

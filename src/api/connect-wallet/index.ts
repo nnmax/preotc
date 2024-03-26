@@ -11,14 +11,12 @@ export interface ConnectWalletParams {
 
 export interface ConnectWalletResponse {
   address: string
-  chatId: number | null
+  tgStatus: 0 | 1
   createTime: string
-  token: string
-  message: string
 }
 
 export const fetchConnectWalletUrl = (params: ConnectWalletParams) => {
-  return fetcher<ConnectWalletResponse>(ConnectWalletUrl, {
+  return fetcher<ConnectWalletResponse | string>(ConnectWalletUrl, {
     method: 'POST',
     body: JSON.stringify(params),
   })

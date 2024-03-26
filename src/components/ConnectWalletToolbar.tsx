@@ -173,17 +173,18 @@ function useSign() {
         address,
         chainId: 1,
       })
+      const message = typeof res === 'string' ? res : ''
       const signature = await signMessageAsync({
-        message: res!.message,
+        message,
         account: address,
       })
       window.localStorage.setItem(SignatureLocalStorageKey, signature)
-      window.localStorage.setItem(MessageLocalStorageKey, res!.message)
+      window.localStorage.setItem(MessageLocalStorageKey, message)
       mutateAsync({
         address,
         chainId: 1,
         signature,
-        message: res!.message,
+        message,
       })
     }
 

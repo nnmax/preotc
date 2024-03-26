@@ -1,7 +1,13 @@
+'use client'
 import Image from 'next/image'
 import clsx from 'clsx'
+import { useSuspenseQuery } from '@tanstack/react-query'
+import { useEffect, useState } from 'react'
 import USDTSvg from '@/images/USDT.svg'
 import NextSvg from '@/images/next.svg'
+import DownSvg from '@/images/down.svg'
+import { listProject, listProjectUrl } from '@/api'
+import type { ListProjectResponse } from '@/api'
 
 const tabPanelContentClasses = 'mt-7 bg-[#162024] rounded-[10px] py-7 px-10'
 
@@ -27,26 +33,76 @@ export default function Panel({ tab }: { tab: 'buying' | 'selling' }) {
       </>
     )
 
+  const [selectedProject, setSelectedProject] = useState<ListProjectResponse>()
+  const { data: projects } = useSuspenseQuery({
+    queryKey: [listProjectUrl],
+    queryFn: listProject,
+  })
+
+  useEffect(() => {
+    if (projects.length) {
+      setSelectedProject(projects[0])
+    }
+  }, [projects])
+
   return (
     <>
       <form className={tabPanelContentClasses}>
-        <label className={'flex flex-col gap-y-5'}>
-          <span
-            className={clsx(
-              'flex items-center self-start rounded-[3px] px-[10px] leading-6 text-black',
-              labelBg,
-            )}
-          >
-            {amountLabelText}
-          </span>
-          <input
-            type={'text'}
-            placeholder={'Enter Amount'}
+        <div className={'flex gap-5'}>
+          <label className={'flex flex-1 flex-col items-center gap-y-5'}>
+            <span
+              className={clsx(
+                'flex items-center self-start rounded-[3px] px-[10px] leading-6 text-black',
+                labelBg,
+              )}
+            >
+              {amountLabelText}
+            </span>
+            <input
+              type={'text'}
+              placeholder={'Enter Amount'}
+              className={
+                'w-full rounded-[5px] bg-[#2A3037] px-[14px] leading-[44px] text-[#9E9E9E]'
+              }
+            />
+          </label>
+
+          <div
             className={
-              'rounded-[5px] bg-[#2A3037] px-[14px] leading-[44px] text-[#9E9E9E]'
+              'relative flex h-[44px] w-[180px] items-center gap-2.5 self-end rounded-[5px] bg-[#2A3037] p-2.5'
             }
-          />
-        </label>
+          >
+            {selectedProject && (
+              <Image
+                src={selectedProject?.avatarUrl}
+                alt={''}
+                width={'24'}
+                height={'24'}
+                className={'h-full w-6 rounded-full'}
+              />
+            )}
+            <span className={'flex-1'}>{selectedProject?.name}</span>
+            <Image src={DownSvg} alt={'down'} width={'24'} />
+            <select
+              value={selectedProject?.id}
+              onChange={(e) => {
+                const project = projects.find(
+                  (project) => project.id === Number(e.target.value),
+                )
+                setSelectedProject(project)
+              }}
+              className={
+                'absolute inset-0 h-full w-full cursor-pointer opacity-0'
+              }
+            >
+              {projects.map((project) => (
+                <option key={project.id} value={project.id}>
+                  {project.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
 
         <label className={'mt-8 flex flex-col gap-y-5'}>
           <span

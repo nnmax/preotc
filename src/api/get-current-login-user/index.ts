@@ -1,12 +1,9 @@
 import fetcher from '@/api/fetcher'
+import type { ConnectWalletResponse } from '@/api'
 
 export const getCurrentLoginUser = '/pre-otc/get-current-login-user'
 
-export interface GetCurrentLoginUserResponse {
-  address: string
-  chatId: null | string
-  createTime: string
-}
+export type GetCurrentLoginUserResponse = ConnectWalletResponse
 
 export const fetchGetCurrentLoginUser = () => {
   return fetcher<GetCurrentLoginUserResponse>(getCurrentLoginUser, {

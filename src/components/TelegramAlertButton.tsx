@@ -34,7 +34,7 @@ export default function TelegramAlertButton({ type }: { type?: 1 | 2 }) {
       return fetchGetCurrentLoginUser()
     },
   })
-  const { mutateAsync: fetchLink } = useMutation({
+  const { mutateAsync: fetchLink, isPending: fetchingLink } = useMutation({
     mutationKey: [generateTelegramInvitationLinkUrl],
     mutationFn: () => {
       return fetchGenerateTelegramInvitationLink()
@@ -51,7 +51,7 @@ export default function TelegramAlertButton({ type }: { type?: 1 | 2 }) {
       return fetchGetTelegramInvitationInfo(code)
     },
     refetchInterval(query) {
-      if (query.state.data) {
+      if (query.state.data === 0) {
         setIsRefetching(false)
         setCode('')
         return false
@@ -76,7 +76,7 @@ export default function TelegramAlertButton({ type }: { type?: 1 | 2 }) {
     }
   }
 
-  if (userInfo?.chatId || status) {
+  if (userInfo?.tgStatus || status === 0) {
     return null
   }
 
@@ -90,9 +90,10 @@ export default function TelegramAlertButton({ type }: { type?: 1 | 2 }) {
             'flex h-[42px] items-center gap-3 rounded-[5px] bg-[#0698D8] px-[38px] text-base'
           }
           onClick={handleClick}
-          disabled={isRefetching}
+          disabled={fetchingLink || isRefetching}
         >
-          {isRefetching && <span className={'loading loading-spinner'} />}
+          {fetchingLink ||
+            (isRefetching && <span className={'loading loading-spinner'} />)}
           {'Connect'}
         </button>
       </div>
@@ -108,7 +109,7 @@ export default function TelegramAlertButton({ type }: { type?: 1 | 2 }) {
         onClick={handleClick}
         disabled={isRefetching}
       >
-        {isRefetching ? (
+        {fetchingLink || isRefetching ? (
           <span className={'loading loading-spinner'} />
         ) : (
           <Image src={TelegramSVG} width={'24'} alt={'telegram'} />
