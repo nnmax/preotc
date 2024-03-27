@@ -134,6 +134,7 @@ export default function Panel({ tab }: PanelProps) {
               readOnly={next}
               required
               step={'any'}
+              autoComplete={'off'}
               type={'number'}
               placeholder={'Enter Amount'}
               className={clsx(
@@ -207,6 +208,7 @@ export default function Panel({ tab }: PanelProps) {
               })}
               min={0}
               required
+              autoComplete={'off'}
               type={'number'}
               step={'any'}
               readOnly={next}

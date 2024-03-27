@@ -1,5 +1,5 @@
-// import { toast } from 'react-toastify'
-// import logout from '@/utils/logout'
+import { toast } from 'react-toastify'
+import logout from '@/utils/logout'
 import type { CommonResponse } from '@/api/types'
 
 export default function fetcher<ResponseData = unknown>(
@@ -13,7 +13,7 @@ export default function fetcher<ResponseData = unknown>(
       ...init?.headers,
     },
   })
-    .then<CommonResponse<ResponseData | null> | null>((response) => {
+    .then<CommonResponse<ResponseData>>((response) => {
       if (response.ok) {
         return response.json()
       }
@@ -24,9 +24,9 @@ export default function fetcher<ResponseData = unknown>(
         return data?.data
       }
       if (data?.code === 401) {
-        // logout()
+        logout()
       }
-      // toast.error(data?.message)
-      return null
+      toast.error(data?.message)
+      throw new Error(data?.message)
     })
 }

@@ -87,14 +87,16 @@ export default function TelegramAlertButton({ type }: { type?: 1 | 2 }) {
         <button
           type={'button'}
           className={
-            'flex h-[42px] items-center gap-3 rounded-[5px] bg-[#0698D8] px-[38px] text-base'
+            'flex h-[42px] w-40 items-center justify-center gap-3 rounded-[5px] bg-[#0698D8] text-base'
           }
           onClick={handleClick}
           disabled={fetchingLink || isRefetching}
         >
-          {fetchingLink ||
-            (isRefetching && <span className={'loading loading-spinner'} />)}
-          {'Connect'}
+          {fetchingLink || isRefetching ? (
+            <span className={'loading loading-dots'} />
+          ) : (
+            'Connect'
+          )}
         </button>
       </div>
     )
@@ -107,10 +109,10 @@ export default function TelegramAlertButton({ type }: { type?: 1 | 2 }) {
         type={'button'}
         className={'mr-2.5 flex items-center gap-3 rounded bg-[#0698D8] px-5'}
         onClick={handleClick}
-        disabled={isRefetching}
+        disabled={fetchingLink || isRefetching}
       >
         {fetchingLink || isRefetching ? (
-          <span className={'loading loading-spinner'} />
+          <span className={'loading loading-dots'} />
         ) : (
           <Image src={TelegramSVG} width={'24'} alt={'telegram'} />
         )}
