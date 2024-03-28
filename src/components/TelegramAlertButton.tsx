@@ -5,7 +5,7 @@ import { Popover } from '@headlessui/react'
 import Image from 'next/image'
 import { useAccount } from 'wagmi'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
-import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import TelegramSVG from '@/images/telegram.svg'
 import InfoSVG from '@/images/info.svg'
@@ -28,7 +28,8 @@ export default function TelegramAlertButton({ type }: { type?: 1 | 2 }) {
   const { address } = useAccount()
   const { openConnectModal } = useConnectModal()
   const [code, setCode] = useState<string>('')
-  const { data: userInfo } = useSuspenseQuery({
+  const { data: userInfo } = useQuery({
+    enabled: Boolean(address),
     queryKey: [getCurrentLoginUser],
     queryFn: () => {
       return fetchGetCurrentLoginUser()

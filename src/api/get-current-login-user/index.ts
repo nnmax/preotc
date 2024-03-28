@@ -8,5 +8,5 @@ export type GetCurrentLoginUserResponse = ConnectWalletResponse
 export const fetchGetCurrentLoginUser = () => {
   return fetcher<GetCurrentLoginUserResponse>(getCurrentLoginUser, {
     method: 'GET',
-  })
+  }).catch(() => null)
 }
