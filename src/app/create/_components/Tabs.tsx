@@ -8,12 +8,8 @@ import { useState } from 'react'
 import Panel from './Panel'
 import type { FormValues } from '../types'
 
-function tabClasses({ selected }: { selected: boolean }) {
-  return clsx(
-    'flex flex-1 items-center justify-center',
-    selected && 'bg-[#FFC300] text-black',
-  )
-}
+const tabClasses =
+  'flex flex-1 items-center justify-center aria-selected:bg-[#FFC300] aria-selected:text-black'
 
 export default function Tabs() {
   const searchParams = useSearchParams()

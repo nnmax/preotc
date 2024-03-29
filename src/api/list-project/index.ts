@@ -14,25 +14,17 @@ export interface ListProjectResponse {
 export const listProject = (): Promise<ListProjectResponse[]> => {
   return fetcher<ListProjectResponse[]>(listProjectUrl, {
     method: 'GET',
-  }).then((res) => {
-    if (res?.length) return res
-    return [
-      {
-        id: 1,
-        name: 'AKAK',
-        symbol: 'symbol',
-        twitterUrl: 'https://x.com',
-        avatarUrl: 'https://fakeimg.pl/24x24/D8D8D8/?text=T',
-        createTime: '2021-03-16T08:52:47.000+00:00',
-      },
-      {
-        id: 2,
-        name: 'AKAK 2',
-        symbol: 'symbol',
-        twitterUrl: 'https://x.com',
-        avatarUrl: 'https://fakeimg.pl/24x24/D8D8D8/?text=T',
-        createTime: '2021-03-16T08:52:47.000+00:00',
-      },
-    ]
   })
+    .catch(() => null)
+    .then((res) => {
+      if (res?.length) return res
+      return Array.from({ length: 20 }, (_, i) => ({
+        id: i + 1,
+        name: 'AKAK' + (i + 1),
+        symbol: 'symbol',
+        twitterUrl: 'https://x.com',
+        avatarUrl: 'https://fakeimg.pl/24x24/D8D8D8',
+        createTime: '2021-03-16T08:52:47.000+00:00',
+      }))
+    })
 }

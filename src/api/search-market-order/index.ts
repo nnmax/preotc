@@ -4,7 +4,7 @@ export const SearchMarketOrderUrl = '/pre-otc/search-market-order'
 
 export interface SearchMarketOrderParams {
   type: 'Buying' | 'Selling'
-  projectId: number
+  projectId?: number
 }
 
 export interface SearchMarketOrderResponse {

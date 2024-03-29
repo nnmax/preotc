@@ -46,7 +46,6 @@ export default function ToggleButton(props: ToggleButtonProps) {
       onClick={handleClick}
       aria-pressed={selected}
       data-toggle-button
-      className={'w-24'}
       {...restProps}
     >
       {children}
