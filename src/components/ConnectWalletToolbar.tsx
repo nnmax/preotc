@@ -12,14 +12,20 @@ import {
   useChainId,
   useDisconnect,
 } from 'wagmi'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { verifyMessage } from 'wagmi/actions'
 import { Popover, Transition } from '@headlessui/react'
 import { blast } from 'wagmi/chains'
 import WalletSvg from '@/images/wallet.svg'
 import EthIcon from '@/images/eth-24x24.png'
+import USDBSvg from '@/images/USDB.svg'
 import ArrowDownSvg from '@/images/arrow-down.svg'
-import { fetchConnectWalletUrl, ConnectWalletUrl } from '@/api'
+import {
+  fetchConnectWalletUrl,
+  ConnectWalletUrl,
+  getUsdbBalanceUrl,
+  getUsdbBalance,
+} from '@/api'
 import {
   ActiveWalletLocalStorageKey,
   MessageLocalStorageKey,
@@ -136,10 +142,19 @@ export default function ConnectWalletToolbar() {
   useSign()
   const [walletType, setWalletType] = useState<WalletType>()
   const connections = useConnections()
+  const { address } = useAccount()
   const chainId = useChainId()
   const { disconnect } = useDisconnect()
   const { recentWalletState, setRecentWalletState } = useRecentWallets({
     walletType,
+  })
+  const { data: usdbBalance } = useQuery({
+    enabled: Boolean(address) && isBlastChain(chainId),
+    queryKey: [getUsdbBalanceUrl, address],
+    queryFn: () => {
+      if (!address) throw new Error('address is required')
+      return getUsdbBalance({ address })
+    },
   })
 
   useEffect(() => {
@@ -201,6 +216,20 @@ export default function ConnectWalletToolbar() {
                 <span title={'0'}>{'0'}</span>
                 <span className={'ml-2.5 text-[#FFC300]'}>{'PTS'}</span>
               </Box>
+              {isBlastChain(chainId) && usdbBalance && (
+                <Box className={'min-w-[136px] justify-start text-xs'}>
+                  <Image
+                    src={USDBSvg}
+                    alt={'USDB'}
+                    width={'24'}
+                    height={'24'}
+                    className={'mr-2'}
+                  />
+                  <span title={usdbBalance.usdbBalance.toString()}>
+                    {usdbBalance.usdbBalance.toLocaleString()}
+                  </span>
+                </Box>
+              )}
               <Box className={'min-w-[136px] justify-start text-xs'}>
                 <Image
                   src={getIcon(walletType).src}
@@ -410,7 +439,6 @@ function useSign() {
 
       const res = await mutateAsync({
         address,
-        chainId: 1,
       })
       const message = typeof res === 'string' ? res : ''
       const signature = await signMessageAsync({
@@ -421,7 +449,6 @@ function useSign() {
       window.localStorage.setItem(MessageLocalStorageKey, message)
       mutateAsync({
         address,
-        chainId: 1,
         signature,
         message,
       })
