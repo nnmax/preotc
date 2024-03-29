@@ -133,7 +133,7 @@ function useRecentWallets(options: { walletType: WalletType | undefined }) {
 }
 
 export default function ConnectWalletToolbar() {
-  // useSign()
+  useSign()
   const [walletType, setWalletType] = useState<WalletType>()
   const connections = useConnections()
   const chainId = useChainId()
@@ -373,7 +373,6 @@ export default function ConnectWalletToolbar() {
   )
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function useSign() {
   const { address } = useAccount()
   const { mutateAsync } = useMutation({

@@ -31,12 +31,12 @@ export default function Card(props: {
         }
       >
         <div className={'flex flex-col'}>
-          <span className={'text-[rgba(155,155,155,0.6) mb-1'}>{'Offer'}</span>
+          <span className={'mb-1 text-[rgba(155,155,155,0.6)]'}>{'Offer'}</span>
           <span className={'mb-2 flex items-center'}>
             {'7050 K'}
             <Image src={OneSVG} alt={''} width={'12'} className={'ml-1'} />
           </span>
-          <span className={'text-[rgba(155,155,155,0.6) text-xs'}>
+          <span className={'text-xs text-[rgba(155,155,155,0.6)]'}>
             {'$ 0.1516 / Token'}
           </span>
         </div>
@@ -47,7 +47,7 @@ export default function Card(props: {
           className={'ml-2 mr-auto mt-3.5'}
         />
         <div className={'flex flex-col items-end'}>
-          <span className={'text-[rgba(155,155,155,0.6) mb-1'}>{'For'}</span>
+          <span className={'mb-1 text-[rgba(155,155,155,0.6)]'}>{'For'}</span>
           <span className={'flex items-center text-[#FFC300]'}>
             {'3050K'}
             <Image src={USDTSvg} alt={'USDT'} width={'14'} className={'ml-1'} />
@@ -56,9 +56,15 @@ export default function Card(props: {
       </div>
 
       <div className={'flex items-center justify-between pt-2.5'}>
-        <span className={'text-xs'}>{'7 Days Ago'}</span>
+        <span className={'text-xs text-[rgba(155,155,155,0.6)]'}>
+          {'7 Days Ago'}
+        </span>
         <Link
-          href={type === 'sell' ? '/market/offer/sell' : '/market/offer/buy'}
+          href={
+            type === 'sell'
+              ? '/offer/address?type=sell'
+              : '/offer/address?type=buy'
+          }
           className={clsx(
             'flex h-7 items-center rounded px-5 text-sm',
             type === 'buy' ? 'bg-[#004DFF]' : 'bg-[#EB2F96]',

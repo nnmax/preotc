@@ -93,7 +93,7 @@ function TabsRightActions() {
   return (
     <div className={'flex'}>
       <Link
-        href={'/market/offer'}
+        href={'/create'}
         className={'mr-8 flex items-center rounded bg-[#EB2F96] px-5'}
         onClick={handleClickLink}
       >
