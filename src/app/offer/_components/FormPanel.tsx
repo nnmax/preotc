@@ -59,6 +59,8 @@ export default function FormPanel({ type }: FormPanelProps) {
         pricePerToken={per}
         type={type}
         price={rangeValue * per}
+        // TODO: 从接口获取
+        fee={2.5}
       />
     )
     stepButton = (
