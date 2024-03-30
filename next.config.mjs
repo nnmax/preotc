@@ -25,7 +25,11 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'fakeimg.pl',
+        hostname: 'icons.llamao.fi',
+      },
+      {
+        protocol: 'https',
+        hostname: 'pbs.twimg.com',
       },
     ],
   },

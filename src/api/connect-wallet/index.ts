@@ -3,7 +3,6 @@ import fetcher from '@/api/fetcher'
 export const ConnectWalletUrl = '/pre-otc/connect-wallet'
 
 export interface ConnectWalletParams {
-  chainId: number
   address: string
   message?: string | null
   signature?: string | null

@@ -78,7 +78,9 @@ export default function FormPanel({ type }: FormPanelProps) {
         id={345}
         name={'AKAK'}
         twitterUrl={'https://x.com'}
-        avatarUrl={'https://fakeimg.pl/24x24/D8D8D8/?text=T'}
+        avatarUrl={
+          'https://icons.llamao.fi/icons/protocols/friend.tech?w=48&h=48'
+        }
       />
       {stepPanel}
       {address ? (

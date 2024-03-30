@@ -8,10 +8,11 @@ interface SecondStepPanelProps {
   amount: number
   pricePerToken: number
   price: number
+  fee: number
 }
 
 export default function SecondStepPanel(props: SecondStepPanelProps) {
-  const { type, amount, pricePerToken, price } = props
+  const { type, amount, pricePerToken, price, fee } = props
   const labelText = type === 'buy' ? 'Buying' : 'Selling'
   const labelBg = type === 'buy' ? 'bg-[#FFC300]' : 'bg-[#EB2F96]'
 
@@ -47,7 +48,7 @@ export default function SecondStepPanel(props: SecondStepPanelProps) {
       <span className={'text-[#FFC300]'}>{`$ ${price.toLocaleString()}`}</span>
       <p className={'mt-8 flex items-center justify-between'}>
         <span className={'text-[#737373]'}>{'PreOTC fee'}</span>
-        <span>{'2.5%'}</span>
+        <span>{`${fee}%`}</span>
       </p>
     </div>
   )

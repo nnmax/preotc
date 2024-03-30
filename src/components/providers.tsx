@@ -14,6 +14,29 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 import { ReactQueryStreamedHydration } from '@tanstack/react-query-next-experimental'
 import BlastIcon from '@/images/blast-icon.svg'
+import type { Chain } from 'wagmi/chains'
+
+const blastSepolia: Chain = {
+  id: 168587773,
+  name: 'Blast Sepolia',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'Ether',
+    symbol: 'ETH',
+  },
+  rpcUrls: {
+    default: { http: ['https://sepolia.blast.io'] },
+  },
+  blockExplorers: {
+    default: { name: 'Testnet Blastscan', url: 'https://testnet.blastscan.io' },
+  },
+  // contracts: {
+  //   multicall3: {
+  //     address: '0xcA11bde05977b3631167028862bE2a173976CA11',
+  //     blockCreated: 212929,
+  //   },
+  // },
+}
 
 const config = getDefaultConfig({
   appName: 'Preotc',
@@ -38,6 +61,15 @@ const config = getDefaultConfig({
       iconUrl: BlastIcon.src,
       iconBackground: '#000',
     },
+    ...(process.env.NEXT_PUBLIC_IS_DEV === 'true'
+      ? [
+          {
+            ...blastSepolia,
+            iconUrl: BlastIcon.src,
+            iconBackground: '#000',
+          },
+        ]
+      : []),
     base,
     zkSync,
   ],

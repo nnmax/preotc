@@ -5,10 +5,18 @@ import { useId } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import { capitalize } from 'lodash-es'
+import { useSendTransaction } from 'wagmi'
+import { parseEther } from 'viem'
+import { useRouter } from 'next/navigation'
 import USDBSvg from '@/images/USDB.svg'
 import DownSvg from '@/images/down.svg'
 import DangerSvg from '@/images/danger.svg'
-import { createOrder, createOrderUrl } from '@/api'
+import {
+  depositMakeOrder,
+  depositMakeOrderUrl,
+  makeOrder,
+  makeOrderUrl,
+} from '@/api'
 import BlurButton from '@/components/BlurButton'
 import SecondStepPanel from '@/app/offer/_components/SecondStepPanel'
 import TokenHeader from '@/components/TokenHeader'
@@ -16,7 +24,7 @@ import { useSelectProps } from '@/app/create/hooks'
 import type { Dispatch, SetStateAction } from 'react'
 import type { FormValues } from '@/app/create/types'
 import type { FieldErrors, UseFormRegister } from 'react-hook-form'
-import type { CreateOrderParams, ListProjectResponse } from '@/api'
+import type { MakeOrderParams, ListProjectResponse } from '@/api'
 
 export interface PanelProps {
   tab: 'buying' | 'selling'
@@ -24,30 +32,45 @@ export interface PanelProps {
   setStep: Dispatch<SetStateAction<number>>
 }
 
+const USDB_LIMIT = process.env.NEXT_PUBLIC_IS_DEV === 'true' ? 1 : 100
+
 export default function Panel({ tab, step, setStep }: PanelProps) {
   const { selectOptions, selectedProject } = useSelectProps()
   const { watch, handleSubmit, register } = useFormContext<FormValues>()
   const formId = useId()
-  const [amount, pricePerToken] = watch(['amount', 'pricePerToken'])
+  const router = useRouter()
+  const [amount, pricePerToken, projectId] = watch([
+    'amount',
+    'pricePerToken',
+    'projectId',
+  ])
   const price = amount * pricePerToken || 0
-  const invalid = price <= 100
+  const invalid = price <= USDB_LIMIT
+  const { sendTransactionAsync, isPending: sendingTransaction } =
+    useSendTransaction()
 
-  const { mutateAsync: createOrderAsync, isPending: creatingOrder } =
+  const {
+    mutateAsync: makeOrderAsync,
+    isPending: makingOrder,
+    data: makeOrderResponse,
+  } = useMutation({
+    mutationKey: [makeOrderUrl],
+    mutationFn: makeOrder,
+  })
+
+  const { mutateAsync: depositMakeOrderAsync, isPending: depositMakingOrder } =
     useMutation({
-      mutationKey: [createOrderUrl],
-      mutationFn: (variables: CreateOrderParams) => {
-        return createOrder(variables)
-      },
+      mutationKey: [depositMakeOrderUrl],
+      mutationFn: depositMakeOrder,
     })
 
   const handleValid = async (values: FormValues) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const res = await createOrderAsync({
+    await makeOrderAsync({
       amount: values.amount,
       price: values.pricePerToken,
       projectId: values.projectId,
-      type: capitalize(tab) as CreateOrderParams['type'],
-    }).catch(() => {})
+      type: capitalize(tab) as MakeOrderParams['type'],
+    })
     setStep(2)
   }
 
@@ -55,6 +78,46 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
     Object.values(errors).forEach((value) => {
       toast.error(value.message)
     })
+  }
+
+  const handleDeposit = async () => {
+    if (!makeOrderResponse) {
+      toast.error('Failed to make order')
+      return
+    }
+
+    const txHash = await sendTransactionAsync({
+      to: makeOrderResponse.depositCallData.destination,
+      value: parseEther(
+        (makeOrderResponse.depositCallData.value || 1).toString(),
+      ),
+      data: makeOrderResponse.depositCallData.callData,
+    }).catch((error) => {
+      console.log(error)
+      toast.error(
+        error?.shortMessage ?? error?.message ?? 'TransactionExecutionError',
+      )
+      return null
+    })
+
+    if (!txHash) return
+
+    const res = await depositMakeOrderAsync({
+      amount,
+      price: pricePerToken,
+      projectId,
+      type: capitalize(tab) as MakeOrderParams['type'],
+      txHash,
+    })
+    toast.success(
+      'Congratulations on completing the deal, please pay close attention to the token settlement time!',
+    )
+    console.log(
+      '%c [ res ]-88',
+      'font-size:13px; background:pink; color:#bf2c9f;',
+      res,
+    )
+    router.push('/market')
   }
 
   let stepPanel = null
@@ -75,8 +138,8 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
       <BlurButton
         form={formId}
         type={'submit'}
-        disabled={invalid || creatingOrder}
-        loading={creatingOrder}
+        disabled={invalid || makingOrder}
+        loading={makingOrder}
         bgColorClass={
           tab === 'buying'
             ? invalid
@@ -98,6 +161,7 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
         pricePerToken={pricePerToken}
         price={price}
         type={tab === 'buying' ? 'buy' : 'sell'}
+        fee={makeOrderResponse?.orderConfirmData.feePercent ?? 0}
       />
     )
     stepButton = (
@@ -105,6 +169,8 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
         type={'button'}
         bgColorClass={'bg-[#FBFC02]'}
         className={'mt-[52px] text-black'}
+        onClick={handleDeposit}
+        loading={sendingTransaction || depositMakingOrder}
       >
         {`Deposit ${price.toLocaleString()} USDB`}
       </BlurButton>
@@ -199,7 +265,7 @@ function FirstStepPanel(props: FirstStepPanelProps) {
 
         <div
           className={
-            'relative flex h-[44px] w-[180px] items-center gap-2.5 self-end rounded-[5px] bg-[#2A3037] p-2.5'
+            'relative flex h-[44px] w-fit items-center gap-2.5 self-end rounded-[5px] bg-[#2A3037] p-2.5'
           }
         >
           {selectedProject && (

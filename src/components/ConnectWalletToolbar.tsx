@@ -83,7 +83,7 @@ function getIcon(
 }
 
 function isBlastChain(chainId: number) {
-  return chainId === blast.id
+  return chainId === blast.id || chainId === 168587773
 }
 
 interface WalletRaw {
@@ -212,10 +212,10 @@ export default function ConnectWalletToolbar() {
         if (account) {
           return (
             <div className={'flex gap-2.5'}>
-              <Box className={'min-w-[176px] justify-end text-sm'}>
+              {/* <Box className={'min-w-[176px] justify-end text-sm'}>
                 <span title={'0'}>{'0'}</span>
                 <span className={'ml-2.5 text-[#FFC300]'}>{'PTS'}</span>
-              </Box>
+              </Box> */}
               {isBlastChain(chainId) && usdbBalance && (
                 <Box className={'min-w-[136px] justify-start text-xs'}>
                   <Image
@@ -239,7 +239,7 @@ export default function ConnectWalletToolbar() {
                   className={'mr-2'}
                 />
                 <span title={account.balanceFormatted}>
-                  {account.balanceFormatted}
+                  {account.displayBalance}
                 </span>
               </Box>
               {walletType === 'ETH' && (
@@ -317,7 +317,7 @@ export default function ConnectWalletToolbar() {
                           >
                             <PanelItem
                               connected
-                              balance={account.balanceFormatted}
+                              balance={account.displayBalance}
                               address={account.address}
                               {...(walletType === 'ETH'
                                 ? {

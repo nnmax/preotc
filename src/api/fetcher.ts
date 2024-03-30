@@ -2,11 +2,17 @@ import { toast } from 'react-toastify'
 import logout from '@/utils/logout'
 import type { CommonResponse } from '@/api/types'
 
+const API_ENDPOINT = process.env.API_ENDPOINT
+
 export default function fetcher<ResponseData = unknown>(
   input: string,
   init?: RequestInit,
 ) {
-  return fetch(input, {
+  let url = input
+  if (typeof window === 'undefined') {
+    url = API_ENDPOINT + input
+  }
+  return fetch(url, {
     ...init,
     headers: {
       'Content-Type': 'application/json',
@@ -26,7 +32,7 @@ export default function fetcher<ResponseData = unknown>(
       if (data?.code === 401) {
         logout()
       }
-      toast.error(data?.message)
-      throw new Error(data?.message)
+      toast.error(data?.prompt)
+      throw new Error(data?.prompt)
     })
 }
