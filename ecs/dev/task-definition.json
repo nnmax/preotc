@@ -9,7 +9,7 @@
         "logDriver": "awslogs",
         "secretOptions": null,
         "options": {
-          "awslogs-group": "/ecs/web-mobile-task-dev",
+          "awslogs-group": "/ecs/preotc-web-task-dev",
           "awslogs-region": "us-west-2",
           "awslogs-stream-prefix": "ecs"
         }
@@ -67,9 +67,9 @@
     }
   ],
   "placementConstraints": [],
-  "memory": "4096",
+  "memory": "512",
   "taskRoleArn": "arn:aws:iam::149736873577:role/ecsTaskExecutionRole",
-  "family": "web-mobile-task-dev",
+  "family": "preotc-web-task-dev",
   "pidMode": null,
   "requiresCompatibilities": ["FARGATE"],
   "networkMode": "awsvpc",
@@ -77,7 +77,7 @@
     "operatingSystemFamily": "LINUX",
     "cpuArchitecture": null
   },
-  "cpu": "2048",
+  "cpu": "256",
   "inferenceAccelerators": null,
   "proxyConfiguration": null,
   "volumes": []
