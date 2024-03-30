@@ -22,8 +22,10 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-ARG NEXT_PUBLIC_API_TARGET
-ENV NEXT_PUBLIC_API_TARGET $NEXT_PUBLIC_API_TARGET
+ARG API_ENDPOINT
+ENV API_ENDPOINT $API_ENDPOINT
+ARG NEXT_PUBLIC_IS_DEV
+ENV NEXT_PUBLIC_IS_DEV $NEXT_PUBLIC_IS_DEV
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
