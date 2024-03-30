@@ -12,6 +12,10 @@ const nextConfig = {
   experimental: {
     typedRoutes: true,
   },
+  typescript: {
+    // Disabling on production builds because we're running checks on PRs via GitHub Actions.
+    ignoreBuildErrors: true,
+  },
   logging: {
     fetches: {
       fullUrl: true,
