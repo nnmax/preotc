@@ -2,72 +2,286 @@
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import Image from 'next/image'
 import clsx from 'clsx'
-import { forwardRef, useEffect } from 'react'
-import { useSignMessage, useAccount, useConfig } from 'wagmi'
-import { useMutation } from '@tanstack/react-query'
+import { forwardRef, useCallback, useEffect, useState } from 'react'
+import {
+  useSignMessage,
+  useAccount,
+  useConfig,
+  useAccountEffect,
+  useConnections,
+  useChainId,
+  useDisconnect,
+} from 'wagmi'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { verifyMessage } from 'wagmi/actions'
+import { Popover, Transition } from '@headlessui/react'
+import { blast } from 'wagmi/chains'
 import WalletSvg from '@/images/wallet.svg'
-import EthDarkSvg from '@/images/eth-dark.svg'
+import EthIcon from '@/images/eth-24x24.png'
+import USDBSvg from '@/images/USDB.svg'
 import ArrowDownSvg from '@/images/arrow-down.svg'
-import USDTSvg from '@/images/USDT.svg'
-import { fetchConnectWalletUrl, ConnectWalletUrl } from '@/api'
-import { MessageLocalStorageKey, SignatureLocalStorageKey } from '@/constant'
+import {
+  fetchConnectWalletUrl,
+  ConnectWalletUrl,
+  getUsdbBalanceUrl,
+  getUsdbBalance,
+} from '@/api'
+import {
+  ActiveWalletLocalStorageKey,
+  MessageLocalStorageKey,
+  RecentWalletsLocalStorageKey,
+  SignatureLocalStorageKey,
+} from '@/constant'
+import logout from '@/utils/logout'
+import LogoutSvg from '@/images/logout.svg'
+import BTCSvg from '@/images/btc.svg'
+import SOLSvg from '@/images/sol.svg'
+import ConnectSvg from '@/images/connect-different-wallet.svg'
+import BlastIcon from '@/images/blast-icon.svg'
+import type { SetStateAction } from 'react'
+import type { StaticImport } from 'next/dist/shared/lib/get-img-props'
 import type { Hex } from 'viem'
 import type { ConnectWalletParams } from '@/api'
-// import { Popover, Transition } from '@headlessui/react'
-// import LogoutSvg from '@/images/logout.svg'
+
+type WalletType = 'ETH' | 'BTC' | 'SOL'
+
+function getWalletChainType(walletName: string): WalletType {
+  if (walletName.indexOf('phantom') !== -1) return 'SOL'
+  if (walletName.indexOf('okx') !== -1) return 'BTC'
+  return 'ETH'
+}
+
+function getIcon(
+  walletType: WalletType | undefined,
+  blastChain?: boolean,
+): {
+  src: string | StaticImport
+  alt: string
+} {
+  if (blastChain) {
+    return {
+      src: BlastIcon,
+      alt: 'Blast',
+    }
+  }
+  if (walletType === 'SOL') {
+    return {
+      src: SOLSvg,
+      alt: 'SOL',
+    }
+  }
+  if (walletType === 'BTC') {
+    return {
+      src: BTCSvg,
+      alt: 'BTC',
+    }
+  }
+  return {
+    src: EthIcon,
+    alt: 'ETH',
+  }
+}
+
+function isBlastChain(chainId: number) {
+  return chainId === blast.id || chainId === 168587773
+}
+
+interface WalletRaw {
+  name: string
+  address: string
+  type: WalletType
+}
+
+function useRecentWallets(options: { walletType: WalletType | undefined }) {
+  const { walletType } = options
+  const [recentWalletState, _setRecentWalletState] = useState<WalletRaw[]>([])
+
+  const setRecentWalletState = useCallback(
+    (setStateAction: SetStateAction<WalletRaw[]>) => {
+      if (typeof setStateAction === 'function') {
+        _setRecentWalletState((prev) => {
+          const ret = setStateAction(prev)
+          window.localStorage.setItem(
+            RecentWalletsLocalStorageKey,
+            JSON.stringify(ret),
+          )
+          return ret
+        })
+      } else {
+        _setRecentWalletState(setStateAction)
+        window.localStorage.setItem(
+          RecentWalletsLocalStorageKey,
+          JSON.stringify(setStateAction),
+        )
+      }
+    },
+    [],
+  )
+
+  useEffect(() => {
+    try {
+      let recentWallets: WalletRaw[] = JSON.parse(
+        window.localStorage.getItem(RecentWalletsLocalStorageKey) ?? '[]',
+      )
+      if (!Array.isArray(recentWallets)) recentWallets = []
+      _setRecentWalletState(
+        recentWallets.filter((item) => item.type !== walletType),
+      )
+    } catch (error) {
+      console.error(error)
+    }
+  }, [walletType])
+
+  return {
+    recentWalletState,
+    setRecentWalletState,
+  }
+}
 
 export default function ConnectWalletToolbar() {
   useSign()
+  const [walletType, setWalletType] = useState<WalletType>()
+  const connections = useConnections()
+  const { address } = useAccount()
+  const chainId = useChainId()
+  const { disconnect } = useDisconnect()
+  const { recentWalletState, setRecentWalletState } = useRecentWallets({
+    walletType,
+  })
+  const { data: usdbBalance } = useQuery({
+    enabled: Boolean(address) && isBlastChain(chainId),
+    queryKey: [getUsdbBalanceUrl, address],
+    queryFn: () => {
+      if (!address) throw new Error('address is required')
+      return getUsdbBalance({ address })
+    },
+  })
+
+  useEffect(() => {
+    if (connections.length === 0) return
+    const walletName = connections[0].connector.name.toLowerCase()
+    const _walletType = getWalletChainType(walletName)
+    setWalletType(_walletType)
+
+    const activeRaw = window.localStorage.getItem(ActiveWalletLocalStorageKey)
+    if (activeRaw) {
+      try {
+        let recentWallets: WalletRaw[] = JSON.parse(
+          window.localStorage.getItem(RecentWalletsLocalStorageKey) ?? '[]',
+        )
+        if (!Array.isArray(recentWallets)) recentWallets = []
+        const foundIndex = recentWallets.findIndex(
+          (item) => item.type === _walletType,
+        )
+        if (foundIndex === -1) {
+          recentWallets.push({
+            name: walletName,
+            address: connections[0].accounts[0],
+            type: _walletType,
+          })
+        } else {
+          recentWallets[foundIndex] = {
+            name: walletName,
+            address: connections[0].accounts[0],
+            type: _walletType,
+          }
+        }
+
+        window.localStorage.setItem(
+          RecentWalletsLocalStorageKey,
+          JSON.stringify(recentWallets),
+        )
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
+    window.localStorage.setItem(
+      ActiveWalletLocalStorageKey,
+      JSON.stringify({
+        name: walletName,
+        address: connections[0].accounts[0],
+        type: _walletType,
+      }),
+    )
+  }, [connections])
 
   return (
     <ConnectButton.Custom>
-      {({ openConnectModal, openAccountModal, account }) => {
+      {({ openConnectModal, account, openChainModal, chain }) => {
         if (account) {
           return (
-            <div className={'flex'}>
-              <Box className={'mr-5 w-40 justify-start text-xs'}>
+            <div className={'flex gap-2.5'}>
+              {/* <Box className={'min-w-[176px] justify-end text-sm'}>
+                <span title={'0'}>{'0'}</span>
+                <span className={'ml-2.5 text-[#FFC300]'}>{'PTS'}</span>
+              </Box> */}
+              {isBlastChain(chainId) && usdbBalance && (
+                <Box className={'min-w-[136px] justify-start text-xs'}>
+                  <Image
+                    src={USDBSvg}
+                    alt={'USDB'}
+                    width={'24'}
+                    height={'24'}
+                    className={'mr-2'}
+                  />
+                  <span title={usdbBalance.usdbBalance.toString()}>
+                    {usdbBalance.usdbBalance.toLocaleString()}
+                  </span>
+                </Box>
+              )}
+              <Box className={'min-w-[136px] justify-start text-xs'}>
                 <Image
-                  src={USDTSvg}
-                  width={'18'}
-                  alt={'USDT'}
-                  className={'mr-1'}
-                />
-                <span title={account.balanceFormatted}>
-                  {account.balanceFormatted}
-                </span>
-              </Box>
-              <Box button onClick={openAccountModal}>
-                <Image
-                  src={EthDarkSvg}
-                  alt={'eth'}
-                  width={'18'}
-                  height={'18'}
+                  src={getIcon(walletType).src}
+                  alt={getIcon(walletType).alt}
+                  width={'24'}
+                  height={'24'}
                   className={'mr-2'}
                 />
-                <span title={account.address} className={'text-xs'}>
-                  {account.address.slice(0, 8)}
-                  {'...'}
-                  {account.address.slice(-8)}
+                <span title={account.balanceFormatted}>
+                  {account.displayBalance}
                 </span>
-                <Image
-                  src={ArrowDownSvg}
-                  alt={'arrow-down'}
-                  height={'18'}
-                  className={'-mb-1 ml-1'}
-                />
               </Box>
-              {/* TODO: 询问蔡叔, 下面这种方式无法实现 */}
-              {/* <Popover className={'relative'}>
+              {walletType === 'ETH' && (
+                <Box button onClick={openChainModal}>
+                  {chain?.hasIcon && (
+                    <div
+                      className={clsx('mr-2.5 h-7 w-7 rounded-full')}
+                      style={{
+                        background: chain.iconBackground,
+                      }}
+                    >
+                      <div
+                        className={
+                          'h-full w-full select-none bg-no-repeat transition-opacity'
+                        }
+                        style={{
+                          backgroundImage: chain.iconUrl
+                            ? `url(${chain.iconUrl})`
+                            : undefined,
+                        }}
+                      />
+                    </div>
+                  )}
+                  <span>{chain?.name || 'Select Chain'}</span>
+                  <Image
+                    src={ArrowDownSvg}
+                    alt={'arrow-down'}
+                    height={'18'}
+                    className={'-mb-1 ml-2.5'}
+                  />
+                </Box>
+              )}
+              <Popover className={'relative'}>
                 {({ close }) => {
                   return (
                     <>
                       <Popover.Button as={Box} button>
                         <Image
-                          src={EthDarkSvg}
-                          alt={'eth'}
-                          width={'18'}
-                          height={'18'}
+                          src={getIcon(walletType, isBlastChain(chainId)).src}
+                          alt={getIcon(walletType, isBlastChain(chainId)).alt}
+                          width={'24'}
+                          height={'24'}
                           className={'mr-2'}
                         />
                         <span title={account.address} className={'text-xs'}>
@@ -79,7 +293,7 @@ export default function ConnectWalletToolbar() {
                           src={ArrowDownSvg}
                           alt={'arrow-down'}
                           height={'18'}
-                          className={'-mb-1 ml-1'}
+                          className={'-mb-1 ml-2.5'}
                         />
                       </Popover.Button>
 
@@ -92,39 +306,87 @@ export default function ConnectWalletToolbar() {
                         leaveTo={'transform scale-95 opacity-0'}
                       >
                         <Popover.Panel
-                          as={Box}
                           className={
-                            'absolute w-full translate-y-1 justify-start bg-[#030303] px-3 py-2 text-xs shadow-md'
+                            'shadow-[0px_4px_10px_0px rgba(0,0,0,0.3)] absolute right-0 z-10 w-[368px] translate-y-1 justify-start border border-solid border-[#AAAAAA] bg-[#2A3037] px-5 text-xs'
                           }
                         >
-                          <button
-                            type={'button'}
-                            className={'button-base'}
-                            onClick={() => {
-                              openAccountModal()
-                              close()
-                            }}
+                          <ul
+                            className={
+                              'flex flex-col divide-y divide-[#525252]'
+                            }
                           >
-                            <Image
-                              src={LogoutSvg}
-                              alt={'logout'}
-                              width={'18'}
-                              className={'mr-2'}
+                            <PanelItem
+                              connected
+                              balance={account.displayBalance}
+                              address={account.address}
+                              {...(walletType === 'ETH'
+                                ? {
+                                    icon: EthIcon,
+                                    title: 'ETH',
+                                  }
+                                : walletType === 'BTC'
+                                  ? {
+                                      icon: BTCSvg,
+                                      title: 'BTC',
+                                    }
+                                  : {
+                                      icon: SOLSvg,
+                                      title: 'SOL',
+                                    })}
                             />
-                            <span>{'Disconnect'}</span>
-                          </button>
+
+                            {recentWalletState.map((item, index) => (
+                              <PanelItem
+                                key={index}
+                                address={item.address}
+                                icon={getIcon(item.type).src}
+                                title={item.type}
+                                onUnlink={() => {
+                                  setRecentWalletState((prev) =>
+                                    prev.filter(
+                                      (_item) => _item.type !== item.type,
+                                    ),
+                                  )
+                                }}
+                              />
+                            ))}
+
+                            <PanelItem
+                              icon={ConnectSvg}
+                              button
+                              onClick={() => {
+                                disconnect()
+                                close()
+                              }}
+                            >
+                              <p className={'text-[#FFC300]'}>
+                                {'Connect Different Wallet'}
+                              </p>
+                            </PanelItem>
+
+                            <PanelItem
+                              icon={LogoutSvg}
+                              button
+                              onClick={() => {
+                                disconnect()
+                                close()
+                              }}
+                            >
+                              <p className={'text-[#A5A5A5]'}>{'Disconnect'}</p>
+                            </PanelItem>
+                          </ul>
                         </Popover.Panel>
                       </Transition>
                     </>
                   )
                 }}
-              </Popover> */}
+              </Popover>
             </div>
           )
         }
 
         return (
-          <Box onClick={openConnectModal} button>
+          <Box onClick={openConnectModal} button className={'w-[222px]'}>
             <Image
               src={WalletSvg}
               alt={'wallet'}
@@ -151,6 +413,12 @@ function useSign() {
   const { signMessageAsync } = useSignMessage()
   const config = useConfig()
 
+  useAccountEffect({
+    onDisconnect() {
+      logout()
+    },
+  })
+
   useEffect(() => {
     const _signature = window.localStorage.getItem(SignatureLocalStorageKey)
     const _message = window.localStorage.getItem(MessageLocalStorageKey)
@@ -171,19 +439,18 @@ function useSign() {
 
       const res = await mutateAsync({
         address,
-        chainId: 1,
       })
+      const message = typeof res === 'string' ? res : ''
       const signature = await signMessageAsync({
-        message: res!.message,
+        message,
         account: address,
       })
       window.localStorage.setItem(SignatureLocalStorageKey, signature)
-      window.localStorage.setItem(MessageLocalStorageKey, res!.message)
+      window.localStorage.setItem(MessageLocalStorageKey, message)
       mutateAsync({
         address,
-        chainId: 1,
         signature,
-        message: res!.message,
+        message,
       })
     }
 
@@ -216,10 +483,84 @@ const Box = forwardRef<
       ref={ref}
       className={clsx(
         className,
-        'button-base flex h-8 items-center rounded border border-solid border-[#aaa] px-2.5 py-1 text-sm text-white',
+        'button-base flex h-[42px] items-center rounded border border-solid border-[#aaa] px-2.5 py-1 text-sm text-white',
       )}
     >
       {children}
     </Component>
   )
 })
+
+function PanelItem(props: {
+  icon: string | StaticImport
+  title?: 'ETH' | 'BTC' | 'SOL'
+  balance?: string
+  address?: string
+  children?: React.ReactNode
+  connected?: boolean
+  onClick?: () => void
+  onUnlink?: () => void
+  button?: boolean
+}) {
+  const {
+    icon,
+    address,
+    balance,
+    children,
+    title,
+    connected,
+    onClick,
+    button,
+    onUnlink,
+  } = props
+
+  const show = !!title && !!address
+
+  const Component = button ? 'button' : 'div'
+
+  return (
+    <li className={'flex-1'}>
+      <Component
+        type={button ? 'button' : undefined}
+        onClick={onClick}
+        className={'flex min-h-20 w-full items-center py-5'}
+      >
+        <Image src={icon} alt={''} className={'mr-2.5'} />
+        {show ? (
+          <div className={'flex-1 text-xs'}>
+            <p className={'flex items-center justify-between'}>
+              <span>
+                <span className={'text-sm'}>{title}</span>
+                {connected && (
+                  <span className={'ml-2 text-[#FFC300]'}>{'Connected'}</span>
+                )}
+              </span>
+              {connected ? (
+                <span>
+                  {balance} {title}
+                </span>
+              ) : title === 'ETH' ? null : (
+                <button
+                  type={'button'}
+                  onClick={onUnlink}
+                  className={
+                    'h-5 w-14 rounded-sm border border-solid border-white'
+                  }
+                >
+                  {'Unlink'}
+                </button>
+              )}
+            </p>
+            <p className={'mt-[5px] text-start text-[#A5A5A5]'}>
+              {address.slice(0, 6)}
+              {'...'}
+              {address.slice(-4)}
+            </p>
+          </div>
+        ) : (
+          children
+        )}
+      </Component>
+    </li>
+  )
+}

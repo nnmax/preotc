@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
-import Tabs from '@/app/market/offer/_components/Tabs'
+import Tabs from '@/app/create/_components/Tabs'
 
-export default function Offer() {
+export default function Create() {
   return (
     <Suspense>
       <Tabs />

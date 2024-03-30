@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import 'react-toastify/dist/ReactToastify.min.css';
+
 @layer components {
   .button-base {
     position: relative;
@@ -28,6 +30,26 @@
       pointer-events: none;
       cursor: default;
     }
+  }
+
+  .reset-input-number {
+    /* FireFox */
+    @supports not selector(: : -webkit-inner-spin-button) {
+      -moz-appearance: textfield !important;
+    }
+
+    /* Chrome */
+    &::-webkit-inner-spin-button {
+      display: none;
+    }
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
   }
 }
 

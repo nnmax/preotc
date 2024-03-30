@@ -3,17 +3,19 @@ import Link from 'next/link'
 import LeftSvg from '@/images/left.svg'
 import OfferIntroduce from '@/components/OfferIntroduce'
 
-export default function OfferLayout({
+export default function Layout({
   children,
+  linkTitle,
 }: {
   children: React.ReactNode
+  linkTitle: React.ReactNode
 }) {
   return (
     <div className={'flex flex-col items-center py-5'}>
       <div className={'mr-auto'}>
         <Link href={'/market'} className={'flex items-center'}>
           <Image className={'mr-2'} src={LeftSvg} alt={'left'} width={'32'} />
-          {'Create Offer'}
+          {linkTitle}
         </Link>
       </div>
       <div className={'flex justify-center gap-[46px] py-9'}>

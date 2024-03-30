@@ -1,5 +1,4 @@
 'use client'
-import clsx from 'clsx'
 import { createContext, useCallback, useMemo } from 'react'
 
 interface ToggleButtonGroupContextType {
@@ -48,14 +47,7 @@ export default function ToggleButtonGroup(props: ToggleButtonGroupProps) {
   }, [handleChange, value])
 
   return (
-    <div
-      role={'group'}
-      className={clsx(
-        className,
-        'flex h-[42px] rounded border border-solid border-[#aaa] text-center text-sm text-[#9e9e9e]',
-      )}
-      {...restProps}
-    >
+    <div role={'group'} className={className} {...restProps}>
       <ToggleButtonGroupContext.Provider value={contextValue}>
         {children}
       </ToggleButtonGroupContext.Provider>

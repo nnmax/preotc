@@ -1,6 +1,7 @@
 import './globals.css'
 import '@rainbow-me/rainbowkit/styles.css'
 import localFont from 'next/font/local'
+import { Bounce, ToastContainer } from 'react-toastify'
 import AppBar from '@/components/AppBar'
 import { Providers } from '@/components/providers'
 import type { Metadata, Viewport } from 'next'
@@ -16,6 +17,8 @@ export const viewport: Viewport = {
   themeColor: '#000000',
 }
 
+export const dynamic = 'force-dynamic'
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -29,6 +32,7 @@ export default function RootLayout({
           <main className={'flex min-h-[calc(100vh-64px)] flex-col px-[60px]'}>
             {children}
           </main>
+          <ToastContainer draggable transition={Bounce} />
         </Providers>
       </body>
     </html>
