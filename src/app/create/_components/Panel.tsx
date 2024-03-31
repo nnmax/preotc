@@ -46,7 +46,7 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
   ])
   const { address } = useAccount()
   const price = amount * pricePerToken || 0
-  const invalid = price <= USDB_LIMIT
+  const invalid = price < USDB_LIMIT
   const { sendTransactionAsync, isPending: sendingTransaction } =
     useSendTransaction()
 

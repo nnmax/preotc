@@ -7,6 +7,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useAccount } from 'wagmi'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { useSuspenseQuery } from '@tanstack/react-query'
+import { Suspense } from 'react'
 import TelegramAlertButton from '@/components/TelegramAlertButton'
 import BuyPanel from '@/app/market/_components/BuyPanel'
 import SellPanel from '@/app/market/_components/SellPanel'
@@ -35,19 +36,23 @@ export default function Tabs() {
             </Tab>
           </Tab.List>
 
-          <Filter />
+          <Suspense fallback={<span className={'loading loading-dots'} />}>
+            <Filter />
+          </Suspense>
         </div>
 
         <TabsRightActions />
       </div>
-      <Tab.Panels>
-        <Tab.Panel className={tabPanelClasses}>
-          <BuyPanel />
-        </Tab.Panel>
-        <Tab.Panel className={tabPanelClasses}>
-          <SellPanel />
-        </Tab.Panel>
-      </Tab.Panels>
+      <Suspense fallback={<span className={'loading loading-dots'} />}>
+        <Tab.Panels>
+          <Tab.Panel className={tabPanelClasses}>
+            <BuyPanel />
+          </Tab.Panel>
+          <Tab.Panel className={tabPanelClasses}>
+            <SellPanel />
+          </Tab.Panel>
+        </Tab.Panels>
+      </Suspense>
     </Tab.Group>
   )
 }

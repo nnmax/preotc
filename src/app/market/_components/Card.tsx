@@ -1,28 +1,39 @@
 import Image from 'next/image'
 import clsx from 'clsx'
 import Link from 'next/link'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import dayjs from 'dayjs'
 import USDTSvg from '@/images/USDT.svg'
 import OneSVG from '@/images/1.svg'
 import RightSVG from '@/images/right.svg'
 import type { SearchMarketOrderResponse } from '@/api'
 
+dayjs.extend(relativeTime)
+
+const cardClasses =
+  'flex w-full flex-col rounded-[10px] border-t-[6px] border-solid border-[#3B4043] bg-[#2A3037] px-4 pb-2.5 pt-4 shadow-[0px_4px_10px_0px_rgba(0,0,0,0.3)]'
+
+const numberFormatter = Intl.NumberFormat('en', { notation: 'compact' })
+
 export default function Card(props: {
   type: 'buy' | 'sell'
   data: SearchMarketOrderResponse
 }) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { type, data } = props
+
   return (
-    <div
-      className={
-        'flex w-full flex-col rounded-[10px] border-t-[6px] border-solid border-[#3B4043] bg-[#2A3037] px-4 pb-2.5 pt-4 shadow-[0px_4px_10px_0px_rgba(0,0,0,0.3)]'
-      }
-    >
+    <div className={cardClasses}>
       <div className={'flex gap-x-[6px]'}>
-        <div className={'top-0 h-10 w-10 rounded-full bg-[#D8D8D8]'} />
+        <Image
+          src={data.projectAvatarUrl}
+          alt={data.projectName}
+          width={'40'}
+          height={'40'}
+          className={'rounded-full'}
+        />
         <div className={'flex flex-col'}>
-          <span className={''}>{'KKK'}</span>
-          <span className={'text-xs'}>{'#345'}</span>
+          <span className={''}>{data.projectName}</span>
+          <span className={'text-xs'}>{`#${data.projectId}`}</span>
         </div>
       </div>
       <div
@@ -32,12 +43,18 @@ export default function Card(props: {
       >
         <div className={'flex flex-col'}>
           <span className={'mb-1 text-[rgba(155,155,155,0.6)]'}>{'Offer'}</span>
-          <span className={'mb-2 flex items-center'}>
-            {'7050 K'}
+          <span
+            className={'mb-2 flex items-center'}
+            title={data.amount.toString()}
+          >
+            {numberFormatter.format(data.amount)}
             <Image src={OneSVG} alt={''} width={'12'} className={'ml-1'} />
           </span>
-          <span className={'text-xs text-[rgba(155,155,155,0.6)]'}>
-            {'$ 0.1516 / Token'}
+          <span
+            className={'text-xs text-[rgba(155,155,155,0.6)]'}
+            title={data.price.toString()}
+          >
+            {`$ ${data.price.toLocaleString()} / Token`}
           </span>
         </div>
         <Image
@@ -48,16 +65,26 @@ export default function Card(props: {
         />
         <div className={'flex flex-col items-end'}>
           <span className={'mb-1 text-[rgba(155,155,155,0.6)]'}>{'For'}</span>
-          <span className={'flex items-center text-[#FFC300]'}>
-            {'3050K'}
+          <span
+            className={'flex items-center text-[#FFC300]'}
+            title={(data.amount * data.price).toString()}
+          >
+            {numberFormatter.format(data.amount * data.price)}
             <Image src={USDTSvg} alt={'USDT'} width={'14'} className={'ml-1'} />
           </span>
         </div>
       </div>
 
       <div className={'flex items-center justify-between pt-2.5'}>
-        <span className={'text-xs text-[rgba(155,155,155,0.6)]'}>
-          {'7 Days Ago'}
+        <span
+          className={'text-xs text-[rgba(155,155,155,0.6)]'}
+          title={
+            data.createTime
+              ? dayjs(data.createTime).toDate().toLocaleString()
+              : undefined
+          }
+        >
+          {data.createTime ? dayjs(data.createTime).fromNow() : 'Invalid Date'}
         </span>
         <Link
           href={
