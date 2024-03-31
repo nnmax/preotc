@@ -145,10 +145,13 @@ export default function FormPanel() {
   if (step === 2) {
     stepPanel = (
       <SecondStepPanel
-        amount={rangeValue}
+        amount={takeOrderResponse?.orderConfirmData.amount ?? rangeValue}
         pricePerToken={data.price}
         type={type}
-        price={rangeValue * data.price}
+        price={
+          takeOrderResponse?.orderConfirmData.totalPrice ??
+          rangeValue * data.price
+        }
         fee={data.feePercent}
       />
     )
@@ -159,7 +162,7 @@ export default function FormPanel() {
         onClick={handleDeposit}
         loading={sendingTransaction || depositTakingOrder}
       >
-        {`Deposit ${rangeValue * data.price * (type === 'buy' ? 1 : 2)} USDB`}
+        {`Deposit ${takeOrderResponse?.orderConfirmData.depositUsdbAmount} USDB`}
       </Button>
     )
   }
