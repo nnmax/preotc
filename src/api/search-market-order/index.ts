@@ -17,7 +17,8 @@ export interface SearchMarketOrderResponse {
   originOrderId: number | null
   buyerId: number
   sellerId: number | null
-  type: number
+  // 1 = buy, 2 = sell
+  type: 1 | 2
   amount: number
   price: number
   feePercent: number
@@ -28,6 +29,8 @@ export interface SearchMarketOrderResponse {
   status: number
   updateTime: string
   createTime: string
+  deliverDeadline: string | null
+  completeTime: string | null
 }
 
 export const fetchSearchMarketOrder = (params: SearchMarketOrderParams) => {

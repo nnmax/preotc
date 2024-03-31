@@ -1,8 +1,9 @@
 'use client'
 import { Tab } from '@headlessui/react'
 import clsx from 'clsx'
+import { Suspense } from 'react'
 import TelegramAlertButton from '@/components/TelegramAlertButton'
-import DeliveredTable from './DeliveredTable'
+import SettledTable from './SettledTable'
 import OffersTable from './OffersTable'
 import CompletedTable from './CompletedTable'
 
@@ -20,7 +21,7 @@ export default function Tabs() {
               'flex h-[42px] w-full max-w-[900px] justify-center divide-x divide-[#aaa] rounded border border-solid border-[#aaa] text-sm text-[#7E7E7E]'
             }
           >
-            <Tab className={tabClasses}>{'To Be Delivered'}</Tab>
+            <Tab className={tabClasses}>{'To Be Settled'}</Tab>
             <Tab className={tabClasses}>{'My Offers'}</Tab>
             <Tab className={tabClasses}>{'Deals Completed'}</Tab>
           </Tab.List>
@@ -31,17 +32,19 @@ export default function Tabs() {
         </div>
 
         <div className={'overflow-x-auto 2xl:px-20 3xl:px-36 4xl:px-44'}>
-          <Tab.Panels>
-            <Tab.Panel>
-              <DeliveredTable />
-            </Tab.Panel>
-            <Tab.Panel>
-              <OffersTable />
-            </Tab.Panel>
-            <Tab.Panel>
-              <CompletedTable />
-            </Tab.Panel>
-          </Tab.Panels>
+          <Suspense fallback={<span className={'loading loading-dots'} />}>
+            <Tab.Panels>
+              <Tab.Panel>
+                <SettledTable />
+              </Tab.Panel>
+              <Tab.Panel>
+                <OffersTable />
+              </Tab.Panel>
+              <Tab.Panel>
+                <CompletedTable />
+              </Tab.Panel>
+            </Tab.Panels>
+          </Suspense>
         </div>
       </Tab.Group>
     </div>

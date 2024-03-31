@@ -1,29 +1,21 @@
 import Image from 'next/image'
 import clsx from 'clsx'
 import { useState } from 'react'
-import USDTSvg from '@/images/USDT.svg'
+import { useSuspenseQuery } from '@tanstack/react-query'
+import dayjs from 'dayjs'
+import { searchUserOrder, searchUserOrderUrl } from '@/api'
 import { tdClasses, thClasses } from '../classes'
 import TablePagination from './TablePagination/TablePagination'
 
-interface Data {
-  id: number
-  token: string
-  time: string
-  value: number
-  amount: number
-  type: 'buy' | 'sell'
-}
-
-const data: Data[] = Array.from({ length: 10 }, (_, i) => ({
-  id: i + 1,
-  token: 'KKKK',
-  time: '2024/3/17 00:27:53',
-  value: 2000 + i,
-  amount: 10000 + i,
-  type: i % 2 === 0 ? 'buy' : 'sell',
-}))
-
 export default function OffersTable() {
+  const { data: offers } = useSuspenseQuery({
+    queryKey: [searchUserOrderUrl, 1],
+    queryFn: () => {
+      return searchUserOrder({
+        dashboardType: 1,
+      })
+    },
+  })
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
 
@@ -48,39 +40,44 @@ export default function OffersTable() {
         <tr>
           <th className={thClasses}>{'TOKEN'}</th>
           <th className={thClasses}>{'TIME'}</th>
-          <th className={thClasses}>{'VALUE'}</th>
+          <th className={thClasses}>{'VALUE (USDB)'}</th>
           <th className={thClasses}>{'AMOUNT'}</th>
           <th className={thClasses}>{'TYPE'}</th>
           <th className={thClasses}>{'ACTION'}</th>
         </tr>
       </thead>
       <tbody>
-        {data.map((item) => (
+        {offers.map((item) => (
           <tr key={item.id} className={'hover'}>
             <td className={tdClasses}>
               <div className={'flex justify-center'}>
                 <Image
-                  src={USDTSvg}
-                  className={'mr-2.5'}
-                  alt={'USDT'}
+                  src={item.projectAvatarUrl}
+                  className={'mr-2.5 rounded-full'}
+                  alt={item.projectName}
                   width={'24'}
+                  height={'24'}
                 />
-                {item.token}
-                <sup>{'#25'}</sup>
+                {item.projectName}
+                <sup>{`#${item.projectId}`}</sup>
               </div>
             </td>
             <td className={tdClasses}>
-              <time>{item.time}</time>
+              <time>
+                {item.createTime
+                  ? dayjs(item.createTime).format('MM/DD HH:mm:ss')
+                  : 'Invalid Date'}
+              </time>
             </td>
-            <td className={tdClasses}>{item.value.toLocaleString()}</td>
-            <td className={tdClasses}>{item.amount.toLocaleString()}</td>
+            <td className={tdClasses}>{item.amount * item.price}</td>
+            <td className={tdClasses}>{item.amount}</td>
             <td
               className={clsx(
                 tdClasses,
-                item.type === 'buy' ? 'text-[#FFC300]' : 'text-[#EB2F96]',
+                item.type === 1 ? 'text-[#FFC300]' : 'text-[#EB2F96]',
               )}
             >
-              {item.type.toLocaleUpperCase()}
+              {item.type === 1 ? 'Buy' : 'Sell'}
             </td>
             <td className={tdClasses}>
               <button

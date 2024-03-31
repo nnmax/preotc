@@ -1,22 +1,22 @@
 import Image from 'next/image'
 import clsx from 'clsx'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { searchUserOrder, searchUserOrderUrl } from '@/api'
+import useCountdown from '@/hooks/useCountdown'
 import { tdClasses, thClasses } from '../classes'
 import TablePagination from './TablePagination/TablePagination'
 
-export default function CompletedTable() {
-  const { data: completedData } = useSuspenseQuery({
-    queryKey: [searchUserOrderUrl, 3],
+export default function SettledTable() {
+  const { data: settledData } = useSuspenseQuery({
+    queryKey: [searchUserOrderUrl, 2],
     queryFn: () => {
       return searchUserOrder({
-        dashboardType: 3,
+        dashboardType: 2,
       })
     },
   })
-
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
 
@@ -40,14 +40,16 @@ export default function CompletedTable() {
       <thead>
         <tr>
           <th className={thClasses}>{'TOKEN'}</th>
+          <th className={thClasses}>{'TIME'}</th>
           <th className={thClasses}>{'VALUE (USDB)'}</th>
           <th className={thClasses}>{'AMOUNT'}</th>
           <th className={thClasses}>{'TYPE'}</th>
-          <th className={thClasses}>{'FINISH TIME'}</th>
+          <th className={thClasses}>{'COUNTDOWN'}</th>
+          <th className={thClasses}>{'ACTION'}</th>
         </tr>
       </thead>
       <tbody>
-        {completedData.map((item) => (
+        {settledData.map((item) => (
           <tr key={item.id} className={'hover'}>
             <td className={tdClasses}>
               <div className={'flex justify-center'}>
@@ -62,6 +64,13 @@ export default function CompletedTable() {
                 <sup>{`#${item.projectId}`}</sup>
               </div>
             </td>
+            <td className={tdClasses}>
+              <time>
+                {item.createTime
+                  ? dayjs(item.createTime).format('MM/DD HH:mm:ss')
+                  : 'Invalid Date'}
+              </time>
+            </td>
             <td className={tdClasses}>{item.amount * item.price}</td>
             <td className={tdClasses}>{item.amount}</td>
             <td
@@ -70,14 +79,25 @@ export default function CompletedTable() {
                 item.type === 1 ? 'text-[#FFC300]' : 'text-[#EB2F96]',
               )}
             >
-              {item.type === 1 ? 'Buy' : 'Sell'}
+              {item.type === 1 ? 'BUY' : 'SELL'}
             </td>
+            <Countdown deadline={item.deliverDeadline} />
             <td className={tdClasses}>
-              <time>
-                {item.completeTime
-                  ? dayjs(item.completeTime).format('MM/DD HH:mm:ss')
-                  : 'Invalid Date'}
-              </time>
+              {(item.status === 2 || item.status === 4) && (
+                <button
+                  type={'button'}
+                  className={clsx(
+                    'rounded border border-solid border-black px-3 py-[5px] text-xs',
+                    {
+                      'bg-[#EB2F96]': item.status === 2,
+                      'border-none bg-[#3D3D3D] text-[#9B9B9B]':
+                        item.status === 4,
+                    },
+                  )}
+                >
+                  {'Settle'}
+                </button>
+              )}
             </td>
           </tr>
         ))}
@@ -97,4 +117,26 @@ export default function CompletedTable() {
       </tfoot>
     </table>
   )
+}
+
+function Countdown({ deadline }: { deadline: string | null }) {
+  const [countdown, { startCountdown, stopCountdown }] = useCountdown({
+    countStart: deadline ? dayjs(deadline).diff(undefined, 'seconds') : 0,
+  })
+
+  useEffect(() => {
+    startCountdown()
+
+    return () => {
+      stopCountdown()
+    }
+  }, [startCountdown, stopCountdown])
+
+  const hours = Math.floor(countdown / 3600)
+  const minutes = Math.floor(countdown / 60) % 60
+  const seconds = countdown % 60
+
+  const displayCountdown = `${hours}:${minutes}:${seconds}`
+
+  return <td className={tdClasses}>{deadline ? displayCountdown : ''}</td>
 }
