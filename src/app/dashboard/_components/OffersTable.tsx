@@ -1,9 +1,13 @@
 import Image from 'next/image'
 import clsx from 'clsx'
 import { useState } from 'react'
-import { useSuspenseQuery } from '@tanstack/react-query'
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
+import { useSendTransaction } from 'wagmi'
+import { parseEther } from 'viem'
+import { toast } from 'react-toastify'
 import { searchUserOrder, searchUserOrderUrl } from '@/api'
+import { cancelOrder, cancelOrderUrl } from '@/api/cancel-order'
 import { tdClasses, thClasses } from '../classes'
 import TablePagination from './TablePagination/TablePagination'
 
@@ -16,6 +20,13 @@ export default function OffersTable() {
       })
     },
   })
+  const { mutateAsync: cancelOrderAsync, isPending: cancelingOrder } =
+    useMutation({
+      mutationKey: [cancelOrderUrl],
+      mutationFn: cancelOrder,
+    })
+  const { sendTransactionAsync, isPending: sendingTransaction } =
+    useSendTransaction()
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
 
@@ -31,6 +42,24 @@ export default function OffersTable() {
   ) => {
     setRowsPerPage(parseInt(event.target.value, 10))
     setPage(0)
+  }
+
+  const handleCancel = async (orderId: number) => {
+    const { cancelOrderCallData } = await cancelOrderAsync({
+      orderId,
+    })
+
+    await sendTransactionAsync({
+      to: cancelOrderCallData.destination,
+      data: cancelOrderCallData.callData,
+      value: parseEther(cancelOrderCallData.value.toString()),
+    }).catch((error) => {
+      console.log(error)
+      toast.error(
+        error?.shortMessage ?? error?.message ?? 'TransactionExecutionError',
+      )
+      return null
+    })
   }
 
   return (
@@ -81,12 +110,18 @@ export default function OffersTable() {
             </td>
             <td className={tdClasses}>
               <button
+                onClick={() => handleCancel(item.id)}
                 type={'button'}
+                disabled={cancelingOrder || sendingTransaction}
                 className={
                   'rounded border border-solid border-[#aaa] px-3 py-[5px] text-xs text-[#aaa]'
                 }
               >
-                {'Cancel'}
+                {cancelingOrder || sendingTransaction ? (
+                  <span className={'loading loading-dots'} />
+                ) : (
+                  'Cancel'
+                )}
               </button>
             </td>
           </tr>

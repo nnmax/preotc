@@ -1,5 +1,5 @@
 import fetcher from '@/api/fetcher'
-import type { Hex } from 'viem'
+import type { CallData } from './types'
 
 export const makeOrderUrl = '/pre-otc/make-order'
 
@@ -8,13 +8,6 @@ export interface MakeOrderParams {
   projectId: number
   amount: number
   price: number
-}
-
-interface CallData {
-  chainId: number
-  destination: Hex
-  value: number
-  callData: Hex
 }
 
 export interface MakeOrderResponse {
