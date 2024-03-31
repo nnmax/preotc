@@ -178,7 +178,7 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
         onClick={handleDeposit}
         loading={sendingTransaction || depositMakingOrder}
       >
-        {`Deposit ${price.toLocaleString()} USDB`}
+        {`Deposit ${(price * (tab === 'selling' ? 2 : 1)).toLocaleString()} USDB`}
       </BlurButton>
     )
   }
