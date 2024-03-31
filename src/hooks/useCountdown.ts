@@ -1,4 +1,4 @@
-// use client
+'use client'
 // forked from https://usehooks-ts.com/react-hook/use-countdown
 import {
   useCallback,

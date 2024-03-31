@@ -21,6 +21,16 @@ export default function Card(props: {
 }) {
   const { type, data } = props
 
+  const createQueryString = () => {
+    const searchParams = new URLSearchParams()
+    Object.entries(data).forEach(([key, value]) => {
+      if (key !== 'type' && value !== null && value !== undefined) {
+        searchParams.set(key, value.toString())
+      }
+    })
+    return searchParams.toString()
+  }
+
   return (
     <div className={cardClasses}>
       <div className={'flex gap-x-[6px]'}>
@@ -33,7 +43,7 @@ export default function Card(props: {
         />
         <div className={'flex flex-col'}>
           <span className={''}>{data.projectName}</span>
-          <span className={'text-xs'}>{`#${data.projectId}`}</span>
+          <span className={'text-xs'}>{`#${data.id}`}</span>
         </div>
       </div>
       <div
@@ -89,8 +99,8 @@ export default function Card(props: {
         <Link
           href={
             type === 'sell'
-              ? '/offer/address?type=sell'
-              : '/offer/address?type=buy'
+              ? `/offer/${data.id}?type=sell&${createQueryString()}`
+              : `/offer/${data.id}?type=buy&${createQueryString()}`
           }
           className={clsx(
             'flex h-7 items-center rounded px-5 text-sm',

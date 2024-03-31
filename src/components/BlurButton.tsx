@@ -21,7 +21,7 @@ export default function BlurButton(props: BlurButtonProps) {
   return (
     <button
       type={'button'}
-      disabled={disabled}
+      disabled={loading || disabled}
       className={clsx(
         className,
         bgColorClass,

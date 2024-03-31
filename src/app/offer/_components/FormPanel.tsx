@@ -1,25 +1,115 @@
+'use client'
 import Image from 'next/image'
-import { useAccount } from 'wagmi'
+import { useAccount, useSendTransaction } from 'wagmi'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { toNumber } from 'lodash-es'
+import { useMutation } from '@tanstack/react-query'
+import { parseEther } from 'viem'
+import { toast } from 'react-toastify'
 import WalletSvg from '@/images/wallet.svg'
 import BlurButton from '@/components/BlurButton'
 import TokenHeader from '@/components/TokenHeader'
+import {
+  depositTakeOrder,
+  depositTakeOrderUrl,
+  takeOrder,
+  takeOrderUrl,
+} from '@/api'
 import FirstStepPanel from './FirstStepPanel'
 import SecondStepPanel from './SecondStepPanel'
 
-const total = 800000
-const per = 0.44
+export default function FormPanel() {
+  const searchParams = useSearchParams()
+  const type = searchParams.get('type') as 'buy' | 'sell'
 
-export interface FormPanelProps {
-  type: 'buy' | 'sell'
-}
+  const data = {
+    id: toNumber(searchParams.get('id')),
+    projectName: searchParams.get('projectName')!,
+    projectAvatarUrl: searchParams.get('projectAvatarUrl')!,
+    projectTwitterUrl: searchParams.get('projectTwitterUrl')!,
+    amount: toNumber(searchParams.get('amount')),
+    price: toNumber(searchParams.get('price')),
+    feePercent: toNumber(searchParams.get('feePercent')),
+  }
 
-export default function FormPanel({ type }: FormPanelProps) {
   const { address } = useAccount()
   const { openConnectModal } = useConnectModal()
-  const [rangeValue, setRangeValue] = useState(total)
+  const [rangeValue, setRangeValue] = useState(data.amount)
   const [step, setStep] = useState(1)
+  const router = useRouter()
+  const { sendTransactionAsync, isPending: sendingTransaction } =
+    useSendTransaction()
+
+  const {
+    mutateAsync: takeOrderAsync,
+    isPending: takingOrder,
+    data: takeOrderResponse,
+  } = useMutation({
+    mutationKey: [takeOrderUrl],
+    mutationFn: takeOrder,
+  })
+
+  const { mutateAsync: depositTakeOrderAsync, isPending: depositTakingOrder } =
+    useMutation({
+      mutationKey: [depositTakeOrderUrl],
+      mutationFn: depositTakeOrder,
+    })
+
+  const handleValid = async () => {
+    await takeOrderAsync({
+      amount: rangeValue,
+      orderId: data.id,
+      type: type === 'buy' ? 'Buying' : 'Selling',
+    })
+    setStep(2)
+  }
+
+  const handleDeposit = async () => {
+    if (!takeOrderResponse || !address) {
+      toast.error('Failed to take order')
+      return
+    }
+
+    await sendTransactionAsync({
+      to: takeOrderResponse.approveCallData.destination,
+      value: parseEther(takeOrderResponse.approveCallData.value.toString()),
+      data: takeOrderResponse.approveCallData.callData,
+    }).catch((error) => {
+      console.log(error)
+      toast.error(
+        error?.shortMessage ?? error?.message ?? 'TransactionExecutionError',
+      )
+      return null
+    })
+
+    const txHash = await sendTransactionAsync({
+      to: takeOrderResponse.depositCallData.destination,
+      value: parseEther(takeOrderResponse.depositCallData.value.toString()),
+      data: takeOrderResponse.depositCallData.callData,
+    }).catch((error) => {
+      console.log(error)
+      toast.error(
+        error?.shortMessage ?? error?.message ?? 'TransactionExecutionError',
+      )
+      return null
+    })
+
+    if (!txHash) return
+
+    await depositTakeOrderAsync({
+      amount: rangeValue,
+      orderId: data.id,
+      type: type === 'buy' ? 'Buying' : 'Selling',
+      price: data.price,
+      txHash,
+    })
+    toast.success(
+      'Congratulations on completing the deal, please pay close attention to the token settlement time!',
+    )
+    router.push('/market')
+  }
 
   let stepPanel = null
   let stepButton = null
@@ -29,6 +119,8 @@ export default function FormPanel({ type }: FormPanelProps) {
         type={type}
         rangeValue={rangeValue}
         setRangeValue={setRangeValue}
+        max={data.amount}
+        pricePerToken={data.price}
       />
     )
     stepButton = (
@@ -44,9 +136,8 @@ export default function FormPanel({ type }: FormPanelProps) {
         }
         disabled={rangeValue <= 0}
         disabledBlur={rangeValue <= 0}
-        onClick={() => {
-          setStep(2)
-        }}
+        onClick={handleValid}
+        loading={takingOrder}
       >
         {'Next'}
       </BlurButton>
@@ -56,20 +147,20 @@ export default function FormPanel({ type }: FormPanelProps) {
     stepPanel = (
       <SecondStepPanel
         amount={rangeValue}
-        pricePerToken={per}
+        pricePerToken={data.price}
         type={type}
-        price={rangeValue * per}
-        // TODO: 从接口获取
-        fee={2.5}
+        price={rangeValue * data.price}
+        fee={data.feePercent}
       />
     )
     stepButton = (
       <BlurButton
         bgColorClass={'bg-[#FBFC02]'}
         className={'text-black'}
-        onClick={() => {}}
+        onClick={handleDeposit}
+        loading={sendingTransaction || depositTakingOrder}
       >
-        {`Deposit ${(rangeValue * per).toLocaleString()} USDB`}
+        {`Deposit ${rangeValue * data.price * (type === 'buy' ? 1 : 2)} USDB`}
       </BlurButton>
     )
   }
@@ -77,12 +168,10 @@ export default function FormPanel({ type }: FormPanelProps) {
   return (
     <div className={'flex flex-col'}>
       <TokenHeader
-        id={345}
-        name={'AKAK'}
-        twitterUrl={'https://x.com'}
-        avatarUrl={
-          'https://icons.llamao.fi/icons/protocols/friend.tech?w=48&h=48'
-        }
+        id={data.id}
+        name={data.projectName}
+        twitterUrl={data.projectTwitterUrl}
+        avatarUrl={data.projectAvatarUrl}
       />
       {stepPanel}
       {address ? (

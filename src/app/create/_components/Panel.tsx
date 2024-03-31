@@ -144,7 +144,7 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
       <BlurButton
         form={formId}
         type={'submit'}
-        disabled={invalid || makingOrder}
+        disabled={invalid}
         loading={makingOrder}
         bgColorClass={
           tab === 'buying'

@@ -1,19 +1,20 @@
 import clsx from 'clsx'
 import { stepPanelClasses } from '@/constant'
 
-const total = 800000
-const per = 0.44
-
 interface FirstStepPanelProps {
   type: 'buy' | 'sell'
   rangeValue: number
   setRangeValue: React.Dispatch<React.SetStateAction<number>>
+  max: number
+  pricePerToken: number
 }
 
 export default function FirstStepPanel({
   type,
   rangeValue,
   setRangeValue,
+  max,
+  pricePerToken,
 }: FirstStepPanelProps) {
   const labelText = type === 'buy' ? 'Buying' : 'Selling'
   const labelBg = type === 'buy' ? 'bg-[#FFC300]' : 'bg-[#EB2F96]'
@@ -31,17 +32,19 @@ export default function FirstStepPanel({
         >
           {labelText}
         </span>
-        <span className={'text-xs text-[#9B9B9B]'}>{`$ ${per} / Token`}</span>
+        <span
+          className={'text-xs text-[#9B9B9B]'}
+        >{`$ ${pricePerToken} / Token`}</span>
       </div>
       <div className={'my-5'}>
-        <span className={''}>{total.toLocaleString()}</span>
+        <span className={''}>{max}</span>
       </div>
       <div className={'flex items-center justify-between gap-[52px]'}>
         <input
           type={'range'}
           className={'range flex-1'}
           min={0}
-          max={total}
+          max={max}
           onChange={handleRangeChange}
           value={rangeValue}
           style={{
@@ -54,14 +57,14 @@ export default function FirstStepPanel({
             labelBg,
           )}
         >
-          {`${((rangeValue / total) * 100 || 0).toFixed(0)} %`}
+          {`${((rangeValue / max) * 100 || 0).toFixed(0)} %`}
         </span>
       </div>
       <div className={'mt-[60px] flex flex-col gap-3'}>
         <span className={'text-[#737373]'}>{'For'}</span>
         <span
           className={'text-[#FFC300]'}
-        >{`${(per * rangeValue).toLocaleString()}`}</span>
+        >{`${(pricePerToken * rangeValue).toLocaleString()}`}</span>
       </div>
     </div>
   )
