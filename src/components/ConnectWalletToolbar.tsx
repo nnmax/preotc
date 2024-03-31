@@ -483,7 +483,7 @@ const Box = forwardRef<
       ref={ref}
       className={clsx(
         className,
-        'button-base flex h-[42px] items-center rounded border border-solid border-[#aaa] px-2.5 py-1 text-sm text-white',
+        'button-base flex h-[36px] items-center rounded border border-solid border-[#aaa] px-2.5 py-1 text-sm text-white',
       )}
     >
       {children}

@@ -14,30 +14,32 @@ export default function AppBar() {
 
   return (
     <header
-      className={'flex h-[72px] flex-row items-center bg-[#030303] px-[60px]'}
+      className={'flex h-[72px] flex-row justify-center bg-[#030303] px-[60px]'}
     >
-      <Link href={'/'} className={'mr-14'}>
-        <h1 className={'sr-only'}>{'PREOTC'}</h1>
-        <Image src={LogoSvg} alt={'logo'} width={132} height={24} />
-      </Link>
+      <div className={'flex w-full max-w-[1684px] flex-row items-center'}>
+        <Link href={'/'} className={'mr-14'}>
+          <h1 className={'sr-only'}>{'PREOTC'}</h1>
+          <Image src={LogoSvg} alt={'logo'} width={132} height={24} />
+        </Link>
 
-      <NavTabs>
-        <LinkTab href={'/market'}>{'Market'}</LinkTab>
-        <LinkTab
-          href={'/dashboard'}
-          onClick={(e) => {
-            if (!address) {
-              e.preventDefault()
-              openConnectModal!()
-            }
-          }}
-        >
-          {'Dashboard'}
-        </LinkTab>
-      </NavTabs>
+        <NavTabs>
+          <LinkTab href={'/market'}>{'Market'}</LinkTab>
+          <LinkTab
+            href={'/dashboard'}
+            onClick={(e) => {
+              if (!address) {
+                e.preventDefault()
+                openConnectModal!()
+              }
+            }}
+          >
+            {'Dashboard'}
+          </LinkTab>
+        </NavTabs>
 
-      <div className={'ml-auto'}>
-        <ConnectWalletToolbar />
+        <div className={'ml-auto'}>
+          <ConnectWalletToolbar />
+        </div>
       </div>
     </header>
   )

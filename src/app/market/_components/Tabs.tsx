@@ -22,10 +22,10 @@ export default function Tabs() {
   return (
     <Tab.Group defaultIndex={defaultIndex}>
       <div className={'flex justify-between py-6'}>
-        <div className={'flex w-full max-w-[60%] gap-x-12'}>
+        <div className={'flex w-full max-w-[70%]'}>
           <Tab.List
             className={
-              'flex h-[42px] w-fit rounded border border-solid border-[#aaa] text-center text-sm text-[#9e9e9e]'
+              'mr-10 flex h-[36px] w-fit rounded border border-solid border-[#aaa] text-center text-sm text-[#9e9e9e]'
             }
           >
             <Tab className={tabClasses} as={Link} href={'/market?tab=buy'}>
@@ -61,7 +61,7 @@ const tabClasses =
   'flex w-24 items-center justify-center aria-selected:bg-[#FFC300] aria-selected:text-black'
 
 const tabPanelClasses =
-  '5xl:grid-cols-6 grid grid-cols-1 gap-y-8 lg:grid-cols-2 lg:gap-x-11 xl:grid-cols-3 2xl:grid-cols-4 2xl:gap-x-10 4xl:grid-cols-5'
+  'grid gap-4 grid-cols-[repeat(auto-fill,minmax(324px,1fr))]'
 
 function Filter() {
   const { data: projects } = useSuspenseQuery({
@@ -71,7 +71,7 @@ function Filter() {
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const router = useRouter()
-  const value = searchParams.get('token')
+  const value = searchParams.get('project')
 
   const createQueryString = (name: string, _value: string | null) => {
     const params = new URLSearchParams(searchParams.toString())
@@ -84,14 +84,14 @@ function Filter() {
   }
 
   const handleToggleButtonChange = (_value: string | null) => {
-    router.push((pathname + '?' + createQueryString('token', _value)) as any)
+    router.push((pathname + '?' + createQueryString('project', _value)) as any)
   }
 
   return (
     <div className={'w-full overflow-hidden'}>
       <ToggleButtonGroup
         className={
-          'no-scrollbar flex w-full items-center gap-x-2 overflow-x-auto overflow-y-hidden'
+          'no-scrollbar flex w-full items-center gap-x-[6px] overflow-x-auto overflow-y-hidden'
         }
         value={value}
         onChange={handleToggleButtonChange}
@@ -101,17 +101,19 @@ function Filter() {
             key={project.id}
             value={project.id.toString()}
             className={clsx(
-              'flex w-fit items-center rounded border border-solid border-[#aaa] px-3 py-2 aria-pressed:bg-[#FFC300] aria-pressed:text-black',
+              'flex h-[36px] w-fit items-center rounded border border-solid border-[#aaa] px-2 text-xs aria-pressed:bg-[#FFC300] aria-pressed:text-black',
             )}
           >
-            <Image
-              className={'mr-3 rounded-full'}
-              src={project.avatarUrl}
-              alt={project.name}
-              width={'24'}
-              height={'24'}
-            />
-            <span>{project.name}</span>
+            <div className={'mr-2 h-5 w-5'}>
+              <Image
+                className={'rounded-full'}
+                src={project.avatarUrl}
+                alt={project.name}
+                width={'20'}
+                height={'20'}
+              />
+            </div>
+            <span className={'whitespace-nowrap'}>{project.name}</span>
           </ToggleButton>
         ))}
       </ToggleButtonGroup>
@@ -136,7 +138,7 @@ function TabsRightActions() {
     <div className={'flex'}>
       <Link
         href={'/create'}
-        className={'mr-8 flex items-center rounded bg-[#EB2F96] px-5'}
+        className={'mr-4 flex items-center rounded bg-[#EB2F96] px-5 text-sm'}
         onClick={handleClickLink}
       >
         {'Create Offer'}

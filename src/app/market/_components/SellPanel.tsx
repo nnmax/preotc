@@ -7,7 +7,7 @@ import type { SearchMarketOrderParams } from '@/api'
 
 export default function SellPanel() {
   const searchParams = useSearchParams()
-  const projectId = searchParams.get('token')
+  const projectId = searchParams.get('project')
 
   const queryVariables: SearchMarketOrderParams = {
     type: 'Selling',

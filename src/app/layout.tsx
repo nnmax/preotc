@@ -29,8 +29,12 @@ export default function RootLayout({
       <body className={localPixelify.className}>
         <Providers>
           <AppBar />
-          <main className={'flex min-h-[calc(100vh-64px)] flex-col px-[60px]'}>
-            {children}
+          <main
+            className={'flex min-h-[calc(100vh-64px)] justify-center px-[60px]'}
+          >
+            <div className={'flex w-full max-w-[1684px] flex-col'}>
+              {children}
+            </div>
           </main>
           <ToastContainer draggable transition={Bounce} />
         </Providers>
