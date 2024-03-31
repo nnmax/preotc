@@ -101,7 +101,7 @@ function Filter() {
             key={project.id}
             value={project.id.toString()}
             className={clsx(
-              'flex h-[36px] w-fit items-center rounded border border-solid border-[#aaa] px-2 text-xs aria-pressed:bg-[#FFC300] aria-pressed:text-black',
+              'flex h-[36px] w-fit items-center rounded border border-solid border-[#aaa] px-2 text-xs aria-pressed:border-[#FFC300]',
             )}
           >
             <div className={'mr-2 h-5 w-5'}>
@@ -138,7 +138,9 @@ function TabsRightActions() {
     <div className={'flex'}>
       <Link
         href={'/create'}
-        className={'mr-4 flex items-center rounded bg-[#EB2F96] px-5 text-sm'}
+        className={
+          'mr-4 flex items-center whitespace-nowrap rounded bg-[#EB2F96] px-5 text-sm'
+        }
         onClick={handleClickLink}
       >
         {'Create Offer'}

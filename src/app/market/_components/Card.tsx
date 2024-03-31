@@ -52,7 +52,9 @@ export default function Card(props: {
         }
       >
         <div className={'flex flex-col'}>
-          <span className={'mb-1 text-[rgba(155,155,155,0.6)]'}>{'Offer'}</span>
+          <span className={'mb-1 text-xs text-[rgba(155,155,155,0.6)]'}>
+            {'Offer'}
+          </span>
           <span
             className={'mb-2 flex items-center'}
             title={data.amount.toString()}

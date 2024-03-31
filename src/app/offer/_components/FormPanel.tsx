@@ -9,7 +9,7 @@ import { useMutation } from '@tanstack/react-query'
 import { parseEther } from 'viem'
 import { toast } from 'react-toastify'
 import WalletSvg from '@/images/wallet.svg'
-import BlurButton from '@/components/BlurButton'
+import Button from '@/components/Button'
 import TokenHeader from '@/components/TokenHeader'
 import {
   depositTakeOrder,
@@ -124,7 +124,7 @@ export default function FormPanel() {
       />
     )
     stepButton = (
-      <BlurButton
+      <Button
         bgColorClass={
           type === 'buy'
             ? rangeValue <= 0
@@ -135,12 +135,11 @@ export default function FormPanel() {
               : 'bg-[#EB2F96]'
         }
         disabled={rangeValue <= 0}
-        disabledBlur={rangeValue <= 0}
         onClick={handleValid}
         loading={takingOrder}
       >
         {'Next'}
-      </BlurButton>
+      </Button>
     )
   }
   if (step === 2) {
@@ -154,14 +153,14 @@ export default function FormPanel() {
       />
     )
     stepButton = (
-      <BlurButton
+      <Button
         bgColorClass={'bg-[#FBFC02]'}
         className={'text-black'}
         onClick={handleDeposit}
         loading={sendingTransaction || depositTakingOrder}
       >
         {`Deposit ${rangeValue * data.price * (type === 'buy' ? 1 : 2)} USDB`}
-      </BlurButton>
+      </Button>
     )
   }
 
@@ -177,7 +176,7 @@ export default function FormPanel() {
       {address ? (
         stepButton
       ) : (
-        <BlurButton
+        <Button
           bgColorClass={'bg-[#FA5151]'}
           onClick={() => {
             openConnectModal!()
@@ -185,7 +184,7 @@ export default function FormPanel() {
         >
           <Image src={WalletSvg} alt={'next'} width={'32'} className={'mr-5'} />
           {'Connect Wallet'}
-        </BlurButton>
+        </Button>
       )}
     </div>
   )

@@ -17,7 +17,7 @@ import {
   makeOrder,
   makeOrderUrl,
 } from '@/api'
-import BlurButton from '@/components/BlurButton'
+import Button from '@/components/Button'
 import SecondStepPanel from '@/app/offer/_components/SecondStepPanel'
 import TokenHeader from '@/components/TokenHeader'
 import { useSelectProps } from '@/app/create/hooks'
@@ -141,7 +141,7 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
       />
     )
     stepButton = (
-      <BlurButton
+      <Button
         form={formId}
         type={'submit'}
         disabled={invalid}
@@ -154,10 +154,9 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
             : 'bg-[#8F2760]'
         }
         className={clsx('mt-[52px]')}
-        disabledBlur={invalid}
       >
         {'Next'}
-      </BlurButton>
+      </Button>
     )
   }
   if (step === 2) {
@@ -171,7 +170,7 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
       />
     )
     stepButton = (
-      <BlurButton
+      <Button
         type={'button'}
         bgColorClass={'bg-[#FBFC02]'}
         className={'mt-[52px] text-black'}
@@ -179,7 +178,7 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
         loading={sendingTransaction || depositMakingOrder}
       >
         {`Deposit ${(price * (tab === 'selling' ? 2 : 1)).toLocaleString()} USDB`}
-      </BlurButton>
+      </Button>
     )
   }
 

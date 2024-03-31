@@ -117,7 +117,7 @@ export default function TelegramAlertButton({ type }: { type?: 1 | 2 }) {
         ) : (
           <Image src={TelegramSVG} width={'24'} alt={'telegram'} />
         )}
-        <span>{'Set Alert'}</span>
+        <span className={'whitespace-nowrap'}>{'Set Alert'}</span>
       </button>
       <Popover className={'relative flex items-center'}>
         <Popover.Button>
