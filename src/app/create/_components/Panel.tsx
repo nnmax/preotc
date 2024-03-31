@@ -5,9 +5,9 @@ import { useId } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import { capitalize } from 'lodash-es'
-import { useSendTransaction } from 'wagmi'
-import { parseEther } from 'viem'
+import { useAccount, useSendTransaction } from 'wagmi'
 import { useRouter } from 'next/navigation'
+import { parseEther } from 'viem'
 import USDBSvg from '@/images/USDB.svg'
 import DownSvg from '@/images/down.svg'
 import DangerSvg from '@/images/danger.svg'
@@ -32,7 +32,7 @@ export interface PanelProps {
   setStep: Dispatch<SetStateAction<number>>
 }
 
-const USDB_LIMIT = process.env.NEXT_PUBLIC_IS_DEV === 'true' ? 1 : 100
+const USDB_LIMIT = 100
 
 export default function Panel({ tab, step, setStep }: PanelProps) {
   const { selectOptions, selectedProject } = useSelectProps()
@@ -44,6 +44,7 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
     'pricePerToken',
     'projectId',
   ])
+  const { address } = useAccount()
   const price = amount * pricePerToken || 0
   const invalid = price <= USDB_LIMIT
   const { sendTransactionAsync, isPending: sendingTransaction } =
@@ -81,16 +82,26 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
   }
 
   const handleDeposit = async () => {
-    if (!makeOrderResponse) {
+    if (!makeOrderResponse || !address) {
       toast.error('Failed to make order')
       return
     }
 
+    await sendTransactionAsync({
+      to: makeOrderResponse.approveCallData.destination,
+      value: parseEther(makeOrderResponse.approveCallData.value.toString()),
+      data: makeOrderResponse.approveCallData.callData,
+    }).catch((error) => {
+      console.log(error)
+      toast.error(
+        error?.shortMessage ?? error?.message ?? 'TransactionExecutionError',
+      )
+      return null
+    })
+
     const txHash = await sendTransactionAsync({
       to: makeOrderResponse.depositCallData.destination,
-      value: parseEther(
-        (makeOrderResponse.depositCallData.value || 1).toString(),
-      ),
+      value: parseEther(makeOrderResponse.depositCallData.value.toString()),
       data: makeOrderResponse.depositCallData.callData,
     }).catch((error) => {
       console.log(error)
@@ -102,7 +113,7 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
 
     if (!txHash) return
 
-    const res = await depositMakeOrderAsync({
+    await depositMakeOrderAsync({
       amount,
       price: pricePerToken,
       projectId,
@@ -111,11 +122,6 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
     })
     toast.success(
       'Congratulations on completing the deal, please pay close attention to the token settlement time!',
-    )
-    console.log(
-      '%c [ res ]-88',
-      'font-size:13px; background:pink; color:#bf2c9f;',
-      res,
     )
     router.push('/market')
   }

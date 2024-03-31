@@ -10,13 +10,16 @@ export interface MakeOrderParams {
   price: number
 }
 
+interface CallData {
+  chainId: number
+  destination: Hex
+  value: number
+  callData: Hex
+}
+
 export interface MakeOrderResponse {
-  depositCallData: {
-    chainId: number
-    destination: Hex
-    value: number
-    callData: Hex
-  }
+  depositCallData: CallData
+  approveCallData: CallData
   orderConfirmData: {
     projectId: number
     projectSymbol: string
