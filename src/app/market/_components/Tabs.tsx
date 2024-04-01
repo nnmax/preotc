@@ -43,16 +43,18 @@ export default function Tabs() {
 
         <TabsRightActions />
       </div>
-      <Suspense fallback={<span className={'loading loading-dots'} />}>
-        <Tab.Panels>
-          <Tab.Panel className={tabPanelClasses}>
+      <Tab.Panels>
+        <Tab.Panel className={tabPanelClasses}>
+          <Suspense fallback={<span className={'loading loading-dots'} />}>
             <BuyPanel />
-          </Tab.Panel>
-          <Tab.Panel className={tabPanelClasses}>
+          </Suspense>
+        </Tab.Panel>
+        <Tab.Panel className={tabPanelClasses}>
+          <Suspense fallback={<span className={'loading loading-dots'} />}>
             <SellPanel />
-          </Tab.Panel>
-        </Tab.Panels>
-      </Suspense>
+          </Suspense>
+        </Tab.Panel>
+      </Tab.Panels>
     </Tab.Group>
   )
 }

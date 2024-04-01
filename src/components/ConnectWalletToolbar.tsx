@@ -263,7 +263,9 @@ export default function ConnectWalletToolbar() {
                       />
                     </div>
                   )}
-                  <span>{chain?.name || 'Select Chain'}</span>
+                  <span className={'whitespace-nowrap'}>
+                    {chain?.name || 'Select Chain'}
+                  </span>
                   <Image
                     src={ArrowDownSvg}
                     alt={'arrow-down'}

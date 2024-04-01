@@ -32,19 +32,23 @@ export default function Tabs() {
         </div>
 
         <div className={'overflow-x-auto 2xl:px-20 3xl:px-36 4xl:px-44'}>
-          <Suspense fallback={<span className={'loading loading-dots'} />}>
-            <Tab.Panels>
-              <Tab.Panel>
+          <Tab.Panels>
+            <Tab.Panel>
+              <Suspense fallback={<span className={'loading loading-dots'} />}>
                 <SettledTable />
-              </Tab.Panel>
-              <Tab.Panel>
+              </Suspense>
+            </Tab.Panel>
+            <Tab.Panel>
+              <Suspense fallback={<span className={'loading loading-dots'} />}>
                 <OffersTable />
-              </Tab.Panel>
-              <Tab.Panel>
+              </Suspense>
+            </Tab.Panel>
+            <Tab.Panel>
+              <Suspense fallback={<span className={'loading loading-dots'} />}>
                 <CompletedTable />
-              </Tab.Panel>
-            </Tab.Panels>
-          </Suspense>
+              </Suspense>
+            </Tab.Panel>
+          </Tab.Panels>
         </div>
       </Tab.Group>
     </div>
