@@ -19,7 +19,7 @@ export default function Tabs() {
           <div className={'flex flex-1 justify-center'}>
             <Tab.List
               className={
-                'flex h-[42px] w-full max-w-[900px] justify-center divide-x divide-[#aaa] rounded border border-solid border-[#aaa] text-sm text-[#7E7E7E]'
+                'flex h-[36px] w-full max-w-[900px] justify-center divide-x divide-[#aaa] rounded border border-solid border-[#aaa] text-sm text-[#7E7E7E]'
               }
             >
               <Tab className={tabClasses}>{'To Be Settled'}</Tab>
@@ -28,7 +28,7 @@ export default function Tabs() {
             </Tab.List>
           </div>
 
-          <div className={'ml-2 flex h-[42px] w-fit'}>
+          <div className={'ml-2 flex h-[36px] w-fit'}>
             <TelegramAlertButton />
           </div>
         </div>
