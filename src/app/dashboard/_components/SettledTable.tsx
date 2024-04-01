@@ -1,11 +1,18 @@
 import Image from 'next/image'
 import clsx from 'clsx'
 import { useEffect } from 'react'
-import { useSuspenseQuery } from '@tanstack/react-query'
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
-import { searchUserOrder, searchUserOrderUrl } from '@/api'
+import { toast } from 'react-toastify'
+import {
+  searchUserOrder,
+  searchUserOrderUrl,
+  settledDeposit,
+  settledDepositUrl,
+} from '@/api'
 import useCountdown from '@/hooks/useCountdown'
 import { tdClasses, thClasses, trBorderClasses } from '../classes'
+import type { SettledDepositParams } from '@/api'
 // import TablePagination from './TablePagination/TablePagination'
 
 export default function SettledTable() {
@@ -15,6 +22,13 @@ export default function SettledTable() {
       return searchUserOrder({
         dashboardType: 2,
       })
+    },
+  })
+
+  const { mutateAsync: settledDepositAsync, isPending } = useMutation({
+    mutationKey: [settledDepositUrl],
+    mutationFn: (variables: SettledDepositParams) => {
+      return settledDeposit(variables)
     },
   })
   // const [page, setPage] = useState(0)
@@ -33,6 +47,13 @@ export default function SettledTable() {
   //   setRowsPerPage(parseInt(event.target.value, 10))
   //   setPage(0)
   // }
+
+  const handleSettled = async (id: number) => {
+    await settledDepositAsync({
+      id,
+    })
+    toast.success('Settled successfully')
+  }
 
   return (
     <table className={'table'}>
@@ -92,8 +113,12 @@ export default function SettledTable() {
               {(item.status === 2 || item.status === 4) && (
                 <button
                   type={'button'}
+                  disabled={item.status === 4 || isPending}
+                  onClick={
+                    item.status === 2 ? () => handleSettled(item.id) : undefined
+                  }
                   className={clsx(
-                    'rounded border border-solid border-black px-3 py-[5px] text-xs',
+                    'h-[28px] w-[77px] rounded border border-solid border-black px-3 py-[5px] text-xs',
                     {
                       'bg-[#EB2F96]': item.status === 2,
                       'border-none bg-[#3D3D3D] text-[#9B9B9B]':
@@ -101,7 +126,11 @@ export default function SettledTable() {
                     },
                   )}
                 >
-                  {'Settle'}
+                  {isPending && item.status === 2 ? (
+                    <span className={'loading loading-dots'} />
+                  ) : (
+                    'Settle'
+                  )}
                 </button>
               )}
             </td>

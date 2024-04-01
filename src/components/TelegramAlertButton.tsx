@@ -77,7 +77,7 @@ export default function TelegramAlertButton({ type }: { type?: 1 | 2 }) {
     }
   }
 
-  if (userInfo?.tgStatus || status === 0) {
+  if (!userInfo || userInfo?.tgStatus || status === 0) {
     return null
   }
 
