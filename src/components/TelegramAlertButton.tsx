@@ -1,7 +1,6 @@
 'use client'
 
 import clsx from 'clsx'
-import { Popover } from '@headlessui/react'
 import Image from 'next/image'
 import { useAccount } from 'wagmi'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
@@ -20,6 +19,7 @@ import {
   fetchGetCurrentLoginUser,
   getCurrentLoginUser,
 } from '@/api/get-current-login-user'
+import Tooltip from '@/components/Tooltip'
 
 const info =
   'Please connect your telegram to ensure that you can receive timely alerts such as delivery notifications and successful deals!'
@@ -119,37 +119,27 @@ export default function TelegramAlertButton({ type }: { type?: 1 | 2 }) {
         )}
         <span className={'whitespace-nowrap'}>{'Set Alert'}</span>
       </button>
-      <Popover className={'relative flex items-center'}>
-        <Popover.Button>
-          <Image
-            aria-label={info}
-            tabIndex={0}
-            src={InfoSVG}
-            width={'24'}
-            alt={'info'}
-          />
-        </Popover.Button>
-        <Popover.Panel
-          className={clsx`
-            absolute
-            right-0
-            top-full
-            z-10
-            w-[460px]
-            translate-y-2
-            rounded-md
-            border
-            border-solid
-            border-[#aaa]
-            bg-[#1e1e1e]
-            p-4
-            text-xs
-            leading-6
-          `}
-        >
-          <p>{info}</p>
-        </Popover.Panel>
-      </Popover>
+      <Tooltip
+        placement={'bottom-end'}
+        title={
+          <p
+            className={clsx(
+              `w-full max-w-[460px] rounded-md border border-solid border-[#aaa] bg-[#1e1e1e] p-4 text-xs leading-6`,
+            )}
+          >
+            {info}
+          </p>
+        }
+      >
+        <Image
+          aria-label={info}
+          tabIndex={0}
+          src={InfoSVG}
+          width={'24'}
+          className={'cursor-pointer'}
+          alt={'info'}
+        />
+      </Tooltip>
     </>
   )
 }
