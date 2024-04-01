@@ -4,19 +4,24 @@ import type { CommonResponse } from '@/api/types'
 
 const API_ENDPOINT = process.env.API_ENDPOINT
 
+interface FetcherOptions extends RequestInit {
+  disabledErrorToast?: boolean
+}
+
 export default function fetcher<ResponseData = unknown>(
   input: string,
-  init?: RequestInit,
+  options?: FetcherOptions,
 ) {
+  const { disabledErrorToast, ...rest } = options || {}
   let url = input
   if (typeof window === 'undefined') {
     url = API_ENDPOINT + input
   }
   return fetch(url, {
-    ...init,
+    ...rest,
     headers: {
       'Content-Type': 'application/json',
-      ...init?.headers,
+      ...rest?.headers,
     },
   })
     .then<CommonResponse<ResponseData>>((response) => {
@@ -26,13 +31,16 @@ export default function fetcher<ResponseData = unknown>(
       throw new Error('Failed to fetch data')
     })
     .then((data) => {
-      if (data?.code === 200) {
-        return data?.data
+      if (data.code === 200) {
+        return data.data
       }
-      if (data?.code === 401) {
+      if (data.code === 401) {
         logout()
       }
-      toast.error(data?.prompt)
-      throw new Error(data?.prompt)
+      if (!disabledErrorToast) {
+        toast.error(data.prompt)
+        throw new Error(data.prompt)
+      }
+      return data.data
     })
 }

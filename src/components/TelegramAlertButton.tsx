@@ -29,6 +29,7 @@ export default function TelegramAlertButton({ type }: { type?: 1 | 2 }) {
   const { address } = useAccount()
   const { openConnectModal } = useConnectModal()
   const [code, setCode] = useState<string>('')
+  const [connected, setConnected] = useState<boolean>(false)
   const { data: userInfo } = useQuery({
     enabled: Boolean(address),
     queryKey: [getCurrentLoginUser],
@@ -45,7 +46,7 @@ export default function TelegramAlertButton({ type }: { type?: 1 | 2 }) {
 
   // useQuery 返回的 isRefetching 不满足要求
   const [isRefetching, setIsRefetching] = useState(false)
-  const { data: status } = useQuery({
+  useQuery({
     gcTime: 0,
     enabled: Boolean(code),
     queryKey: [getTelegramInvitationInfoUrl, code],
@@ -55,8 +56,9 @@ export default function TelegramAlertButton({ type }: { type?: 1 | 2 }) {
     refetchInterval(query) {
       if (query.state.data === 0) {
         setIsRefetching(false)
+        setConnected(true)
         setCode('')
-        toast.error('You have successfully linked to Telegram')
+        toast.success('You have successfully linked to Telegram')
         return false
       }
       return 1000
@@ -79,7 +81,7 @@ export default function TelegramAlertButton({ type }: { type?: 1 | 2 }) {
     }
   }
 
-  if (!userInfo || userInfo?.tgStatus || status === 0) {
+  if (!userInfo || userInfo?.tgStatus || connected) {
     return null
   }
 
@@ -107,7 +109,6 @@ export default function TelegramAlertButton({ type }: { type?: 1 | 2 }) {
 
   return (
     <>
-      {' '}
       <button
         type={'button'}
         className={'mr-2.5 flex items-center gap-3 rounded bg-[#0698D8] px-5'}

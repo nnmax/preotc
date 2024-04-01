@@ -8,6 +8,7 @@ export const fetchGetTelegramInvitationInfo = (code: string) => {
     getTelegramInvitationInfoUrl + '?invitaitonCode=' + code,
     {
       method: 'GET',
+      disabledErrorToast: true,
     },
   )
 }
