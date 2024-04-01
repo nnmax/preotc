@@ -1,6 +1,11 @@
 'use client'
 import Image from 'next/image'
-import { useAccount, useSendTransaction } from 'wagmi'
+import {
+  useAccount,
+  useChainId,
+  useSendTransaction,
+  useSwitchChain,
+} from 'wagmi'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -8,6 +13,7 @@ import { toNumber } from 'lodash-es'
 import { useMutation } from '@tanstack/react-query'
 import { parseEther } from 'viem'
 import { toast } from 'react-toastify'
+import { blast } from 'wagmi/chains'
 import WalletSvg from '@/images/wallet.svg'
 import Button from '@/components/Button'
 import TokenHeader from '@/components/TokenHeader'
@@ -17,6 +23,8 @@ import {
   takeOrder,
   takeOrderUrl,
 } from '@/api'
+import isBlastChain from '@/utils/isBlastChain'
+import { BLAST_TESTNET_CHAIN_ID } from '@/constant'
 import FirstStepPanel from './FirstStepPanel'
 import SecondStepPanel from './SecondStepPanel'
 
@@ -39,6 +47,8 @@ export default function FormPanel() {
   const [rangeValue, setRangeValue] = useState(data.amount)
   const [step, setStep] = useState(1)
   const router = useRouter()
+  const chainId = useChainId()
+  const { switchChainAsync } = useSwitchChain()
   const { sendTransactionAsync, isPending: sendingTransaction } =
     useSendTransaction()
 
@@ -72,10 +82,26 @@ export default function FormPanel() {
       return
     }
 
-    await sendTransactionAsync({
+    if (!isBlastChain(chainId)) {
+      const switched = await switchChainAsync({
+        chainId:
+          process.env.NEXT_PUBLIC_IS_DEV === 'true'
+            ? BLAST_TESTNET_CHAIN_ID
+            : blast.id,
+      }).catch((error) => {
+        console.log(error)
+        toast.error(error?.shortMessage ?? error?.message ?? 'SwitchChainError')
+        return null
+      })
+
+      if (!switched) return
+    }
+
+    const approved = await sendTransactionAsync({
       to: takeOrderResponse.approveCallData.destination,
       value: parseEther(takeOrderResponse.approveCallData.value.toString()),
       data: takeOrderResponse.approveCallData.callData,
+      gas: null,
     }).catch((error) => {
       console.log(error)
       toast.error(
@@ -84,10 +110,13 @@ export default function FormPanel() {
       return null
     })
 
+    if (!approved) return
+
     const txHash = await sendTransactionAsync({
       to: takeOrderResponse.depositCallData.destination,
       value: parseEther(takeOrderResponse.depositCallData.value.toString()),
       data: takeOrderResponse.depositCallData.callData,
+      gas: null,
     }).catch((error) => {
       console.log(error)
       toast.error(

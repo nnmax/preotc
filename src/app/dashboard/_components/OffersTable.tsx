@@ -53,6 +53,7 @@ export default function OffersTable() {
       to: cancelOrderCallData.destination,
       data: cancelOrderCallData.callData,
       value: parseEther(cancelOrderCallData.value.toString()),
+      gas: null,
     }).catch((error) => {
       console.log(error)
       toast.error(

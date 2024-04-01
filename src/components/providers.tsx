@@ -14,10 +14,11 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 import { ReactQueryStreamedHydration } from '@tanstack/react-query-next-experimental'
 import BlastIcon from '@/images/blast-icon.svg'
+import { BLAST_TESTNET_CHAIN_ID } from '@/constant'
 import type { Chain } from 'wagmi/chains'
 
 const blastSepolia: Chain = {
-  id: 168587773,
+  id: BLAST_TESTNET_CHAIN_ID,
   name: 'Blast Sepolia',
   nativeCurrency: {
     decimals: 18,

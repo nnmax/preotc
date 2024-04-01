@@ -15,7 +15,6 @@ import {
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { verifyMessage } from 'wagmi/actions'
 import { Popover, Transition } from '@headlessui/react'
-import { blast } from 'wagmi/chains'
 import WalletSvg from '@/images/wallet.svg'
 import EthIcon from '@/images/eth-24x24.png'
 import USDBSvg from '@/images/USDB.svg'
@@ -38,6 +37,7 @@ import BTCSvg from '@/images/btc.svg'
 import SOLSvg from '@/images/sol.svg'
 import ConnectSvg from '@/images/connect-different-wallet.svg'
 import BlastIcon from '@/images/blast-icon.svg'
+import isBlastChain from '@/utils/isBlastChain'
 import type { SetStateAction } from 'react'
 import type { StaticImport } from 'next/dist/shared/lib/get-img-props'
 import type { Hex } from 'viem'
@@ -80,10 +80,6 @@ function getIcon(
     src: EthIcon,
     alt: 'ETH',
   }
-}
-
-function isBlastChain(chainId: number) {
-  return chainId === blast.id || chainId === 168587773
 }
 
 interface WalletRaw {
