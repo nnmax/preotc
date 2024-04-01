@@ -6,6 +6,7 @@ import { useAccount } from 'wagmi'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
+import { toast } from 'react-toastify'
 import TelegramSVG from '@/images/telegram.svg'
 import InfoSVG from '@/images/info.svg'
 import TelegramSvg from '@/images/telegram.svg'
@@ -55,6 +56,7 @@ export default function TelegramAlertButton({ type }: { type?: 1 | 2 }) {
       if (query.state.data === 0) {
         setIsRefetching(false)
         setCode('')
+        toast.error('You have successfully linked to Telegram')
         return false
       }
       return 1000
