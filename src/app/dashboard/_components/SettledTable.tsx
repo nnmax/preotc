@@ -1,12 +1,12 @@
 import Image from 'next/image'
 import clsx from 'clsx'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { searchUserOrder, searchUserOrderUrl } from '@/api'
 import useCountdown from '@/hooks/useCountdown'
-import { tdClasses, thClasses } from '../classes'
-import TablePagination from './TablePagination/TablePagination'
+import { tdClasses, thClasses, trBorderClasses } from '../classes'
+// import TablePagination from './TablePagination/TablePagination'
 
 export default function SettledTable() {
   const { data: settledData } = useSuspenseQuery({
@@ -17,28 +17,27 @@ export default function SettledTable() {
       })
     },
   })
-  const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = useState(10)
+  // const [page, setPage] = useState(0)
+  // const [rowsPerPage, setRowsPerPage] = useState(10)
 
-  const handleChangePage = (
-    event: React.MouseEvent<HTMLButtonElement> | null,
-    newPage: number,
-  ) => {
-    setPage(newPage)
-  }
+  // const handleChangePage = (
+  //   event: React.MouseEvent<HTMLButtonElement> | null,
+  //   newPage: number,
+  // ) => {
+  //   setPage(newPage)
+  // }
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLSelectElement>,
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10))
-    setPage(0)
-  }
+  // const handleChangeRowsPerPage = (
+  //   event: React.ChangeEvent<HTMLSelectElement>,
+  // ) => {
+  //   setRowsPerPage(parseInt(event.target.value, 10))
+  //   setPage(0)
+  // }
 
   return (
-    <table className={'table bg-[#2A3037]'}>
-      {/* head */}
+    <table className={'table'}>
       <thead>
-        <tr>
+        <tr className={trBorderClasses}>
           <th className={thClasses}>{'TOKEN'}</th>
           <th className={thClasses}>{'TIME'}</th>
           <th className={thClasses}>{'VALUE (USDB)'}</th>
@@ -49,8 +48,15 @@ export default function SettledTable() {
         </tr>
       </thead>
       <tbody>
-        {settledData.map((item) => (
-          <tr key={item.id} className={'hover'}>
+        {settledData.map((item, index, arr) => (
+          <tr
+            key={item.id}
+            className={
+              index === arr.length - 1
+                ? 'hover'
+                : clsx(trBorderClasses, 'hover')
+            }
+          >
             <td className={tdClasses}>
               <div className={'flex justify-center'}>
                 <Image
@@ -102,7 +108,7 @@ export default function SettledTable() {
           </tr>
         ))}
       </tbody>
-      <tfoot className={'bg-[var(--body-background-color)]'}>
+      {/* <tfoot className={'bg-[var(--body-background-color)]'}>
         <tr>
           <TablePagination
             toolbarClassName={'ml-auto'}
@@ -114,7 +120,7 @@ export default function SettledTable() {
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </tr>
-      </tfoot>
+      </tfoot> */}
     </table>
   )
 }

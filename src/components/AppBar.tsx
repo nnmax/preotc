@@ -19,7 +19,13 @@ export default function AppBar() {
       <div className={'flex w-full max-w-[1684px] flex-row items-center'}>
         <Link href={'/'} className={'mr-14'}>
           <h1 className={'sr-only'}>{'PREOTC'}</h1>
-          <Image src={LogoSvg} alt={'logo'} width={132} height={24} />
+          <Image
+            src={LogoSvg}
+            alt={'logo'}
+            width={132}
+            height={24}
+            className={'max-w-[132px]'}
+          />
         </Link>
 
         <NavTabs>

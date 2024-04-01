@@ -1,4 +1,6 @@
 export const thClasses =
-  'py-5 text-[#9E9E9E] text-base leading-5 text-center font-normal'
+  'py-[14px] text-[#9E9E9E] text-sm text-center font-normal'
 
-export const tdClasses = 'py-[18px] text-xs leading-5 text-center'
+export const tdClasses = 'py-4 text-xs text-center'
+
+export const trBorderClasses = 'border-b border-[#838383] border-solid'
