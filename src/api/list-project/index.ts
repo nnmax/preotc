@@ -9,10 +9,14 @@ export interface ListProjectResponse {
   twitterUrl: string
   avatarUrl: string // 项目图标
   createTime: string
+  singularUnit: string
+  pluralUnit: string
 }
 
 export const listProject = (): Promise<ListProjectResponse[]> => {
   return fetcher<ListProjectResponse[]>(listProjectUrl, {
     method: 'GET',
+  }).catch(() => {
+    return []
   })
 }

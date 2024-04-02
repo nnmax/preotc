@@ -5,8 +5,9 @@ interface FirstStepPanelProps {
   type: 'buy' | 'sell'
   rangeValue: number
   setRangeValue: React.Dispatch<React.SetStateAction<number>>
-  max: number
-  pricePerToken: number
+  max: number | undefined
+  pricePerToken: number | undefined
+  unit: string | undefined
 }
 
 export default function FirstStepPanel({
@@ -15,6 +16,7 @@ export default function FirstStepPanel({
   setRangeValue,
   max,
   pricePerToken,
+  unit,
 }: FirstStepPanelProps) {
   const labelText = type === 'buy' ? 'Buying' : 'Selling'
   const labelBg = type === 'buy' ? 'bg-[#FFC300]' : 'bg-[#EB2F96]'
@@ -34,17 +36,17 @@ export default function FirstStepPanel({
         </span>
         <span
           className={'text-xs text-[#9B9B9B]'}
-        >{`$ ${pricePerToken} / Token`}</span>
+        >{`$ ${pricePerToken} / ${unit}`}</span>
       </div>
       <div className={'my-5'}>
-        <span className={''}>{max}</span>
+        <span className={''}>{rangeValue}</span>
       </div>
       <div className={'flex items-center justify-between gap-[52px]'}>
         <input
           type={'range'}
           className={'range flex-1'}
           min={0}
-          max={max}
+          max={max ?? 0}
           onChange={handleRangeChange}
           value={rangeValue}
           style={{
@@ -57,14 +59,14 @@ export default function FirstStepPanel({
             labelBg,
           )}
         >
-          {`${((rangeValue / max) * 100 || 0).toFixed(0)} %`}
+          {`${((rangeValue / (max || 0)) * 100 || 0).toFixed(0)} %`}
         </span>
       </div>
       <div className={'mt-[60px] flex flex-col gap-3'}>
         <span className={'text-[#737373]'}>{'For'}</span>
         <span
           className={'text-[#FFC300]'}
-        >{`${(pricePerToken * rangeValue).toLocaleString()}`}</span>
+        >{`${((pricePerToken || 0) * rangeValue).toLocaleString()}`}</span>
       </div>
     </div>
   )

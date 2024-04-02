@@ -2,23 +2,25 @@ import Image from 'next/image'
 import XSvg from '@/images/x.svg'
 
 interface TokenHeaderProps {
-  avatarUrl: string
-  name: string
-  twitterUrl: string
-  id: number
+  avatarUrl: string | undefined
+  name: string | undefined
+  twitterUrl: string | undefined
+  id: number | undefined
 }
 
 export default function TokenHeader(props: TokenHeaderProps) {
   const { avatarUrl, name, twitterUrl, id } = props
   return (
     <div className={'flex items-center'}>
-      <Image
-        src={avatarUrl}
-        alt={''}
-        width={'60'}
-        height={'60'}
-        className={'mr-5 rounded-full'}
-      />
+      {avatarUrl && (
+        <Image
+          src={avatarUrl}
+          alt={''}
+          width={'60'}
+          height={'60'}
+          className={'mr-5 rounded-full'}
+        />
+      )}
       <div className={'flex flex-col'}>
         <p className={'mb-3 flex text-[18px] leading-5'}>
           {name}

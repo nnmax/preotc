@@ -17,6 +17,7 @@ import { verifyMessage } from 'wagmi/actions'
 import { Popover, Transition } from '@headlessui/react'
 import WalletSvg from '@/images/wallet.svg'
 import EthIcon from '@/images/eth-24x24.png'
+import EthYellowIcon from '@/images/eth-yellow.png'
 import USDBSvg from '@/images/USDB.svg'
 import ArrowDownSvg from '@/images/arrow-down.svg'
 import {
@@ -51,14 +52,24 @@ function getWalletChainType(walletName: string): WalletType {
   return 'ETH'
 }
 
-function getIcon(
-  walletType: WalletType | undefined,
-  blastChain?: boolean,
-): {
+function getIcon(options: {
+  walletType: WalletType | undefined
+  blastChain?: boolean
+  isEthBalance?: boolean
+}): {
   src: string | StaticImport
   alt: string
 } {
+  const { walletType, blastChain, isEthBalance } = options
+
   if (blastChain) {
+    if (isEthBalance) {
+      return {
+        src: EthYellowIcon,
+        alt: 'ETH',
+      }
+    }
+
     return {
       src: BlastIcon,
       alt: 'Blast',
@@ -217,8 +228,8 @@ export default function ConnectWalletToolbar() {
                   <Image
                     src={USDBSvg}
                     alt={'USDB'}
-                    width={'24'}
-                    height={'24'}
+                    width={'20'}
+                    height={'20'}
                     className={'mr-2'}
                   />
                   <span title={usdbBalance.usdbBalance.toString()}>
@@ -228,10 +239,22 @@ export default function ConnectWalletToolbar() {
               )}
               <Box className={'min-w-[136px] justify-start text-xs'}>
                 <Image
-                  src={getIcon(walletType).src}
-                  alt={getIcon(walletType).alt}
-                  width={'24'}
-                  height={'24'}
+                  src={
+                    getIcon({
+                      walletType,
+                      blastChain: isBlastChain(chainId),
+                      isEthBalance: true,
+                    }).src
+                  }
+                  alt={
+                    getIcon({
+                      walletType,
+                      blastChain: isBlastChain(chainId),
+                      isEthBalance: true,
+                    }).alt
+                  }
+                  width={'20'}
+                  height={'20'}
                   className={'mr-2'}
                 />
                 <span title={account.balanceFormatted}>
@@ -242,7 +265,7 @@ export default function ConnectWalletToolbar() {
                 <Box button onClick={openChainModal}>
                   {chain?.hasIcon && (
                     <div
-                      className={clsx('mr-2.5 h-7 w-7 rounded-full')}
+                      className={clsx('mr-2.5 h-5 w-5 rounded-full')}
                       style={{
                         background: chain.iconBackground,
                       }}
@@ -276,8 +299,18 @@ export default function ConnectWalletToolbar() {
                     <>
                       <Popover.Button as={Box} button>
                         <Image
-                          src={getIcon(walletType, isBlastChain(chainId)).src}
-                          alt={getIcon(walletType, isBlastChain(chainId)).alt}
+                          src={
+                            getIcon({
+                              walletType,
+                              blastChain: isBlastChain(chainId),
+                            }).src
+                          }
+                          alt={
+                            getIcon({
+                              walletType,
+                              blastChain: isBlastChain(chainId),
+                            }).alt
+                          }
                           width={'24'}
                           height={'24'}
                           className={'mr-2'}
@@ -337,7 +370,7 @@ export default function ConnectWalletToolbar() {
                               <PanelItem
                                 key={index}
                                 address={item.address}
-                                icon={getIcon(item.type).src}
+                                icon={getIcon({ walletType }).src}
                                 title={item.type}
                                 onUnlink={() => {
                                   setRecentWalletState((prev) =>
@@ -481,7 +514,8 @@ const Box = forwardRef<
       ref={ref}
       className={clsx(
         className,
-        'button-base flex h-[36px] items-center rounded border border-solid border-[#aaa] px-2.5 py-1 text-sm text-white',
+        button && 'button-base',
+        'flex h-[36px] items-center rounded border border-solid border-[#aaa] px-2.5 py-1 text-sm text-white',
       )}
     >
       {children}

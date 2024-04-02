@@ -1,56 +1,51 @@
 'use client'
 import Image from 'next/image'
-import {
-  useAccount,
-  useChainId,
-  useSendTransaction,
-  useSwitchChain,
-} from 'wagmi'
+import { useAccount } from 'wagmi'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
-import { useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { toNumber } from 'lodash-es'
-import { useMutation } from '@tanstack/react-query'
-import { parseEther } from 'viem'
-import { toast } from 'react-toastify'
-import { blast } from 'wagmi/chains'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import WalletSvg from '@/images/wallet.svg'
 import Button from '@/components/Button'
 import TokenHeader from '@/components/TokenHeader'
 import {
   depositTakeOrder,
   depositTakeOrderUrl,
+  getMarketOrderById,
+  getMarketOrderByIdUrl,
   takeOrder,
   takeOrderUrl,
 } from '@/api'
-import isBlastChain from '@/utils/isBlastChain'
-import { BLAST_TESTNET_CHAIN_ID } from '@/constant'
+import useDepositTransaction from '@/hooks/useDepositTransaction'
+import DepositSuccessfulDialog from '@/components/DepositSuccessfulDialog'
 import FirstStepPanel from './FirstStepPanel'
 import SecondStepPanel from './SecondStepPanel'
 
 export default function FormPanel() {
   const searchParams = useSearchParams()
+  const { id } = useParams()
   const type = searchParams.get('type') as 'buy' | 'sell'
-
-  const data = {
-    id: toNumber(searchParams.get('id')),
-    projectName: searchParams.get('projectName')!,
-    projectAvatarUrl: searchParams.get('projectAvatarUrl')!,
-    projectTwitterUrl: searchParams.get('projectTwitterUrl')!,
-    amount: toNumber(searchParams.get('amount')),
-    price: toNumber(searchParams.get('price')),
-    feePercent: toNumber(searchParams.get('feePercent')),
-  }
+  const { data, isPending } = useQuery({
+    queryKey: [getMarketOrderByIdUrl, id],
+    queryFn: () => {
+      return getMarketOrderById({ id: toNumber(id) })
+    },
+  })
 
   const { address } = useAccount()
   const { openConnectModal } = useConnectModal()
-  const [rangeValue, setRangeValue] = useState(data.amount)
+  const [rangeValue, setRangeValue] = useState(0)
   const [step, setStep] = useState(1)
   const router = useRouter()
-  const chainId = useChainId()
-  const { switchChainAsync } = useSwitchChain()
-  const { sendTransactionAsync, isPending: sendingTransaction } =
-    useSendTransaction()
+  const { depositTransaction, sendingTransaction } = useDepositTransaction()
+  const [successfulDialogOpen, setSuccessfulDialogOpen] = useState(false)
+
+  useEffect(() => {
+    if (data?.amount) {
+      setRangeValue(data.amount)
+    }
+  }, [data?.amount])
 
   const {
     mutateAsync: takeOrderAsync,
@@ -70,74 +65,31 @@ export default function FormPanel() {
   const handleValid = async () => {
     await takeOrderAsync({
       amount: rangeValue,
-      orderId: data.id,
+      orderId: data!.id,
       type: type === 'buy' ? 'Buying' : 'Selling',
     })
     setStep(2)
   }
 
   const handleDeposit = async () => {
-    if (!takeOrderResponse || !address) {
-      toast.error('Failed to take order')
-      return
-    }
-
-    if (!isBlastChain(chainId)) {
-      const switched = await switchChainAsync({
-        chainId:
-          process.env.NEXT_PUBLIC_IS_DEV === 'true'
-            ? BLAST_TESTNET_CHAIN_ID
-            : blast.id,
-      }).catch((error) => {
-        console.log(error)
-        toast.error(error?.shortMessage ?? error?.message ?? 'SwitchChainError')
-        return null
-      })
-
-      if (!switched) return
-    }
-
-    const approved = await sendTransactionAsync({
-      to: takeOrderResponse.approveCallData.destination,
-      value: parseEther(takeOrderResponse.approveCallData.value.toString()),
-      data: takeOrderResponse.approveCallData.callData,
-      gas: null,
-    }).catch((error) => {
-      console.log(error)
-      toast.error(
-        error?.shortMessage ?? error?.message ?? 'TransactionExecutionError',
-      )
-      return null
-    })
-
-    if (!approved) return
-
-    const txHash = await sendTransactionAsync({
-      to: takeOrderResponse.depositCallData.destination,
-      value: parseEther(takeOrderResponse.depositCallData.value.toString()),
-      data: takeOrderResponse.depositCallData.callData,
-      gas: null,
-    }).catch((error) => {
-      console.log(error)
-      toast.error(
-        error?.shortMessage ?? error?.message ?? 'TransactionExecutionError',
-      )
-      return null
+    const txHash = await depositTransaction({
+      orderResponse: takeOrderResponse,
     })
 
     if (!txHash) return
 
     await depositTakeOrderAsync({
       amount: rangeValue,
-      orderId: data.id,
+      orderId: data!.id,
       type: type === 'buy' ? 'Buying' : 'Selling',
-      price: data.price,
+      price: data!.price,
       txHash,
     })
-    toast.success(
-      'Congratulations on completing the deal, please pay close attention to the token settlement time!',
-    )
-    router.push('/market')
+    setSuccessfulDialogOpen(true)
+  }
+
+  if (isPending) {
+    return <span className={'loading loading-dots'} />
   }
 
   let stepPanel = null
@@ -148,8 +100,9 @@ export default function FormPanel() {
         type={type}
         rangeValue={rangeValue}
         setRangeValue={setRangeValue}
-        max={data.amount}
-        pricePerToken={data.price}
+        max={data?.amount ?? 0}
+        pricePerToken={data?.price}
+        unit={data?.projectSingularUnit}
       />
     )
     stepButton = (
@@ -175,13 +128,13 @@ export default function FormPanel() {
     stepPanel = (
       <SecondStepPanel
         amount={takeOrderResponse?.orderConfirmData.amount ?? rangeValue}
-        pricePerToken={data.price}
+        pricePerToken={data!.price}
         type={type}
         price={
           takeOrderResponse?.orderConfirmData.totalPrice ??
-          rangeValue * data.price
+          rangeValue * data!.price
         }
-        fee={data.feePercent}
+        fee={data!.feePercent}
       />
     )
     stepButton = (
@@ -199,10 +152,10 @@ export default function FormPanel() {
   return (
     <div className={'flex flex-col'}>
       <TokenHeader
-        id={data.id}
-        name={data.projectName}
-        twitterUrl={data.projectTwitterUrl}
-        avatarUrl={data.projectAvatarUrl}
+        id={data?.id}
+        name={data?.projectName}
+        twitterUrl={data?.projectTwitterUrl}
+        avatarUrl={data?.projectAvatarUrl}
       />
       {stepPanel}
       {address ? (
@@ -218,6 +171,14 @@ export default function FormPanel() {
           {'Connect Wallet'}
         </Button>
       )}
+
+      <DepositSuccessfulDialog
+        open={successfulDialogOpen}
+        onClose={() => {
+          setSuccessfulDialogOpen(false)
+          router.push('/market')
+        }}
+      />
     </div>
   )
 }

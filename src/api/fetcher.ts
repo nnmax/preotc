@@ -25,6 +25,13 @@ export default function fetcher<ResponseData = unknown>(
     },
   })
     .then<CommonResponse<ResponseData>>((response) => {
+      if (url === '/pre-otc/get-market-order-by-id') {
+        console.log(
+          '%c [ response ]-37',
+          'font-size:13px; background:pink; color:#bf2c9f;',
+          response,
+        )
+      }
       if (response.ok) {
         return response.json()
       }

@@ -125,7 +125,14 @@ export default function Tooltip(props: TooltipProps) {
               getFloatingProps().className as string,
             )}
           >
-            <div style={styles}>{title}</div>
+            <div
+              style={styles}
+              className={
+                'w-full max-w-[460px] rounded-md border border-solid border-[#aaa] bg-[#1e1e1e] p-4 text-xs leading-6'
+              }
+            >
+              {title}
+            </div>
           </div>
         </FloatingPortal>
       )}

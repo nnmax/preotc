@@ -1,19 +1,11 @@
 import Image from 'next/image'
 import clsx from 'clsx'
 import { useMutation } from '@tanstack/react-query'
-import { useId } from 'react'
+import { useId, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import { capitalize } from 'lodash-es'
-import {
-  useAccount,
-  useChainId,
-  useSendTransaction,
-  useSwitchChain,
-} from 'wagmi'
 import { useRouter } from 'next/navigation'
-import { parseEther } from 'viem'
-import { blast } from 'wagmi/chains'
 import USDBSvg from '@/images/USDB.svg'
 import DownSvg from '@/images/down.svg'
 import DangerSvg from '@/images/danger.svg'
@@ -27,8 +19,8 @@ import Button from '@/components/Button'
 import SecondStepPanel from '@/app/offer/_components/SecondStepPanel'
 import TokenHeader from '@/components/TokenHeader'
 import { useSelectProps } from '@/app/create/hooks'
-import isBlastChain from '@/utils/isBlastChain'
-import { BLAST_TESTNET_CHAIN_ID } from '@/constant'
+import useDepositTransaction from '@/hooks/useDepositTransaction'
+import DepositSuccessfulDialog from '@/components/DepositSuccessfulDialog'
 import type { Dispatch, SetStateAction } from 'react'
 import type { FormValues } from '@/app/create/types'
 import type { FieldErrors, UseFormRegister } from 'react-hook-form'
@@ -47,18 +39,15 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
   const { watch, handleSubmit, register } = useFormContext<FormValues>()
   const formId = useId()
   const router = useRouter()
-  const chainId = useChainId()
-  const { switchChainAsync } = useSwitchChain()
   const [amount, pricePerToken, projectId] = watch([
     'amount',
     'pricePerToken',
     'projectId',
   ])
-  const { address } = useAccount()
   const price = amount * pricePerToken || 0
   const invalid = price < USDB_LIMIT
-  const { sendTransactionAsync, isPending: sendingTransaction } =
-    useSendTransaction()
+  const [successfulDialogOpen, setSuccessfulDialogOpen] = useState(false)
+  const { depositTransaction, sendingTransaction } = useDepositTransaction()
 
   const {
     mutateAsync: makeOrderAsync,
@@ -92,52 +81,8 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
   }
 
   const handleDeposit = async () => {
-    if (!makeOrderResponse || !address) {
-      toast.error('Failed to make order')
-      return
-    }
-
-    if (!isBlastChain(chainId)) {
-      const switched = await switchChainAsync({
-        chainId:
-          process.env.NEXT_PUBLIC_IS_DEV === 'true'
-            ? BLAST_TESTNET_CHAIN_ID
-            : blast.id,
-      }).catch((error) => {
-        console.log(error)
-        toast.error(error?.shortMessage ?? error?.message ?? 'SwitchChainError')
-        return null
-      })
-
-      if (!switched) return
-    }
-
-    const approved = await sendTransactionAsync({
-      to: makeOrderResponse.approveCallData.destination,
-      value: parseEther(makeOrderResponse.approveCallData.value.toString()),
-      data: makeOrderResponse.approveCallData.callData,
-      gas: null,
-    }).catch((error) => {
-      console.log(error)
-      toast.error(
-        error?.shortMessage ?? error?.message ?? 'TransactionExecutionError',
-      )
-      return null
-    })
-
-    if (!approved) return
-
-    const txHash = await sendTransactionAsync({
-      to: makeOrderResponse.depositCallData.destination,
-      value: parseEther(makeOrderResponse.depositCallData.value.toString()),
-      data: makeOrderResponse.depositCallData.callData,
-      gas: null,
-    }).catch((error) => {
-      console.log(error)
-      toast.error(
-        error?.shortMessage ?? error?.message ?? 'TransactionExecutionError',
-      )
-      return null
+    const txHash = await depositTransaction({
+      orderResponse: makeOrderResponse,
     })
 
     if (!txHash) return
@@ -149,10 +94,8 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
       type: capitalize(tab) as MakeOrderParams['type'],
       txHash,
     })
-    toast.success(
-      'Congratulations on completing the deal, please pay close attention to the token settlement time!',
-    )
-    router.push('/market')
+
+    setSuccessfulDialogOpen(true)
   }
 
   let stepPanel = null
@@ -233,6 +176,13 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
         </p>
       )}
       {stepButton}
+      <DepositSuccessfulDialog
+        open={successfulDialogOpen}
+        onClose={() => {
+          setSuccessfulDialogOpen(false)
+          router.push('/market')
+        }}
+      />
     </div>
   )
 }

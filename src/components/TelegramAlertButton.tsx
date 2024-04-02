@@ -1,6 +1,4 @@
 'use client'
-
-import clsx from 'clsx'
 import Image from 'next/image'
 import { useAccount } from 'wagmi'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
@@ -122,18 +120,7 @@ export default function TelegramAlertButton({ type }: { type?: 1 | 2 }) {
         )}
         <span className={'whitespace-nowrap'}>{'Set Alert'}</span>
       </button>
-      <Tooltip
-        placement={'bottom-end'}
-        title={
-          <p
-            className={clsx(
-              `w-full max-w-[460px] rounded-md border border-solid border-[#aaa] bg-[#1e1e1e] p-4 text-xs leading-6`,
-            )}
-          >
-            {info}
-          </p>
-        }
-      >
+      <Tooltip placement={'bottom-end'} title={info}>
         <Image
           aria-label={info}
           tabIndex={0}

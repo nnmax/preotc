@@ -3,8 +3,7 @@ import clsx from 'clsx'
 import Link from 'next/link'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import dayjs from 'dayjs'
-import USDTSvg from '@/images/USDT.svg'
-import OneSVG from '@/images/1.svg'
+import USDBSvg from '@/images/USDB.svg'
 import RightSVG from '@/images/right.svg'
 import type { SearchMarketOrderResponse } from '@/api'
 
@@ -20,16 +19,6 @@ export default function Card(props: {
   data: SearchMarketOrderResponse
 }) {
   const { type, data } = props
-
-  const createQueryString = () => {
-    const searchParams = new URLSearchParams()
-    Object.entries(data).forEach(([key, value]) => {
-      if (key !== 'type' && value !== null && value !== undefined) {
-        searchParams.set(key, value.toString())
-      }
-    })
-    return searchParams.toString()
-  }
 
   return (
     <div className={cardClasses}>
@@ -52,21 +41,17 @@ export default function Card(props: {
         }
       >
         <div className={'flex flex-col'}>
-          <span className={'mb-1 text-xs text-[rgba(155,155,155,0.6)]'}>
+          <span className={'mb-4 text-xs text-[rgba(155,155,155,0.6)]'}>
             {'Offer'}
           </span>
           <span
-            className={'mb-2 flex items-center'}
+            className={'mb-4 flex items-center'}
             title={data.amount.toString()}
           >
-            {numberFormatter.format(data.amount)}
-            <Image src={OneSVG} alt={''} width={'12'} className={'ml-1'} />
+            {`${numberFormatter.format(data.amount)} ${data.projectPluralUnit}`}
           </span>
-          <span
-            className={'text-xs text-[rgba(155,155,155,0.6)]'}
-            title={data.price.toString()}
-          >
-            {`$ ${data.price.toLocaleString()} / Token`}
+          <span className={'text-xs text-white'}>
+            {`$ ${data.price} / ${data.projectSingularUnit}`}
           </span>
         </div>
         <Image
@@ -76,13 +61,13 @@ export default function Card(props: {
           className={'ml-2 mr-auto mt-3.5'}
         />
         <div className={'flex flex-col items-end'}>
-          <span className={'mb-1 text-[rgba(155,155,155,0.6)]'}>{'For'}</span>
+          <span className={'mb-4 text-[rgba(155,155,155,0.6)]'}>{'For'}</span>
           <span
             className={'flex items-center text-[#FFC300]'}
             title={(data.amount * data.price).toString()}
           >
             {numberFormatter.format(data.amount * data.price)}
-            <Image src={USDTSvg} alt={'USDT'} width={'14'} className={'ml-1'} />
+            <Image src={USDBSvg} alt={'USDB'} width={'14'} className={'ml-1'} />
           </span>
         </div>
       </div>
@@ -101,8 +86,8 @@ export default function Card(props: {
         <Link
           href={
             type === 'sell'
-              ? `/offer/${data.id}?type=sell&${createQueryString()}`
-              : `/offer/${data.id}?type=buy&${createQueryString()}`
+              ? `/offer/${data.id}?type=sell`
+              : `/offer/${data.id}?type=buy`
           }
           className={clsx(
             'flex h-7 items-center rounded px-5 text-sm',
