@@ -178,6 +178,7 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
       {stepButton}
       <DepositSuccessfulDialog
         open={successfulDialogOpen}
+        text={'Congratulations, you have successfully created an order!'}
         onClose={() => {
           setSuccessfulDialogOpen(false)
           router.push('/market')
