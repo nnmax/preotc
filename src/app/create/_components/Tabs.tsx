@@ -23,7 +23,7 @@ export default function Tabs() {
       <Tab.Group defaultIndex={defaultIndex}>
         <Tab.List
           className={clsx(
-            'flex h-[42px] max-w-[640px] rounded border border-solid border-[#FFC300] text-center text-[18px] text-[#FFC300]',
+            'flex h-[40px] rounded border border-solid border-[#FFC300] text-center text-base text-[#FFC300]',
             (buyingStep === 2 || sellingStep === 2) && 'hidden',
           )}
         >

@@ -18,15 +18,15 @@ export default function Layout({
           {linkTitle}
         </Link>
       </div>
-      <div className={'flex justify-center gap-[46px] py-9'}>
+      <div className={'flex w-full justify-center gap-[72px] py-9'}>
         <div
           className={
-            'w-[600px] rounded-[10px] bg-[#2A3037] px-10 py-8 shadow-[0px_4px_10px_0px_rgba(0,0,0,0.3)]'
+            'w-full max-w-[600px] rounded-[10px] bg-[#2A3037] p-8 pb-12 shadow-[0px_4px_10px_0px_rgba(0,0,0,0.3)]'
           }
         >
           {children}
         </div>
-        <OfferIntroduce className={'w-[503px]'} />
+        <OfferIntroduce />
       </div>
     </div>
   )

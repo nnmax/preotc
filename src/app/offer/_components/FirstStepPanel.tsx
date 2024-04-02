@@ -27,10 +27,13 @@ export default function FirstStepPanel({
   }
 
   return (
-    <div className={clsx(stepPanelClasses, 'mb-[52px] mt-[22px]')}>
+    <div className={clsx(stepPanelClasses)}>
       <div className={'flex items-center justify-between'}>
         <span
-          className={clsx('rounded-[3px] px-2.5 leading-6 text-black', labelBg)}
+          className={clsx(
+            'rounded-[3px] px-2 text-sm leading-6 text-black',
+            labelBg,
+          )}
         >
           {labelText}
         </span>

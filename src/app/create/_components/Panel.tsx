@@ -125,7 +125,7 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
               : 'bg-[#004DFF]'
             : 'bg-[#8F2760]'
         }
-        className={clsx('mt-[52px]')}
+        className={clsx('mt-12')}
       >
         {'Next'}
       </Button>
@@ -145,7 +145,7 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
       <Button
         type={'button'}
         bgColorClass={'bg-[#FBFC02]'}
-        className={'mt-[52px] text-black'}
+        className={'mt-12 text-black'}
         onClick={handleDeposit}
         loading={sendingTransaction || depositMakingOrder}
       >
@@ -158,7 +158,7 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
     <div>
       {step === 2 && !!selectedProject && (
         <TokenHeader
-          id={selectedProject.id}
+          id={undefined}
           name={selectedProject.name}
           avatarUrl={selectedProject.avatarUrl}
           twitterUrl={selectedProject.twitterUrl}
@@ -213,15 +213,15 @@ function FirstStepPanel(props: FirstStepPanelProps) {
 
   return (
     <form
-      className={clsx('mt-7 rounded-[10px] bg-[#162024] px-10 py-7')}
+      className={clsx('mt-8 rounded-[10px] bg-[#162024] p-6')}
       id={formId}
       onSubmit={onSubmit}
     >
-      <div className={'flex gap-5'}>
-        <label className={'flex flex-1 flex-col items-center gap-y-5'}>
+      <div className={'flex gap-4'}>
+        <label className={'flex flex-1 flex-col items-center gap-y-2'}>
           <span
             className={clsx(
-              'flex items-center self-start rounded-[3px] px-[10px] leading-6 text-black',
+              'flex items-center self-start rounded-[3px] px-2 text-sm leading-6 text-black',
               labelBg,
             )}
           >
@@ -243,14 +243,14 @@ function FirstStepPanel(props: FirstStepPanelProps) {
             type={'number'}
             placeholder={'Enter Amount'}
             className={clsx(
-              'reset-input-number w-full rounded-[5px] bg-[#2A3037] px-[14px] leading-[44px] text-[#9E9E9E]',
+              'reset-input-number w-full rounded-[5px] bg-[#2A3037] px-[14px] text-sm leading-9 text-white',
             )}
           />
         </label>
 
         <div
           className={
-            'relative flex h-[44px] w-fit items-center gap-2.5 self-end rounded-[5px] bg-[#2A3037] p-2.5'
+            'relative flex h-9 w-fit items-center gap-2.5 self-end rounded-[5px] bg-[#2A3037] p-2.5'
           }
         >
           {selectedProject && (
@@ -262,8 +262,8 @@ function FirstStepPanel(props: FirstStepPanelProps) {
               className={'h-full w-6 rounded-full'}
             />
           )}
-          <span className={'flex-1'}>{selectedProject?.name}</span>
-          <Image src={DownSvg} alt={'down'} width={'24'} />
+          <span className={'flex-1 text-sm'}>{selectedProject?.name}</span>
+          <Image src={DownSvg} alt={'down'} width={'16'} />
           <select
             {...register('projectId', {
               valueAsNumber: true,
@@ -279,10 +279,10 @@ function FirstStepPanel(props: FirstStepPanelProps) {
         </div>
       </div>
 
-      <label className={'mt-8 flex flex-col gap-y-5'}>
+      <label className={'mt-[18px] flex flex-col gap-y-2'}>
         <span
           className={clsx(
-            'flex items-center self-start rounded-[3px] px-[10px] leading-6 text-black',
+            'flex items-center self-start rounded-[3px] px-2 text-sm leading-6 text-black',
             labelBg,
           )}
         >
@@ -290,7 +290,7 @@ function FirstStepPanel(props: FirstStepPanelProps) {
         </span>
         <div
           className={clsx(
-            'relative flex rounded-[5px] bg-[#2A3037] leading-[44px] text-[#9E9E9E]',
+            'relative flex rounded-[5px] bg-[#2A3037] leading-9 text-[#9E9E9E]',
           )}
         >
           <input
@@ -309,18 +309,20 @@ function FirstStepPanel(props: FirstStepPanelProps) {
             step={'any'}
             placeholder={'Enter Unit Price'}
             className={clsx(
-              'reset-input-number w-full appearance-none bg-transparent pl-[14px] pr-[100px]',
+              'reset-input-number w-full appearance-none bg-transparent pl-[14px] pr-[96] text-sm leading-9 text-white',
             )}
           />
           <div
-            className={'absolute right-2.5 top-0 flex items-center gap-[10px]'}
+            className={
+              'absolute right-2 top-0 flex h-full items-center gap-2 text-sm'
+            }
           >
             <span>{'USDB'}</span>
             <Image src={USDBSvg} alt={'USDB'} width={24} />
           </div>
         </div>
       </label>
-      <div className={'mt-5 flex flex-col gap-3 leading-5'}>
+      <div className={'mt-8 flex flex-col gap-4 leading-5'}>
         <span className={' text-[#737373]'}>{'For'}</span>
         <span className={'text-[#FFC300]'}>
           {'$ '}

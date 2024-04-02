@@ -22,7 +22,7 @@ export default function OfferIntroduce({ className }: { className?: string }) {
     <div
       className={clsx(
         className,
-        'flex flex-col gap-5 text-xs leading-[30px] text-white [&>p>a]:text-[#FFC300] [&>p>a]:underline [&>p>span]:text-[#FFC300]',
+        'flex w-full max-w-[565px] flex-col gap-5 text-xs leading-[30px] text-white [&>p>a]:text-[#FFC300] [&>p>a]:underline [&>p>span]:text-[#FFC300]',
       )}
     >
       <p>
