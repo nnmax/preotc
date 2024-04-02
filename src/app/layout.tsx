@@ -30,7 +30,7 @@ export default function RootLayout({
         <Providers>
           <AppBar />
           <main
-            className={'flex min-h-[calc(100vh-64px)] justify-center px-[60px]'}
+            className={'flex min-h-[calc(100vh-64px)] justify-center px-[56px]'}
           >
             <div className={'flex w-full max-w-[1684px] flex-col'}>
               {children}

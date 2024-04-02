@@ -48,10 +48,10 @@ export default function Card(props: {
             className={'mb-4 flex items-center'}
             title={data.amount.toString()}
           >
-            {`${numberFormatter.format(data.amount)} ${data.projectPluralUnit}`}
+            {`${numberFormatter.format(data.amount)} ${data.pluralUnit}`}
           </span>
           <span className={'text-xs text-white'}>
-            {`$ ${data.price} / ${data.projectSingularUnit}`}
+            {`$ ${data.price} / ${data.singularUnit}`}
           </span>
         </div>
         <Image

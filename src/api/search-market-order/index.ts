@@ -13,8 +13,8 @@ export interface SearchMarketOrderResponse {
   projectName: string
   projectAvatarUrl: string
   projectTwitterUrl: string
-  projectSingularUnit: string
-  projectPluralUnit: string
+  singularUnit: string
+  pluralUnit: string
   // 1 = buy, 2 = sell
   type: 1 | 2
   amount: number

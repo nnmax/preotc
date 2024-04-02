@@ -102,7 +102,7 @@ export default function FormPanel() {
         setRangeValue={setRangeValue}
         max={data?.amount ?? 0}
         pricePerToken={data?.price}
-        unit={data?.projectSingularUnit}
+        unit={data?.singularUnit}
       />
     )
     stepButton = (

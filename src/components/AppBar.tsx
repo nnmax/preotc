@@ -14,7 +14,7 @@ export default function AppBar() {
 
   return (
     <header
-      className={'flex h-[72px] flex-row justify-center bg-[#030303] px-[60px]'}
+      className={'flex h-[64px] flex-row justify-center bg-[#030303] px-[56px]'}
     >
       <div className={'flex w-full max-w-[1684px] flex-row items-center'}>
         <Link href={'/'} className={'mr-14'}>
