@@ -37,7 +37,7 @@ const mockData = Array.from({ length: 20 }, (_, i) => ({
   completeTime: null,
   updateTime: '2024-04-02T13:48:10.000+00:00',
   createTime: '2024-04-02T13:48:03.000+00:00',
-  projectName: 'friend.tech',
+  projectName: '这是假的数据',
   projectTwitterUrl: 'https://twitter.com/friendtech',
   projectAvatarUrl:
     'https://icons.llamao.fi/icons/protocols/friend.tech?w=48&h=48',
@@ -45,7 +45,7 @@ const mockData = Array.from({ length: 20 }, (_, i) => ({
   pluralUnit: 'Points',
 }))
 
-const mock = false
+const mock = true
 
 export const fetchSearchMarketOrder = (params: SearchMarketOrderParams) => {
   return fetcher<SearchMarketOrderResponse[]>(SearchMarketOrderUrl, {
