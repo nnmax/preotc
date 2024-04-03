@@ -26,11 +26,39 @@ export interface SearchMarketOrderResponse {
   completeTime: string | null
 }
 
+const mockData = Array.from({ length: 20 }, (_, i) => ({
+  id: 39 + i,
+  projectId: 1,
+  type: 1,
+  amount: 32,
+  price: 12,
+  feePercent: 2.5,
+  deliverDeadline: null,
+  completeTime: null,
+  updateTime: '2024-04-02T13:48:10.000+00:00',
+  createTime: '2024-04-02T13:48:03.000+00:00',
+  projectName: 'friend.tech',
+  projectTwitterUrl: 'https://twitter.com/friendtech',
+  projectAvatarUrl:
+    'https://icons.llamao.fi/icons/protocols/friend.tech?w=48&h=48',
+  singularUnit: 'Point',
+  pluralUnit: 'Points',
+}))
+
+const mock = true
+
 export const fetchSearchMarketOrder = (params: SearchMarketOrderParams) => {
   return fetcher<SearchMarketOrderResponse[]>(SearchMarketOrderUrl, {
     method: 'POST',
     body: JSON.stringify(params),
-  }).catch<SearchMarketOrderResponse[]>(() => {
-    return []
   })
+    .then((res) => {
+      if (mock) {
+        return mockData
+      }
+      return res
+    })
+    .catch<SearchMarketOrderResponse[]>(() => {
+      return []
+    })
 }

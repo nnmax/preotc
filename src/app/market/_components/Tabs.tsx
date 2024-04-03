@@ -63,7 +63,7 @@ const tabClasses =
   'flex w-24 items-center justify-center aria-selected:bg-[#FFC300] aria-selected:text-black'
 
 const tabPanelClasses =
-  'grid gap-4 grid-cols-[repeat(auto-fill,minmax(324px,1fr))]'
+  'grid gap-4 min-[1440px]:grid-cols-4 min-[1920px]:grid-cols-5 min-[1104px]:grid-cols-3 min-[768px]:grid-cols-2'
 
 function Filter() {
   const { data: projects } = useSuspenseQuery({

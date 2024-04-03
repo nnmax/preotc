@@ -15,11 +15,11 @@ export default function Tabs() {
   return (
     <div className={'flex flex-col items-center'}>
       <Tab.Group>
-        <div className={'flex w-full justify-between py-6'}>
+        <div className={'flex w-full justify-between py-4 pt-6'}>
           <div className={'flex flex-1 justify-center'}>
             <Tab.List
               className={
-                'flex h-[36px] w-full max-w-[900px] justify-center divide-x divide-[#aaa] rounded border border-solid border-[#aaa] text-sm text-[#7E7E7E]'
+                'flex h-[36px] w-full max-w-[720px] justify-center divide-x divide-[#aaa] rounded border border-solid border-[#aaa] text-sm text-[#7E7E7E]'
               }
             >
               <Tab className={tabClasses}>{'To Be Settled'}</Tab>
@@ -33,7 +33,7 @@ export default function Tabs() {
           </div>
         </div>
 
-        <div className={'w-full max-w-[1440px] overflow-x-auto'}>
+        <div className={'w-full max-w-[1200px] overflow-x-auto'}>
           <Tab.Panels>
             <Tab.Panel>
               <Suspense fallback={<span className={'loading loading-dots'} />}>
