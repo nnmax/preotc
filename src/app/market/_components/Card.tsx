@@ -22,7 +22,7 @@ export default function Card(props: {
 
   return (
     <div className={cardClasses}>
-      <div className={'flex gap-x-[6px]'}>
+      <div className={'flex gap-2'}>
         <Image
           src={data.projectAvatarUrl}
           alt={data.projectName}
@@ -30,14 +30,14 @@ export default function Card(props: {
           height={'32'}
           className={'rounded-full'}
         />
-        <div className={'flex flex-col leading-4'}>
+        <div className={'flex flex-col gap-1 leading-4'}>
           <span>{data.projectName}</span>
           <span className={'text-xs'}>{`#${data.id}`}</span>
         </div>
       </div>
       <div
         className={
-          'flex items-start justify-between border-b border-solid border-[rgba(155,155,155,0.5)] pb-4 pt-4 text-sm'
+          'flex items-start justify-between border-b border-solid border-aaa/30 pb-4 pt-4 text-sm'
         }
       >
         <div className={'flex flex-col'}>
@@ -91,7 +91,7 @@ export default function Card(props: {
               : `/offer/${data.id}?type=buy`
           }
           className={clsx(
-            'flex h-7 items-center rounded px-5 text-sm',
+            'flex h-6 w-16 items-center justify-center rounded text-sm',
             type === 'buy' ? 'bg-[#004DFF]' : 'bg-[#EB2F96]',
           )}
         >
