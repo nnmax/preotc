@@ -54,7 +54,7 @@ export const fetchSearchMarketOrder = (params: SearchMarketOrderParams) => {
   })
     .then((res) => {
       if (mock) {
-        return mockData
+        return mockData as unknown as SearchMarketOrderResponse[]
       }
       return res
     })
