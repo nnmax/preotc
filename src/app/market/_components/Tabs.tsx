@@ -25,7 +25,7 @@ export default function Tabs() {
         <div className={'flex w-full max-w-[70%]'}>
           <Tab.List
             className={
-              'mr-10 flex h-[36px] w-fit rounded border border-solid border-[#aaa] text-center text-sm text-[#9e9e9e]'
+              'mr-10 flex h-[36px] w-fit rounded border border-solid border-[#FFC300] text-center text-sm text-[#FFC300]'
             }
           >
             <Tab className={tabClasses} as={Link} href={'/market?tab=buy'}>
@@ -60,7 +60,7 @@ export default function Tabs() {
 }
 
 const tabClasses =
-  'flex w-24 items-center justify-center aria-selected:bg-[#FFC300] aria-selected:text-black'
+  'flex w-24 items-center justify-center transition-colors aria-selected:bg-[#FFC300] aria-selected:text-black'
 
 const tabPanelClasses =
   'grid gap-4 min-[1440px]:grid-cols-4 min-[1920px]:grid-cols-5 min-[1104px]:grid-cols-3 min-[768px]:grid-cols-2'
@@ -103,7 +103,7 @@ function Filter() {
             key={project.id}
             value={project.id.toString()}
             className={clsx(
-              'flex h-[36px] w-fit items-center rounded border border-solid border-[#aaa] px-2 text-xs aria-pressed:border-[#FFC300]',
+              'flex h-[36px] w-fit items-center rounded border border-solid border-aaa/50 px-2 text-xs aria-pressed:border-[#FFC300]',
             )}
           >
             <div className={'mr-2 h-5 w-5'}>

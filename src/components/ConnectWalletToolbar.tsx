@@ -338,13 +338,11 @@ export default function ConnectWalletToolbar() {
                       >
                         <Popover.Panel
                           className={
-                            'shadow-[0px_4px_10px_0px rgba(0,0,0,0.3)] absolute right-0 z-10 w-[368px] translate-y-1 justify-start border border-solid border-[#AAAAAA] bg-[#2A3037] px-5 text-xs'
+                            'shadow-[0px_4px_10px_0px rgba(0,0,0,0.3)] absolute right-0 z-10 w-[368px] translate-y-1 justify-start rounded-[5px] border border-solid border-aaa/50 bg-[#2A3037] px-4 text-xs'
                           }
                         >
                           <ul
-                            className={
-                              'flex flex-col divide-y divide-[#525252]'
-                            }
+                            className={'flex flex-col divide-y divide-aaa/50'}
                           >
                             <PanelItem
                               connected
@@ -515,7 +513,7 @@ const Box = forwardRef<
       className={clsx(
         className,
         button && 'button-base',
-        'flex h-[36px] items-center rounded border border-solid border-[#aaa] px-2.5 py-1 text-sm text-white',
+        'flex h-[36px] items-center rounded border border-solid border-aaa/50 px-2.5 py-1 text-sm text-white',
       )}
     >
       {children}
@@ -555,9 +553,9 @@ function PanelItem(props: {
       <Component
         type={button ? 'button' : undefined}
         onClick={onClick}
-        className={'flex min-h-20 w-full items-center py-5'}
+        className={'flex min-h-20 w-full items-center py-4'}
       >
-        <Image src={icon} alt={''} className={'mr-2.5'} />
+        <Image src={icon} alt={''} className={'mr-2'} />
         {show ? (
           <div className={'flex-1 text-xs'}>
             <p className={'flex items-center justify-between'}>

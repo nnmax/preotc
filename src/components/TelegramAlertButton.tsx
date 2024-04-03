@@ -85,23 +85,21 @@ export default function TelegramAlertButton({ type }: { type?: 1 | 2 }) {
 
   if (type === 2) {
     return (
-      <div className={'flex items-center gap-5'}>
-        <Image src={TelegramSvg} alt={'telegram'} width={'32'} />
-        <button
-          type={'button'}
-          className={
-            'flex h-[42px] w-40 items-center justify-center gap-3 rounded-[5px] bg-[#0698D8] text-base'
-          }
-          onClick={handleClick}
-          disabled={fetchingLink || isRefetching}
-        >
-          {fetchingLink || isRefetching ? (
-            <span className={'loading loading-dots'} />
-          ) : (
-            'Connect'
-          )}
-        </button>
-      </div>
+      <button
+        type={'button'}
+        className={
+          'flex h-9 w-[154px] items-center justify-center gap-3 rounded-[5px] bg-[#0698D8] text-sm'
+        }
+        onClick={handleClick}
+        disabled={fetchingLink || isRefetching}
+      >
+        {fetchingLink || isRefetching ? (
+          <span className={'loading loading-dots'} />
+        ) : (
+          <Image src={TelegramSvg} alt={'telegram'} width={'23'} />
+        )}
+        <span>{'Connect'}</span>
+      </button>
     )
   }
 

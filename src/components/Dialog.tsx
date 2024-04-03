@@ -10,10 +10,17 @@ interface DialogBaseProps {
   onClose?: () => void
   panelClassName?: string
   children?: React.ReactNode | undefined
+  showCloseButton?: boolean
 }
 
 export default function Dialog(props: DialogBaseProps) {
-  const { panelClassName, children, open, onClose } = props
+  const {
+    panelClassName,
+    children,
+    open,
+    onClose,
+    showCloseButton = true,
+  } = props
 
   const handleClose = () => {
     if (onClose) onClose()
@@ -54,18 +61,20 @@ export default function Dialog(props: DialogBaseProps) {
                 panelClassName,
               )}
             >
-              <button
-                type={'button'}
-                className={'absolute right-2 top-2 h-5 w-5'}
-                onClick={handleClose}
-              >
-                <Image
-                  src={CLoseSvg}
-                  width={'20'}
-                  height={'20'}
-                  alt={'Close'}
-                />
-              </button>
+              {showCloseButton && (
+                <button
+                  type={'button'}
+                  className={'absolute right-2 top-2 h-5 w-5'}
+                  onClick={handleClose}
+                >
+                  <Image
+                    src={CLoseSvg}
+                    width={'20'}
+                    height={'20'}
+                    alt={'Close'}
+                  />
+                </button>
+              )}
               {children}
             </HeadlessDialog.Panel>
           </Transition.Child>

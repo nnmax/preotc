@@ -1,21 +1,21 @@
 import Image from 'next/image'
 import clsx from 'clsx'
-import { useEffect } from 'react'
-import { useMutation, useSuspenseQuery } from '@tanstack/react-query'
+import { useEffect, useState } from 'react'
+import { useSuspenseQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
-import { toast } from 'react-toastify'
-import {
-  searchUserOrder,
-  searchUserOrderUrl,
-  settledDeposit,
-  settledDepositUrl,
-} from '@/api'
+import { searchUserOrder, searchUserOrderUrl } from '@/api'
 import useCountdown from '@/hooks/useCountdown'
+import DepositSuccessfulModal from '@/app/dashboard/_components/DepositSuccessfulModal'
 import { tdClasses, thClasses, trBorderClasses } from '../classes'
-import type { SettledDepositParams } from '@/api'
+import DepositModal from './DepositModal'
+import type { SearchUserOrderResponse } from '@/api'
 // import TablePagination from './TablePagination/TablePagination'
 
 export default function SettledTable() {
+  const [depositModalOpen, setDepositModalOpen] = useState(false)
+  const [depositSuccessfulModalOpen, setDepositSuccessfulModalOpen] =
+    useState(true)
+  const [currentData, setCurrentData] = useState<SearchUserOrderResponse>()
   const { data: settledData } = useSuspenseQuery({
     queryKey: [searchUserOrderUrl, 2],
     queryFn: () => {
@@ -25,12 +25,6 @@ export default function SettledTable() {
     },
   })
 
-  const { mutateAsync: settledDepositAsync, isPending } = useMutation({
-    mutationKey: [settledDepositUrl],
-    mutationFn: (variables: SettledDepositParams) => {
-      return settledDeposit(variables)
-    },
-  })
   // const [page, setPage] = useState(0)
   // const [rowsPerPage, setRowsPerPage] = useState(10)
 
@@ -48,11 +42,13 @@ export default function SettledTable() {
   //   setPage(0)
   // }
 
-  const handleSettled = async (id: number) => {
-    await settledDepositAsync({
-      id,
-    })
-    toast.success('Settled successfully')
+  const handleSettled = (current: SearchUserOrderResponse) => {
+    // await settledDepositAsync({
+    //   id,
+    // })
+    // toast.success('Settled successfully')
+    setCurrentData(current)
+    setDepositModalOpen(true)
   }
 
   return (
@@ -113,9 +109,9 @@ export default function SettledTable() {
               {(item.status === 2 || item.status === 4) && (
                 <button
                   type={'button'}
-                  disabled={item.status === 4 || isPending}
+                  disabled={item.status === 4}
                   onClick={
-                    item.status === 2 ? () => handleSettled(item.id) : undefined
+                    item.status === 2 ? () => handleSettled(item) : undefined
                   }
                   className={clsx(
                     'h-[28px] w-[77px] rounded border border-solid border-black px-3 py-[5px] text-xs',
@@ -126,17 +122,25 @@ export default function SettledTable() {
                     },
                   )}
                 >
-                  {isPending && item.status === 2 ? (
-                    <span className={'loading loading-dots'} />
-                  ) : (
-                    'Settle'
-                  )}
+                  {'Settle'}
                 </button>
               )}
             </td>
           </tr>
         ))}
       </tbody>
+      <DepositModal
+        open={depositModalOpen}
+        setOpen={setDepositModalOpen}
+        currentData={currentData}
+        onSuccess={() => {
+          setDepositSuccessfulModalOpen(true)
+        }}
+      />
+      <DepositSuccessfulModal
+        open={depositSuccessfulModalOpen}
+        setOpen={setDepositSuccessfulModalOpen}
+      />
       {/* <tfoot className={'bg-[var(--body-background-color)]'}>
         <tr>
           <TablePagination

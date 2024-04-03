@@ -13,6 +13,9 @@ const config: Config = {
         '3xl': '1792px',
         '4xl': '2048px',
       },
+      colors: {
+        aaa: '#aaa',
+      },
     },
   },
   plugins: [daisyui],

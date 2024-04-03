@@ -1,34 +1,30 @@
 'use client'
 import { Tab } from '@headlessui/react'
-import clsx from 'clsx'
 import { Suspense } from 'react'
 import TelegramAlertButton from '@/components/TelegramAlertButton'
 import SettledTable from './SettledTable'
 import OffersTable from './OffersTable'
 import CompletedTable from './CompletedTable'
 
-function tabClasses({ selected }: { selected: boolean }) {
-  return clsx('flex-1', selected && 'bg-[#FFC300] text-black')
-}
+const tabClasses =
+  'flex-1 aria-selected:bg-[#FFC300] aria-selected:text-black transition-colors'
 
 export default function Tabs() {
   return (
     <div className={'flex flex-col items-center'}>
       <Tab.Group>
-        <div className={'flex w-full justify-between py-4 pt-6'}>
-          <div className={'flex flex-1 justify-center'}>
-            <Tab.List
-              className={
-                'flex h-[36px] w-full max-w-[720px] justify-center divide-x divide-[#aaa] rounded border border-solid border-[#aaa] text-sm text-[#7E7E7E]'
-              }
-            >
-              <Tab className={tabClasses}>{'To Be Settled'}</Tab>
-              <Tab className={tabClasses}>{'My Offers'}</Tab>
-              <Tab className={tabClasses}>{'Deals Completed'}</Tab>
-            </Tab.List>
-          </div>
+        <div className={'relative flex w-full justify-center py-4 pt-6'}>
+          <Tab.List
+            className={
+              'flex h-[36px] w-full max-w-[720px] justify-center divide-x divide-[#FFC300] rounded border border-solid border-[#FFC300] text-sm text-[#FFC300]'
+            }
+          >
+            <Tab className={tabClasses}>{'To Be Settled'}</Tab>
+            <Tab className={tabClasses}>{'My Offers'}</Tab>
+            <Tab className={tabClasses}>{'Deals Completed'}</Tab>
+          </Tab.List>
 
-          <div className={'ml-2 flex h-[36px] w-fit'}>
+          <div className={'absolute right-0 flex h-[36px] w-fit'}>
             <TelegramAlertButton />
           </div>
         </div>
