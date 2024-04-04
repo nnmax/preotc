@@ -249,7 +249,7 @@ function FirstStepPanel(props: FirstStepPanelProps) {
 
         <div
           className={
-            'relative flex h-9 w-fit items-center gap-2.5 self-end rounded-[5px] bg-[#2A3037] p-2.5'
+            'relative flex h-9 w-fit items-center gap-2.5 self-end rounded-[5px] bg-[#2A3037] px-2'
           }
         >
           {selectedProject && (
@@ -258,7 +258,7 @@ function FirstStepPanel(props: FirstStepPanelProps) {
               alt={''}
               width={'24'}
               height={'24'}
-              className={'h-full w-6 rounded-full'}
+              className={'h-6 w-6 rounded-full'}
             />
           )}
           <span className={'flex-1 text-sm'}>{selectedProject?.name}</span>
