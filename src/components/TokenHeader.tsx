@@ -16,18 +16,16 @@ export default function TokenHeader(props: TokenHeaderProps) {
         <Image
           src={avatarUrl}
           alt={''}
-          width={'56'}
-          height={'56'}
+          width={'48'}
+          height={'48'}
           className={'mr-2 rounded-full'}
         />
       )}
       <div className={'flex flex-col'}>
-        <p className={'mb-3 flex'}>
+        <p className={'mb-2 flex leading-4'}>
           {name}
           {id && (
-            <span
-              className={'ml-2.5 text-sm leading-4 text-[#737373]'}
-            >{`#${id}`}</span>
+            <span className={'ml-2.5 text-sm text-[#737373]'}>{`#${id}`}</span>
           )}
         </p>
         <a

@@ -68,7 +68,7 @@ export default function FirstStepPanel({
           {`${((rangeValue / (max || 0)) * 100 || 0).toFixed(0)} %`}
         </span>
       </div>
-      <div className={'mt-[60px] flex flex-col gap-3'}>
+      <div className={'mt-12 flex flex-col gap-3'}>
         <span className={'text-[#737373]'}>{'For'}</span>
         <span
           className={'text-[#FFC300]'}

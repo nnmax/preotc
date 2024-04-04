@@ -31,7 +31,7 @@ export default function SecondStepPanel(props: SecondStepPanelProps) {
       >
         {labelText}
       </span>
-      <span className={'my-6 text-sm leading-[14px]'}>{amount}</span>
+      <span className={'mb-6 mt-4 text-sm leading-[14px]'}>{amount}</span>
       <span
         className={clsx(
           labelBg,
@@ -40,14 +40,14 @@ export default function SecondStepPanel(props: SecondStepPanelProps) {
       >
         {'Price Per Token'}
       </span>
-      <p className={'mb-7 mt-5 flex items-center justify-between text-sm'}>
+      <p className={'mb-6 mt-4 flex items-center justify-between text-sm'}>
         <span>{pricePerToken}</span>
         <span className={'flex text-[#9E9E9E]'}>
           {'USDB '}
           <Image src={USDBSvg} alt={'USDB'} className={'ml-2.5'} />
         </span>
       </p>
-      <span className={'mb-2 text-[#737373]'}>{'For'}</span>
+      <span className={'mb-4 text-[#737373]'}>{'For'}</span>
       <span
         className={'text-sm leading-[14px] text-[#FFC300]'}
       >{`$ ${price.toLocaleString()}`}</span>

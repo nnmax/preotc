@@ -135,7 +135,7 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
               : 'bg-[#004DFF]'
             : 'bg-[#8F2760]'
         }
-        className={clsx('mt-12')}
+        className={'mt-8'}
       >
         {'Next'}
       </Button>
@@ -155,7 +155,7 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
       <Button
         type={'button'}
         bgColorClass={'bg-[#FBFC02]'}
-        className={'mt-12 text-black'}
+        className={'mt-8 text-black'}
         onClick={handleDeposit}
         loading={sendingTransaction || depositMakingOrder}
       >
@@ -290,7 +290,7 @@ function FirstStepPanel(props: FirstStepPanelProps) {
           />
         }
       </div>
-      <label className={'mt-[18px] flex flex-col gap-y-2'}>
+      <label className={'mt-6 flex flex-col gap-y-2'}>
         <span className={labelClasses}>{'Price Per Token'}</span>
         <div
           className={clsx(
@@ -326,7 +326,7 @@ function FirstStepPanel(props: FirstStepPanelProps) {
           </div>
         </div>
       </label>
-      <div className={'mt-8 flex flex-col gap-4 leading-5'}>
+      <div className={'mt-6 flex flex-col gap-4 leading-5'}>
         <span className={' text-[#737373]'}>{'For'}</span>
         <span className={'text-[#FFC300]'}>
           {'$ '}

@@ -21,7 +21,7 @@ export default function Layout({
       <div className={'flex w-full justify-center gap-[72px] py-4'}>
         <div
           className={
-            'w-full max-w-[600px] rounded-[10px] bg-[#2A3037] p-8 pb-12 shadow-[0px_4px_10px_0px_rgba(0,0,0,0.3)]'
+            'w-full max-w-[600px] rounded-[10px] bg-[#2A3037] p-6 shadow-[0px_4px_10px_0px_rgba(0,0,0,0.3)]'
           }
         >
           {children}
