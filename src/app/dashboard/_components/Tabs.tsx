@@ -29,7 +29,7 @@ export default function Tabs() {
           </div>
         </div>
 
-        <div className={'w-full max-w-[1200px] overflow-x-auto'}>
+        <div className={'w-full max-w-[1260px] overflow-x-auto'}>
           <Tab.Panels>
             <Tab.Panel>
               <Suspense fallback={<span className={'loading loading-dots'} />}>

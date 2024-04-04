@@ -75,7 +75,7 @@ export default function SettledTable() {
             }
           >
             <td className={tdClasses}>
-              <div className={'flex justify-center'}>
+              <div className={'flex'}>
                 <Image
                   src={item.projectAvatarUrl}
                   className={'mr-2.5 rounded-full'}
