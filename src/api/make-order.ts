@@ -31,5 +31,6 @@ export const makeOrder = (params: MakeOrderParams) => {
   return fetcher<MakeOrderResponse>(makeOrderUrl, {
     method: 'POST',
     body: JSON.stringify(params),
+    disabledErrorToast: true,
   })
 }

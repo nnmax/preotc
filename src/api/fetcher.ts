@@ -4,13 +4,15 @@ import type { CommonResponse } from '@/api/types'
 
 const API_ENDPOINT = process.env.API_ENDPOINT
 
-interface FetcherOptions extends RequestInit {
-  disabledErrorToast?: boolean
+interface FetcherOptions<ResponseData> extends RequestInit {
+  disabledErrorToast?:
+    | boolean
+    | ((response: CommonResponse<ResponseData>) => boolean)
 }
 
 export default function fetcher<ResponseData = unknown>(
   input: string,
-  options?: FetcherOptions,
+  options?: FetcherOptions<ResponseData>,
 ) {
   const { disabledErrorToast, ...rest } = options || {}
   let url = input
@@ -25,13 +27,6 @@ export default function fetcher<ResponseData = unknown>(
     },
   })
     .then<CommonResponse<ResponseData>>((response) => {
-      if (url === '/pre-otc/get-market-order-by-id') {
-        console.log(
-          '%c [ response ]-37',
-          'font-size:13px; background:pink; color:#bf2c9f;',
-          response,
-        )
-      }
       if (response.ok) {
         return response.json()
       }
@@ -43,6 +38,12 @@ export default function fetcher<ResponseData = unknown>(
       }
       if (data.code === 401) {
         logout()
+      }
+      if (
+        disabledErrorToast === true ||
+        (typeof disabledErrorToast === 'function' && disabledErrorToast(data))
+      ) {
+        throw new Error(data.prompt)
       }
       if (!disabledErrorToast) {
         toast.error(data.prompt)
