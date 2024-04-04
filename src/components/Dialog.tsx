@@ -57,7 +57,7 @@ export default function Dialog(props: DialogBaseProps) {
           >
             <HeadlessDialog.Panel
               className={clsx(
-                'shadow-[0px_4px_10px_0px_rgba(0,0,0,0.3) relative m-8 max-h-[calc(100%-64px)] w-full max-w-[600px] overflow-y-auto rounded-[10px] bg-[#2A3037] px-10 pb-8 pt-4',
+                'shadow-[0px_4px_10px_0px_rgba(0,0,0,0.3) relative m-8 max-h-[calc(100%-64px)] w-full max-w-[600px] overflow-y-auto rounded-[10px] bg-[#2A3037] px-10 py-[26px]',
                 panelClassName,
               )}
             >

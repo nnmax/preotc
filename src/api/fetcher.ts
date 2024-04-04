@@ -43,11 +43,11 @@ export default function fetcher<ResponseData = unknown>(
         disabledErrorToast === true ||
         (typeof disabledErrorToast === 'function' && disabledErrorToast(data))
       ) {
-        throw new Error(data.prompt)
+        throw data
       }
       if (!disabledErrorToast) {
         toast.error(data.prompt)
-        throw new Error(data.prompt)
+        throw data
       }
       return data.data
     })

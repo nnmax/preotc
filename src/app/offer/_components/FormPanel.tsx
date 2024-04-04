@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { toNumber } from 'lodash-es'
 import { useMutation, useQuery } from '@tanstack/react-query'
+import { toast } from 'react-toastify'
 import WalletSvg from '@/images/wallet.svg'
 import Button from '@/components/Button'
 import TokenHeader from '@/components/TokenHeader'
@@ -19,6 +20,7 @@ import {
 } from '@/api'
 import useDepositTransaction from '@/hooks/useDepositTransaction'
 import DepositSuccessfulDialog from '@/components/DepositSuccessfulDialog'
+import InsufficientBalanceDialog from '@/components/InsufficientBalanceDialog'
 import FirstStepPanel from './FirstStepPanel'
 import SecondStepPanel from './SecondStepPanel'
 
@@ -40,6 +42,7 @@ export default function FormPanel() {
   const router = useRouter()
   const { depositTransaction, sendingTransaction } = useDepositTransaction()
   const [successfulDialogOpen, setSuccessfulDialogOpen] = useState(false)
+  const [balanceDialogOpen, setBalanceDialogOpen] = useState(false)
 
   useEffect(() => {
     if (data?.amount) {
@@ -67,6 +70,13 @@ export default function FormPanel() {
       amount: rangeValue,
       orderId: data!.id,
       type: type === 'buy' ? 'Buying' : 'Selling',
+    }).catch((error) => {
+      if (error?.code === 668800011) {
+        setBalanceDialogOpen(true)
+      } else {
+        toast.error(error?.prompt)
+      }
+      throw error
     })
     setStep(2)
   }
@@ -183,6 +193,11 @@ export default function FormPanel() {
           setSuccessfulDialogOpen(false)
           router.push('/market')
         }}
+      />
+
+      <InsufficientBalanceDialog
+        open={balanceDialogOpen}
+        onClose={() => setBalanceDialogOpen(false)}
       />
     </div>
   )

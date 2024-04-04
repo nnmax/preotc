@@ -21,6 +21,7 @@ import TokenHeader from '@/components/TokenHeader'
 import { useSelectProps } from '@/app/create/hooks'
 import useDepositTransaction from '@/hooks/useDepositTransaction'
 import DepositSuccessfulDialog from '@/components/DepositSuccessfulDialog'
+import InsufficientBalanceDialog from '@/components/InsufficientBalanceDialog'
 import type { Dispatch, SetStateAction } from 'react'
 import type { FormValues } from '@/app/create/types'
 import type { FieldErrors, UseFormRegister } from 'react-hook-form'
@@ -47,6 +48,7 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
   const price = amount * pricePerToken || 0
   const invalid = price < USDB_LIMIT
   const [successfulDialogOpen, setSuccessfulDialogOpen] = useState(false)
+  const [balanceDialogOpen, setBalanceDialogOpen] = useState(false)
   const { depositTransaction, sendingTransaction } = useDepositTransaction()
 
   const {
@@ -70,6 +72,13 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
       price: values.pricePerToken,
       projectId: values.projectId,
       type: capitalize(tab) as MakeOrderParams['type'],
+    }).catch((error) => {
+      if (error?.code === 668800011) {
+        setBalanceDialogOpen(true)
+      } else {
+        toast.error(error?.prompt)
+      }
+      throw error
     })
     setStep(2)
   }
@@ -183,6 +192,10 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
           setSuccessfulDialogOpen(false)
           router.push('/market')
         }}
+      />
+      <InsufficientBalanceDialog
+        open={balanceDialogOpen}
+        onClose={() => setBalanceDialogOpen(false)}
       />
     </div>
   )

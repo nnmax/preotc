@@ -15,5 +15,6 @@ export const takeOrder = (params: TakeOrderParams) => {
   return fetcher<TakeOrderResponse>(takeOrderUrl, {
     method: 'POST',
     body: JSON.stringify(params),
+    disabledErrorToast: true,
   })
 }
