@@ -52,7 +52,7 @@ export default function useDepositTransaction() {
         to: orderResponse.approveCallData.destination,
         value: parseEther(orderResponse.approveCallData.value.toString()),
         data: orderResponse.approveCallData.callData,
-        gas: null,
+        gas: process.env.NEXT_PUBLIC_IS_DEV === 'true' ? null : undefined,
       }).catch(handleWeb3Error)
 
       if (!approved) return null
@@ -61,7 +61,7 @@ export default function useDepositTransaction() {
         to: orderResponse.depositCallData.destination,
         value: parseEther(orderResponse.depositCallData.value.toString()),
         data: orderResponse.depositCallData.callData,
-        gas: null,
+        gas: process.env.NEXT_PUBLIC_IS_DEV === 'true' ? null : undefined,
       }).catch(handleWeb3Error)
 
       return txHash

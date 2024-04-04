@@ -60,7 +60,7 @@ export default function OffersTable() {
       to: cancelOrderCallData.destination,
       data: cancelOrderCallData.callData,
       value: parseEther(cancelOrderCallData.value.toString()),
-      gas: null,
+      gas: process.env.NEXT_PUBLIC_IS_DEV === 'true' ? null : undefined,
     }).catch((error) => {
       console.log(error)
       toast.error(
