@@ -1,12 +1,28 @@
 'use client'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useQuery } from '@tanstack/react-query'
 import ConnectWalletToolbar from '@/components/ConnectWalletToolbar'
 import LinkTab from '@/components/LinkTab'
 import NavTabs from '@/components/NavTabs'
 import LogoSvg from '@/images/logo.svg'
+import useCorrectConnected from '@/hooks/useCorrectConnected'
+import { searchUserOrder, searchUserOrderUrl } from '@/api'
 
 export default function AppBar() {
+  const { correctConnected } = useCorrectConnected()
+  const { data: settledData = [] } = useQuery({
+    enabled: correctConnected,
+    queryKey: [searchUserOrderUrl, 2],
+    queryFn: () => {
+      return searchUserOrder({
+        dashboardType: 2,
+      })
+    },
+  })
+
+  const len = settledData.filter((item) => item.status === 2).length
+
   return (
     <header
       className={'flex h-[64px] flex-row justify-center bg-[#030303] px-[56px]'}
@@ -25,7 +41,18 @@ export default function AppBar() {
 
         <NavTabs>
           <LinkTab href={'/market'}>{'Market'}</LinkTab>
-          <LinkTab href={'/dashboard'}>{'Dashboard'}</LinkTab>
+          <LinkTab href={'/dashboard'}>
+            {'Dashboard'}
+            {!!len && (
+              <span
+                className={
+                  'absolute h-[18px] translate-x-2 rounded-[10px] bg-[#FF2626] px-2 text-xs'
+                }
+              >
+                {len}
+              </span>
+            )}
+          </LinkTab>
         </NavTabs>
 
         <div className={'ml-auto'}>

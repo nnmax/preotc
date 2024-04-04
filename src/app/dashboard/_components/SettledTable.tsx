@@ -1,9 +1,8 @@
 import Image from 'next/image'
 import clsx from 'clsx'
 import { useEffect, useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import dayjs from 'dayjs'
-import { useAccount, useConnections } from 'wagmi'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { searchUserOrder, searchUserOrderUrl } from '@/api'
 import useCountdown from '@/hooks/useCountdown'
@@ -12,19 +11,18 @@ import SettleConfirmDialog from '@/app/dashboard/_components/SettleConfirmDialog
 import { SteeldConfirmLocalStorageKey } from '@/constant'
 import WalletBlackSvg from '@/images/wallet-black.svg'
 import Button from '@/components/Button'
+import useCorrectConnected from '@/hooks/useCorrectConnected'
 import { tdClasses, thClasses, trBorderClasses } from '../classes'
 import DepositModal from './DepositModal'
-import type { WalletType } from '@/types'
 import type { SearchUserOrderResponse } from '@/api'
 // import TablePagination from './TablePagination/TablePagination'
 
 export default function SettledTable() {
   const [depositModalOpen, setDepositModalOpen] = useState(false)
   const [settledModalOpen, setSettledModalOpen] = useState(false)
-  const { address } = useAccount()
-  const [correctConnected, setCorrectConnected] = useState(false)
+  const { correctConnected } = useCorrectConnected()
   const { openConnectModal } = useConnectModal()
-  const connections = useConnections()
+  const queryClient = useQueryClient()
   const [depositSuccessfulModalOpen, setDepositSuccessfulModalOpen] =
     useState(false)
   const [currentData, setCurrentData] = useState<SearchUserOrderResponse>()
@@ -37,13 +35,6 @@ export default function SettledTable() {
       })
     },
   })
-
-  useEffect(() => {
-    if (!address || !connections.length) return
-    const walletName = connections[0].connector.name.toLowerCase() as WalletType
-    if (walletName === 'BTC') return
-    setCorrectConnected(true)
-  }, [connections, address])
 
   // const [page, setPage] = useState(0)
   // const [rowsPerPage, setRowsPerPage] = useState(10)
@@ -163,6 +154,9 @@ export default function SettledTable() {
           currentData={currentData}
           onSuccess={() => {
             setDepositSuccessfulModalOpen(true)
+            queryClient.invalidateQueries({
+              queryKey: [searchUserOrderUrl, 2],
+            })
           }}
         />
         <DepositSuccessfulModal

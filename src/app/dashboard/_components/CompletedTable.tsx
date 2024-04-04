@@ -1,23 +1,20 @@
 import Image from 'next/image'
 import clsx from 'clsx'
-import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
-import { useAccount, useConnections } from 'wagmi'
 import WalletBlackSvg from '@/images/wallet-black.svg'
 import { searchUserOrder, searchUserOrderUrl } from '@/api'
 import Button from '@/components/Button'
+import useCorrectConnected from '@/hooks/useCorrectConnected'
 import { tdClasses, thClasses, trBorderClasses } from '../classes'
-import type { WalletType } from '@/types'
 // import TablePagination from './TablePagination/TablePagination'
 
 export default function CompletedTable() {
-  const { address } = useAccount()
-  const [correctConnected, setCorrectConnected] = useState(false)
+  const { correctConnected } = useCorrectConnected()
   const { openConnectModal } = useConnectModal()
-  const connections = useConnections()
   const { data: completedData = [] } = useQuery({
+    enabled: correctConnected,
     queryKey: [searchUserOrderUrl, 3],
     queryFn: () => {
       return searchUserOrder({
@@ -25,13 +22,6 @@ export default function CompletedTable() {
       })
     },
   })
-
-  useEffect(() => {
-    if (!address || !connections.length) return
-    const walletName = connections[0].connector.name.toLowerCase() as WalletType
-    if (walletName === 'BTC') return
-    setCorrectConnected(true)
-  }, [connections, address])
 
   // const [page, setPage] = useState(0)
   // const [rowsPerPage, setRowsPerPage] = useState(10)

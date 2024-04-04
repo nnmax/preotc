@@ -1,26 +1,25 @@
 import Image from 'next/image'
 import clsx from 'clsx'
-import { useEffect, useState } from 'react'
-import { useMutation, useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
-import { useAccount, useConnections, useSendTransaction } from 'wagmi'
+import { useSendTransaction } from 'wagmi'
 import { parseEther } from 'viem'
 import { toast } from 'react-toastify'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { searchUserOrder, searchUserOrderUrl } from '@/api'
 import { cancelOrder, cancelOrderUrl } from '@/api/cancel-order'
 import WalletBlackSvg from '@/images/wallet-black.svg'
 import Button from '@/components/Button'
+import useCorrectConnected from '@/hooks/useCorrectConnected'
 import { tdClasses, thClasses, trBorderClasses } from '../classes'
-import type { WalletType } from '@/types'
 // import TablePagination from './TablePagination/TablePagination'
 
 export default function OffersTable() {
-  const { address } = useAccount()
-  const [correctConnected, setCorrectConnected] = useState(false)
+  const { correctConnected } = useCorrectConnected()
   const { openConnectModal } = useConnectModal()
-  const connections = useConnections()
+  const queryClient = useQueryClient()
   const { data: offers = [] } = useQuery({
+    enabled: correctConnected,
     queryKey: [searchUserOrderUrl, 1],
     queryFn: () => {
       return searchUserOrder({
@@ -52,13 +51,6 @@ export default function OffersTable() {
   //   setPage(0)
   // }
 
-  useEffect(() => {
-    if (!address || !connections.length) return
-    const walletName = connections[0].connector.name.toLowerCase() as WalletType
-    if (walletName === 'BTC') return
-    setCorrectConnected(true)
-  }, [connections, address])
-
   const handleCancel = async (orderId: number) => {
     const { cancelOrderCallData } = await cancelOrderAsync({
       orderId,
@@ -74,7 +66,12 @@ export default function OffersTable() {
       toast.error(
         error?.shortMessage ?? error?.message ?? 'TransactionExecutionError',
       )
-      return null
+      throw error
+    })
+
+    toast.success('Order canceled successfully')
+    queryClient.invalidateQueries({
+      queryKey: [searchUserOrderUrl, 1],
     })
   }
 
