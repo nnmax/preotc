@@ -39,12 +39,11 @@ import SOLSvg from '@/images/sol.svg'
 import ConnectSvg from '@/images/connect-different-wallet.svg'
 import BlastIcon from '@/images/blast-icon.svg'
 import isBlastChain from '@/utils/isBlastChain'
+import type { WalletType } from '@/types'
 import type { SetStateAction } from 'react'
 import type { StaticImport } from 'next/dist/shared/lib/get-img-props'
 import type { Hex } from 'viem'
 import type { ConnectWalletParams } from '@/api'
-
-type WalletType = 'ETH' | 'BTC' | 'SOL'
 
 function getWalletChainType(walletName: string): WalletType {
   if (walletName.indexOf('phantom') !== -1) return 'SOL'

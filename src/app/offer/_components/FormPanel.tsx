@@ -175,11 +175,9 @@ export default function FormPanel() {
         <Button
           bgColorClass={'bg-[#FA5151]'}
           className={'mt-8'}
-          onClick={() => {
-            openConnectModal!()
-          }}
+          onClick={openConnectModal}
         >
-          <Image src={WalletSvg} alt={'next'} width={'32'} className={'mr-5'} />
+          <Image src={WalletSvg} alt={'next'} width={'24'} className={'mr-5'} />
           {'Connect Wallet'}
         </Button>
       )}

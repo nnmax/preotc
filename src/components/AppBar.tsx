@@ -1,6 +1,4 @@
 'use client'
-import { useConnectModal } from '@rainbow-me/rainbowkit'
-import { useAccount } from 'wagmi'
 import Image from 'next/image'
 import Link from 'next/link'
 import ConnectWalletToolbar from '@/components/ConnectWalletToolbar'
@@ -9,9 +7,6 @@ import NavTabs from '@/components/NavTabs'
 import LogoSvg from '@/images/logo.svg'
 
 export default function AppBar() {
-  const { address } = useAccount()
-  const { openConnectModal } = useConnectModal()
-
   return (
     <header
       className={'flex h-[64px] flex-row justify-center bg-[#030303] px-[56px]'}
@@ -30,17 +25,7 @@ export default function AppBar() {
 
         <NavTabs>
           <LinkTab href={'/market'}>{'Market'}</LinkTab>
-          <LinkTab
-            href={'/dashboard'}
-            onClick={(e) => {
-              if (!address) {
-                e.preventDefault()
-                openConnectModal!()
-              }
-            }}
-          >
-            {'Dashboard'}
-          </LinkTab>
+          <LinkTab href={'/dashboard'}>{'Dashboard'}</LinkTab>
         </NavTabs>
 
         <div className={'ml-auto'}>
