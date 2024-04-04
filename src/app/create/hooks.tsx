@@ -2,7 +2,9 @@
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { useEffect, useMemo, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
+import Image from 'next/image'
 import { listProject, listProjectUrl, type ListProjectResponse } from '@/api'
+import type { SelectOption } from '@/components/Select'
 import type { FormValues } from '@/app/create/types'
 
 export function useSelectProps() {
@@ -13,11 +15,21 @@ export function useSelectProps() {
     queryFn: listProject,
   })
 
-  const selectOptions = projects.map((project) => (
-    <option key={project.id} value={project.id}>
-      {project.name}
-    </option>
-  ))
+  const selectOptions = projects.map<SelectOption<number>>((project) => ({
+    name: (
+      <>
+        <Image
+          src={project.avatarUrl}
+          width={'20'}
+          height={'20'}
+          alt={project.name}
+          className={'mr-2 rounded-full'}
+        />
+        <span>{project.name}</span>
+      </>
+    ),
+    value: project.id,
+  }))
 
   useEffect(() => {
     const { unsubscribe } = watch((value) => {
