@@ -11,7 +11,7 @@ export default function Layout({
   linkTitle: React.ReactNode
 }) {
   return (
-    <div className={'flex flex-col items-center py-6'}>
+    <div className={'flex flex-col items-center py-4'}>
       <div className={'mr-auto'}>
         <Link href={'/market'} className={'flex items-center'}>
           <Image className={'mr-2'} src={LeftSvg} alt={'left'} width={'32'} />
