@@ -18,7 +18,7 @@ export default function Button(props: ButtonProps) {
         bgColorClass,
         disabled && 'cursor-not-allowed',
         loading && 'cursor-wait',
-        'flex h-[42px] w-full items-center justify-center rounded',
+        'flex h-9 w-full items-center justify-center rounded',
       )}
       {...restProps}
     >

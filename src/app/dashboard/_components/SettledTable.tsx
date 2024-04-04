@@ -14,7 +14,7 @@ import type { SearchUserOrderResponse } from '@/api'
 export default function SettledTable() {
   const [depositModalOpen, setDepositModalOpen] = useState(false)
   const [depositSuccessfulModalOpen, setDepositSuccessfulModalOpen] =
-    useState(true)
+    useState(false)
   const [currentData, setCurrentData] = useState<SearchUserOrderResponse>()
   const { data: settledData } = useSuspenseQuery({
     queryKey: [searchUserOrderUrl, 2],

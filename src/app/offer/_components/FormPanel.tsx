@@ -119,6 +119,7 @@ export default function FormPanel() {
         disabled={rangeValue <= 0}
         onClick={handleValid}
         loading={takingOrder}
+        className={'mt-12'}
       >
         {'Next'}
       </Button>
@@ -140,7 +141,7 @@ export default function FormPanel() {
     stepButton = (
       <Button
         bgColorClass={'bg-[#FBFC02]'}
-        className={'text-black'}
+        className={'mt-12 text-black'}
         onClick={handleDeposit}
         loading={sendingTransaction || depositTakingOrder}
       >
@@ -163,6 +164,7 @@ export default function FormPanel() {
       ) : (
         <Button
           bgColorClass={'bg-[#FA5151]'}
+          className={'mt-12'}
           onClick={() => {
             openConnectModal!()
           }}

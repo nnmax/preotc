@@ -32,7 +32,9 @@ export default function Card(props: {
         />
         <div className={'flex flex-col gap-1 leading-4'}>
           <span>{data.projectName}</span>
-          <span className={'text-xs'}>{`#${data.id}`}</span>
+          <span
+            className={'text-xs text-[rgba(155,155,155,0.6)]'}
+          >{`#${data.id}`}</span>
         </div>
       </div>
       <div

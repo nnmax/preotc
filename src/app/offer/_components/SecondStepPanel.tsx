@@ -54,16 +54,18 @@ export default function SecondStepPanel(props: SecondStepPanelProps) {
       <p className={'mt-8 flex items-center justify-between leading-4'}>
         <span className={'text-[#737373]'}>{'PreOTC fee'}</span>
         <span className={'ml-auto mr-2'}>{`${fee}%`}</span>
-        <Tooltip placement={'top-end'} title={info}>
-          <Image
-            aria-label={info}
-            tabIndex={0}
-            src={InfoSVG}
-            width={'24'}
-            className={'cursor-pointer'}
-            alt={'info'}
-          />
-        </Tooltip>
+        {type === 'sell' && (
+          <Tooltip placement={'top-end'} title={info}>
+            <Image
+              aria-label={info}
+              tabIndex={0}
+              src={InfoSVG}
+              width={'24'}
+              className={'cursor-pointer'}
+              alt={'info'}
+            />
+          </Tooltip>
+        )}
       </p>
     </div>
   )

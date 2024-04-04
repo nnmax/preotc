@@ -25,7 +25,9 @@ export default function TokenHeader(props: TokenHeaderProps) {
         <p className={'mb-3 flex'}>
           {name}
           {id && (
-            <span className={'ml-2.5 text-sm leading-4'}>{`# ${id}`}</span>
+            <span
+              className={'ml-2.5 text-sm leading-4 text-[#737373]'}
+            >{`#${id}`}</span>
           )}
         </p>
         <a

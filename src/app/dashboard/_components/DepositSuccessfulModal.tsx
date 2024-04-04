@@ -32,7 +32,7 @@ export default function DepositSuccessfulModal({
             'flex h-9 w-[140px] items-center justify-center rounded-[5px] bg-[#EB2F96]'
           }
         >
-          {'COnfirm'}
+          {'Confirm'}
         </button>
       </div>
     </Dialog>

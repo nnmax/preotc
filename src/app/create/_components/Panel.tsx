@@ -209,7 +209,13 @@ function FirstStepPanel(props: FirstStepPanelProps) {
   } = props
 
   const amountLabelText = tab === 'buying' ? 'Buying' : 'Selling'
-  const labelBg = tab === 'buying' ? 'bg-[#FFC300]' : 'bg-[#EB2F96]'
+  const labelClasses = clsx(
+    'flex items-center self-start rounded-[3px] px-2 text-sm leading-6',
+    {
+      'bg-[#FFC300] text-black': tab === 'buying',
+      'bg-[#EB2F96] text-white': tab === 'selling',
+    },
+  )
 
   return (
     <form
@@ -219,14 +225,7 @@ function FirstStepPanel(props: FirstStepPanelProps) {
     >
       <div className={'flex gap-4'}>
         <label className={'flex flex-1 flex-col items-center gap-y-2'}>
-          <span
-            className={clsx(
-              'flex items-center self-start rounded-[3px] px-2 text-sm leading-6 text-black',
-              labelBg,
-            )}
-          >
-            {amountLabelText}
-          </span>
+          <span className={labelClasses}>{amountLabelText}</span>
           <input
             {...register('amount', {
               valueAsNumber: true,
@@ -280,14 +279,7 @@ function FirstStepPanel(props: FirstStepPanelProps) {
       </div>
 
       <label className={'mt-[18px] flex flex-col gap-y-2'}>
-        <span
-          className={clsx(
-            'flex items-center self-start rounded-[3px] px-2 text-sm leading-6 text-black',
-            labelBg,
-          )}
-        >
-          {'Price Per Token'}
-        </span>
+        <span className={labelClasses}>{'Price Per Token'}</span>
         <div
           className={clsx(
             'relative flex rounded-[5px] bg-[#2A3037] leading-9 text-[#9E9E9E]',

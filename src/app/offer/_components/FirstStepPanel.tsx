@@ -19,6 +19,7 @@ export default function FirstStepPanel({
   unit,
 }: FirstStepPanelProps) {
   const labelText = type === 'buy' ? 'Buying' : 'Selling'
+  const labelTextColor = type === 'buy' ? 'text-black' : 'text-white'
   const labelBg = type === 'buy' ? 'bg-[#FFC300]' : 'bg-[#EB2F96]'
   const rangeShdw = type === 'buy' ? '#FFC300' : '#EB2F96'
 
@@ -31,14 +32,15 @@ export default function FirstStepPanel({
       <div className={'flex items-center justify-between'}>
         <span
           className={clsx(
-            'rounded-[3px] px-2 text-sm leading-6 text-black',
+            'rounded px-2 text-sm leading-6',
             labelBg,
+            labelTextColor,
           )}
         >
           {labelText}
         </span>
         <span
-          className={'text-xs text-[#9B9B9B]'}
+          className={'text-xs text-white'}
         >{`$ ${pricePerToken} / ${unit}`}</span>
       </div>
       <div className={'my-5'}>
@@ -58,8 +60,9 @@ export default function FirstStepPanel({
         />
         <span
           className={clsx(
-            'w-[74px] rounded-[3px] text-center leading-6 text-black',
+            'w-[74px] rounded text-center text-sm leading-6',
             labelBg,
+            labelTextColor,
           )}
         >
           {`${((rangeValue / (max || 0)) * 100 || 0).toFixed(0)} %`}
