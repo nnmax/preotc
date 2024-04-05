@@ -100,7 +100,11 @@ export default function SettledTable() {
     {
       field: 'type',
       headerName: 'TYPE',
-      renderCell: ({ row }) => (row.type === 1 ? 'BUY' : 'SELL'),
+      renderCell: ({ row }) => (
+        <span className={row.type === 1 ? 'text-[#FFC300]' : 'text-[#EB2F96]'}>
+          {row.type === 1 ? 'BUY' : 'SELL'}
+        </span>
+      ),
     },
     {
       field: 'deliverDeadline',
@@ -113,6 +117,7 @@ export default function SettledTable() {
       renderCell: ({ row }) => {
         const beforeDate = isBeforeDate(row.deliverDeadline)
         return (
+          row.type === 1 &&
           (beforeDate === null || beforeDate) && (
             <button
               type={'button'}

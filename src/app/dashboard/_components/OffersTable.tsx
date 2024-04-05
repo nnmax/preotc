@@ -106,9 +106,11 @@ export default function OffersTable() {
     {
       field: 'type',
       headerName: 'TYPE',
-      renderCell: ({ row }) => {
-        return row.type === 1 ? 'BUY' : 'SELL'
-      },
+      renderCell: ({ row }) => (
+        <span className={row.type === 1 ? 'text-[#FFC300]' : 'text-[#EB2F96]'}>
+          {row.type === 1 ? 'BUY' : 'SELL'}
+        </span>
+      ),
     },
     {
       field: 'id',
