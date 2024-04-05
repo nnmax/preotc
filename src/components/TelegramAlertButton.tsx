@@ -21,7 +21,7 @@ import {
 import Tooltip from '@/components/Tooltip'
 
 const info =
-  'Please connect your telegram to ensure that you can receive timely alerts such as delivery notifications and successful deals!'
+  'Please connect your telegram to ensure that you can receive timely alerts such as settlement notifications and successful deals!'
 
 export default function TelegramAlertButton({ type }: { type?: 1 | 2 }) {
   const { address } = useAccount()
