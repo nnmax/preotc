@@ -191,7 +191,7 @@ export default function FormPanel() {
       <DepositSuccessfulDialog
         open={successfulDialogOpen}
         text={
-          'Congratulations on completing the deal, please pay close attention to the token settlement time!'
+          'Congratulations on completing the deal, please pay close attention to the settlement time!'
         }
         onClose={() => {
           setSuccessfulDialogOpen(false)

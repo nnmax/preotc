@@ -37,7 +37,7 @@ const data = [
     description: (
       <>
         {
-          'If you are a seller, you will earn points for each successful token settlement; if you are a buyer, you will earn points as compensation for each time the seller fails to settle the tokens to you within the deadline. The number of points you earn each time is equal to '
+          'If you are a seller, you will earn points for each successful settlement; if you are a buyer, you will earn points as compensation for each time the seller fails to settle the tokens to you within the deadline. The number of points you earn each time is equal to '
         }
         <span>{'100'}</span>
         {' multiplied by the deal amount.'}

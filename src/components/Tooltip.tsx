@@ -13,6 +13,7 @@ import {
   useInteractions,
   useRole,
   useTransitionStyles,
+  shift,
 } from '@floating-ui/react'
 import { isObject } from 'lodash-es'
 import useForkRef from '@/hooks/useForkRef'
@@ -56,7 +57,12 @@ export default function Tooltip(props: TooltipProps) {
 
   const { refs, floatingStyles, context } = useFloating({
     placement,
-    middleware: [offset(8)],
+    middleware: [
+      offset(8),
+      shift({
+        padding: 16,
+      }),
+    ],
     open: isOpen,
     onOpenChange: setIsOpen,
     strategy,
