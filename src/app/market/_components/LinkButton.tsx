@@ -3,53 +3,42 @@ import clsx from 'clsx'
 import Link from 'next/link'
 import { useAccount } from 'wagmi'
 import { useMemo } from 'react'
-import type { Hex } from 'viem'
+import isSameAddress from '@/utils/isSameAddress'
 import type { SearchMarketOrderResponse } from '@/api'
-
-function isSameAddress(
-  data: SearchMarketOrderResponse,
-  address: Hex | undefined,
-) {
-  if (data.type === 1) {
-    return data.buyerEthAddress?.toLowerCase() === address?.toLowerCase()
-  }
-  if (data.type === 2) {
-    return data.sellerEthAddress?.toLowerCase() === address?.toLowerCase()
-  }
-  return false
-}
 
 export default function LinkButton(props: { data: SearchMarketOrderResponse }) {
   const { data } = props
   const { address } = useAccount()
+  const same = isSameAddress(data, address)
+  const isBuy = data.type === 2
 
   const Component = useMemo(() => {
-    if (isSameAddress(data, address)) {
-      return 'span'
-    }
+    if (same) return 'span'
     return Link
-  }, [address, data])
+  }, [same])
 
   const componentProps = useMemo(() => {
-    const commonProps = {
-      className: clsx(
-        'flex h-6 w-16 items-center justify-center rounded text-sm',
-        data.type === 2 ? 'bg-[#004DFF]' : 'bg-[#EB2F96]',
-      ),
-      children: data.type === 2 ? 'BUY' : 'SELL',
+    const commonProps: any = {
+      children: isBuy ? 'BUY' : 'SELL',
+      href: isBuy
+        ? `/offer/${data.id}?type=buy`
+        : `/offer/${data.id}?type=sell`,
+    }
+    let className = 'flex h-6 w-16 items-center justify-center rounded text-sm'
+    if (same) {
+      className = clsx(
+        'cursor-not-allowed select-none bg-[#555555] text-aaa',
+        className,
+      )
+      delete commonProps.href
+    } else {
+      className = clsx(isBuy ? 'bg-[#004DFF]' : 'bg-[#EB2F96]', className)
     }
 
-    if (!isSameAddress(data, address)) {
-      Object.assign(commonProps, {
-        href:
-          data.type === 2
-            ? `/offer/${data.id}?type=buy`
-            : `/offer/${data.id}?type=sell`,
-      })
-    }
+    commonProps.className = className
 
-    return commonProps as any
-  }, [address, data])
+    return commonProps
+  }, [data.id, isBuy, same])
 
   return <Component {...componentProps} />
 }

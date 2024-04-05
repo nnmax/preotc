@@ -21,6 +21,7 @@ import {
 import useDepositTransaction from '@/hooks/useDepositTransaction'
 import DepositSuccessfulDialog from '@/components/DepositSuccessfulDialog'
 import InsufficientBalanceDialog from '@/components/InsufficientBalanceDialog'
+import isSameAddress from '@/utils/isSameAddress'
 import FirstStepPanel from './FirstStepPanel'
 import SecondStepPanel from './SecondStepPanel'
 
@@ -43,12 +44,17 @@ export default function FormPanel() {
   const { depositTransaction, sendingTransaction } = useDepositTransaction()
   const [successfulDialogOpen, setSuccessfulDialogOpen] = useState(false)
   const [balanceDialogOpen, setBalanceDialogOpen] = useState(false)
+  const same = isSameAddress(data, address)
 
   useEffect(() => {
     if (data?.amount) {
       setRangeValue(data.amount)
     }
   }, [data?.amount])
+
+  useEffect(() => {
+    if (same) router.replace('/market')
+  }, [router, same])
 
   const {
     mutateAsync: takeOrderAsync,
@@ -98,7 +104,7 @@ export default function FormPanel() {
     setSuccessfulDialogOpen(true)
   }
 
-  if (isPending) {
+  if (isPending || same) {
     return <span className={'loading loading-dots'} />
   }
 
