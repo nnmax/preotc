@@ -24,6 +24,8 @@ export interface SearchMarketOrderResponse {
   createTime: string
   deliverDeadline: string | null
   completeTime: string | null
+  buyerEthAddress: string | null
+  sellerEthAddress: string | null
 }
 
 const mockData = Array.from({ length: 20 }, (_, i) => ({

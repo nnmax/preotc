@@ -23,5 +23,5 @@ export default function SellPanel() {
 
   if (!data || !data.length) return <p>{'No data'}</p>
 
-  return data.map((item) => <Card key={item.id} data={item} type={'sell'} />)
+  return data.map((item) => <Card key={item.id} data={item} />)
 }

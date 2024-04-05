@@ -22,5 +22,5 @@ export default function BuyPanel() {
 
   if (!data || !data.length) return <p>{'No data'}</p>
 
-  return data.map((item) => <Card key={item.id} data={item} type={'buy'} />)
+  return data.map((item) => <Card key={item.id} data={item} />)
 }

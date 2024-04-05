@@ -1,10 +1,9 @@
 import Image from 'next/image'
-import clsx from 'clsx'
-import Link from 'next/link'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import dayjs from 'dayjs'
 import USDBSvg from '@/images/USDB.svg'
 import RightSVG from '@/images/right.svg'
+import LinkButton from '@/app/market/_components/LinkButton'
 import type { SearchMarketOrderResponse } from '@/api'
 
 dayjs.extend(relativeTime)
@@ -14,11 +13,8 @@ const cardClasses =
 
 const numberFormatter = Intl.NumberFormat('en', { notation: 'compact' })
 
-export default function Card(props: {
-  type: 'buy' | 'sell'
-  data: SearchMarketOrderResponse
-}) {
-  const { type, data } = props
+export default function Card(props: { data: SearchMarketOrderResponse }) {
+  const { data } = props
 
   return (
     <div className={cardClasses}>
@@ -86,19 +82,7 @@ export default function Card(props: {
         >
           {data.createTime ? dayjs(data.createTime).fromNow() : 'Invalid Date'}
         </span>
-        <Link
-          href={
-            type === 'sell'
-              ? `/offer/${data.id}?type=sell`
-              : `/offer/${data.id}?type=buy`
-          }
-          className={clsx(
-            'flex h-6 w-16 items-center justify-center rounded text-sm',
-            type === 'buy' ? 'bg-[#004DFF]' : 'bg-[#EB2F96]',
-          )}
-        >
-          {type === 'buy' ? 'BUY' : 'SELL'}
-        </Link>
+        <LinkButton data={data} />
       </div>
     </div>
   )
