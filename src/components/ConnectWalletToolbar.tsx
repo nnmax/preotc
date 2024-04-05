@@ -25,6 +25,8 @@ import {
   ConnectWalletUrl,
   getUsdbBalanceUrl,
   getUsdbBalance,
+  disconnectWalletUrl,
+  disconnectWallet,
 } from '@/api'
 import {
   ActiveWalletLocalStorageKey,
@@ -160,6 +162,24 @@ export default function ConnectWalletToolbar() {
     queryFn: () => {
       if (!address) throw new Error('address is required')
       return getUsdbBalance({ address })
+    },
+  })
+  const { mutate: disconnectWalletFn } = useMutation({
+    mutationKey: [disconnectWalletUrl],
+    mutationFn: disconnectWallet,
+  })
+
+  const handleDisconnect = (close: () => void) => {
+    disconnect()
+    disconnectWalletFn()
+    logout()
+    close()
+  }
+
+  useAccountEffect({
+    onDisconnect() {
+      logout()
+      disconnectWalletFn()
     },
   })
 
@@ -382,10 +402,7 @@ export default function ConnectWalletToolbar() {
                             <PanelItem
                               icon={ConnectSvg}
                               button
-                              onClick={() => {
-                                disconnect()
-                                close()
-                              }}
+                              onClick={() => handleDisconnect(close)}
                             >
                               <p className={'text-[#FFC300]'}>
                                 {'Connect Different Wallet'}
@@ -440,12 +457,6 @@ function useSign() {
   })
   const { signMessageAsync } = useSignMessage()
   const config = useConfig()
-
-  useAccountEffect({
-    onDisconnect() {
-      logout()
-    },
-  })
 
   useEffect(() => {
     const _signature = window.localStorage.getItem(SignatureLocalStorageKey)
