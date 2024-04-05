@@ -15,13 +15,13 @@ export default function DepositSuccessfulModal({
     <Dialog
       open={open}
       onClose={() => setOpen(false)}
-      panelClassName={'!max-w-[480px]'}
+      panelClassName={'!max-w-[490px]'}
     >
       <div className={'flex flex-col items-center'}>
         <Image src={CheckGreenSvg} width={'24'} height={'24'} alt={'check'} />
         <p className={'mb-10 mt-4 text-xs leading-6'}>
           {
-            'Congratulations on completing the settlement, please be patient and'
+            'Congratulations on completing the settlement, please be patient and '
           }
           {'wait for the confirmation.'}
         </p>

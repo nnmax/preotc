@@ -8,12 +8,12 @@ import { searchUserOrder, searchUserOrderUrl } from '@/api'
 import useCountdown from '@/hooks/useCountdown'
 import DepositSuccessfulModal from '@/app/dashboard/_components/DepositSuccessfulModal'
 import SettleConfirmDialog from '@/app/dashboard/_components/SettleConfirmDialog'
-import { SteeldConfirmLocalStorageKey } from '@/constant'
+import { SettledConfirmLocalStorageKey } from '@/constant'
 import WalletBlackSvg from '@/images/wallet-black.svg'
 import Button from '@/components/Button'
 import useCorrectConnected from '@/hooks/useCorrectConnected'
-import isBeforeDate from '@/utils/isBeforeDate'
 import DataGrid from '@/app/dashboard/_components/DataGrid/DataGrid'
+import getSettledStatus from '@/utils/getSettledStatus'
 import DepositModal from './DepositModal'
 import type { Column } from '@/app/dashboard/_components/DataGrid/DataGrid'
 import type { SearchUserOrderResponse } from '@/api'
@@ -46,10 +46,12 @@ export default function SettledTable() {
   useEffect(() => {
     if (
       settledData &&
-      settledData.some((item) => isBeforeDate(item.deliverDeadline))
+      settledData.some((item) =>
+        getSettledStatus(item.deliverDeadline, item.type),
+      )
     ) {
       const settledConfirm = window.localStorage.getItem(
-        SteeldConfirmLocalStorageKey,
+        SettledConfirmLocalStorageKey,
       )
       if (!settledConfirm) {
         setSettledModalOpen(true)
@@ -115,20 +117,18 @@ export default function SettledTable() {
       field: 'action',
       headerName: 'ACTION',
       renderCell: ({ row }) => {
-        const beforeDate = isBeforeDate(row.deliverDeadline)
+        const settledStatus = getSettledStatus(row.deliverDeadline, row.type)
         return (
-          row.type === 1 &&
-          (beforeDate === null || beforeDate) && (
+          settledStatus !== null && (
             <button
               type={'button'}
-              disabled={beforeDate === null}
-              onClick={beforeDate ? () => handleSettled(row) : undefined}
+              disabled={!settledStatus}
+              onClick={settledStatus ? () => handleSettled(row) : undefined}
               className={clsx(
                 'h-[28px] w-[77px] rounded border border-solid border-black px-3 py-[5px] text-xs',
                 {
-                  'bg-[#EB2F96]': beforeDate,
-                  'border-none bg-[#3D3D3D] text-[#9B9B9B]':
-                    beforeDate === null,
+                  'bg-[#EB2F96]': settledStatus,
+                  'border-none bg-[#3D3D3D] text-[#9B9B9B]': !settledStatus,
                 },
               )}
             >
