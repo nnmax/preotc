@@ -20,7 +20,6 @@ export interface SearchMarketOrderResponse {
   amount: number
   price: number
   feePercent: number
-  status: number
   createTime: string
   deliverDeadline: string | null
   completeTime: string | null

@@ -12,6 +12,7 @@ import { SteeldConfirmLocalStorageKey } from '@/constant'
 import WalletBlackSvg from '@/images/wallet-black.svg'
 import Button from '@/components/Button'
 import useCorrectConnected from '@/hooks/useCorrectConnected'
+import isBeforeDate from '@/utils/isBeforeDate'
 import { tdClasses, thClasses, trBorderClasses } from '../classes'
 import DepositModal from './DepositModal'
 import type { SearchUserOrderResponse } from '@/api'
@@ -59,7 +60,10 @@ export default function SettledTable() {
   }
 
   useEffect(() => {
-    if (settledData && settledData.some((item) => item.status === 2)) {
+    if (
+      settledData &&
+      settledData.some((item) => isBeforeDate(item.deliverDeadline))
+    ) {
       const settledConfirm = window.localStorage.getItem(
         SteeldConfirmLocalStorageKey,
       )
@@ -84,69 +88,72 @@ export default function SettledTable() {
           </tr>
         </thead>
         <tbody>
-          {settledData.map((item, index, arr) => (
-            <tr
-              key={item.id}
-              className={
-                index === arr.length - 1
-                  ? 'hover'
-                  : clsx(trBorderClasses, 'hover')
-              }
-            >
-              <td className={tdClasses}>
-                <div className={'flex'}>
-                  <Image
-                    src={item.projectAvatarUrl}
-                    className={'mr-2.5 rounded-full'}
-                    alt={item.projectName}
-                    width={'24'}
-                    height={'24'}
-                  />
-                  {item.projectName}
-                  <sup>{`#${item.projectId}`}</sup>
-                </div>
-              </td>
-              <td className={tdClasses}>
-                <time>
-                  {item.createTime
-                    ? dayjs(item.createTime).format('MM/DD HH:mm:ss')
-                    : 'Invalid Date'}
-                </time>
-              </td>
-              <td className={tdClasses}>{item.amount * item.price}</td>
-              <td className={tdClasses}>{item.amount}</td>
-              <td
-                className={clsx(
-                  tdClasses,
-                  item.type === 1 ? 'text-[#FFC300]' : 'text-[#EB2F96]',
-                )}
+          {settledData.map((item, index, arr) => {
+            const beforeDate = isBeforeDate(item.deliverDeadline)
+            return (
+              <tr
+                key={item.id}
+                className={
+                  index === arr.length - 1
+                    ? 'hover'
+                    : clsx(trBorderClasses, 'hover')
+                }
               >
-                {item.type === 1 ? 'BUY' : 'SELL'}
-              </td>
-              <Countdown deadline={item.deliverDeadline} />
-              <td className={tdClasses}>
-                {(item.status === 2 || item.status === 4) && (
-                  <button
-                    type={'button'}
-                    disabled={item.status === 4}
-                    onClick={
-                      item.status === 2 ? () => handleSettled(item) : undefined
-                    }
-                    className={clsx(
-                      'h-[28px] w-[77px] rounded border border-solid border-black px-3 py-[5px] text-xs',
-                      {
-                        'bg-[#EB2F96]': item.status === 2,
-                        'border-none bg-[#3D3D3D] text-[#9B9B9B]':
-                          item.status === 4,
-                      },
-                    )}
-                  >
-                    {'Settle'}
-                  </button>
-                )}
-              </td>
-            </tr>
-          ))}
+                <td className={tdClasses}>
+                  <div className={'flex'}>
+                    <Image
+                      src={item.projectAvatarUrl}
+                      className={'mr-2.5 rounded-full'}
+                      alt={item.projectName}
+                      width={'24'}
+                      height={'24'}
+                    />
+                    {item.projectName}
+                    <sup>{`#${item.projectId}`}</sup>
+                  </div>
+                </td>
+                <td className={tdClasses}>
+                  <time>
+                    {item.createTime
+                      ? dayjs(item.createTime).format('MM/DD HH:mm:ss')
+                      : 'Invalid Date'}
+                  </time>
+                </td>
+                <td className={tdClasses}>{item.amount * item.price}</td>
+                <td className={tdClasses}>{item.amount}</td>
+                <td
+                  className={clsx(
+                    tdClasses,
+                    item.type === 1 ? 'text-[#FFC300]' : 'text-[#EB2F96]',
+                  )}
+                >
+                  {item.type === 1 ? 'BUY' : 'SELL'}
+                </td>
+                <Countdown deadline={item.deliverDeadline} />
+                <td className={tdClasses}>
+                  {(beforeDate === null || beforeDate) && (
+                    <button
+                      type={'button'}
+                      disabled={beforeDate === null}
+                      onClick={
+                        beforeDate ? () => handleSettled(item) : undefined
+                      }
+                      className={clsx(
+                        'h-[28px] w-[77px] rounded border border-solid border-black px-3 py-[5px] text-xs',
+                        {
+                          'bg-[#EB2F96]': beforeDate,
+                          'border-none bg-[#3D3D3D] text-[#9B9B9B]':
+                            beforeDate === null,
+                        },
+                      )}
+                    >
+                      {'Settle'}
+                    </button>
+                  )}
+                </td>
+              </tr>
+            )
+          })}
         </tbody>
         <DepositModal
           open={depositModalOpen}

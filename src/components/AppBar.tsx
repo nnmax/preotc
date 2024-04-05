@@ -8,6 +8,7 @@ import NavTabs from '@/components/NavTabs'
 import LogoSvg from '@/images/logo.svg'
 import useCorrectConnected from '@/hooks/useCorrectConnected'
 import { searchUserOrder, searchUserOrderUrl } from '@/api'
+import isBeforeDate from '@/utils/isBeforeDate'
 
 export default function AppBar() {
   const { correctConnected } = useCorrectConnected()
@@ -21,7 +22,9 @@ export default function AppBar() {
     },
   })
 
-  const len = settledData.filter((item) => item.status === 2).length
+  const len = settledData.filter((item) =>
+    isBeforeDate(item.deliverDeadline),
+  ).length
 
   return (
     <header

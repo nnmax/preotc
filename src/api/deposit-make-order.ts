@@ -25,7 +25,6 @@ export interface DepositMakeOrderResponse {
   sellerDepositTx: string | null
   sellerDeliverTx: string | null
   buyerConfirmTx: string | null
-  status: number
   deliverDeadline: number | null
   completeTime: number | null
   updateTime: string
