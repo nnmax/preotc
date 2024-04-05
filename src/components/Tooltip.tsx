@@ -25,6 +25,7 @@ interface TooltipProps {
   placement?: Placement
   defaultOpen?: boolean
   strategy?: 'fixed' | 'absolute'
+  className?: string
   delay?:
     | number
     | Partial<{
@@ -42,6 +43,7 @@ export default function Tooltip(props: TooltipProps) {
     floatingClassName,
     defaultOpen = false,
     strategy,
+    className,
   } = props
 
   const children = React.isValidElement(childrenProp) ? (
@@ -75,10 +77,10 @@ export default function Tooltip(props: TooltipProps) {
     },
     common: ({ placement: _placement }) => ({
       transformOrigin: {
-        top: 'bottom left',
-        bottom: 'top left',
-        left: 'top right',
-        right: 'top left',
+        top: 'bottom',
+        bottom: 'top',
+        left: 'right',
+        right: 'left',
         'top-start': 'bottom left',
         'top-end': 'bottom right',
         'bottom-start': 'top left',
@@ -127,9 +129,10 @@ export default function Tooltip(props: TooltipProps) {
           >
             <div
               style={styles}
-              className={
-                'w-full max-w-[460px] rounded-md border border-solid border-[#aaa] bg-[#1e1e1e] p-4 text-xs leading-6'
-              }
+              className={clsx(
+                className,
+                'w-full max-w-[460px] rounded-md border border-aaa/50 bg-[#1e1e1e] p-4 text-xs leading-6',
+              )}
             >
               {title}
             </div>

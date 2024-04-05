@@ -7,7 +7,7 @@ export default function NavTabs(props: { children: React.ReactNode }) {
     <div role={'navigation'} className={'relative'}>
       <div
         role={'tablist'}
-        className={'flex h-8 flex-row gap-x-14 text-sm text-white'}
+        className={'flex h-8 flex-row gap-x-10 text-sm text-white'}
       >
         {children}
       </div>

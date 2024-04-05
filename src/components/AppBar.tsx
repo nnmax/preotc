@@ -28,7 +28,7 @@ export default function AppBar() {
       className={'flex h-[64px] flex-row justify-center bg-[#030303] px-[56px]'}
     >
       <div className={'flex w-full max-w-[1684px] flex-row items-center'}>
-        <Link href={'/'} className={'mr-14'}>
+        <Link href={'/'} className={'mr-10'}>
           <h1 className={'sr-only'}>{'PREOTC'}</h1>
           <Image
             src={LogoSvg}
@@ -53,6 +53,7 @@ export default function AppBar() {
               </span>
             )}
           </LinkTab>
+          <LinkTab href={'/points'}>{'Points'}</LinkTab>
         </NavTabs>
 
         <div className={'ml-auto'}>
