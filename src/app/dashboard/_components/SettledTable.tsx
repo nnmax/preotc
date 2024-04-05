@@ -13,21 +13,22 @@ import WalletBlackSvg from '@/images/wallet-black.svg'
 import Button from '@/components/Button'
 import useCorrectConnected from '@/hooks/useCorrectConnected'
 import isBeforeDate from '@/utils/isBeforeDate'
-import { tdClasses, thClasses, trBorderClasses } from '../classes'
+import DataGrid from '@/app/dashboard/_components/DataGrid/DataGrid'
 import DepositModal from './DepositModal'
+import type { Column } from '@/app/dashboard/_components/DataGrid/DataGrid'
 import type { SearchUserOrderResponse } from '@/api'
 // import TablePagination from './TablePagination/TablePagination'
 
 export default function SettledTable() {
   const [depositModalOpen, setDepositModalOpen] = useState(false)
   const [settledModalOpen, setSettledModalOpen] = useState(false)
-  const { correctConnected } = useCorrectConnected()
+  const { correctConnected, completed } = useCorrectConnected()
   const { openConnectModal } = useConnectModal()
   const queryClient = useQueryClient()
   const [depositSuccessfulModalOpen, setDepositSuccessfulModalOpen] =
     useState(false)
   const [currentData, setCurrentData] = useState<SearchUserOrderResponse>()
-  const { data: settledData = [] } = useQuery({
+  const { data: settledData = [], isPending } = useQuery({
     enabled: correctConnected,
     queryKey: [searchUserOrderUrl, 2],
     queryFn: () => {
@@ -36,23 +37,6 @@ export default function SettledTable() {
       })
     },
   })
-
-  // const [page, setPage] = useState(0)
-  // const [rowsPerPage, setRowsPerPage] = useState(10)
-
-  // const handleChangePage = (
-  //   event: React.MouseEvent<HTMLButtonElement> | null,
-  //   newPage: number,
-  // ) => {
-  //   setPage(newPage)
-  // }
-
-  // const handleChangeRowsPerPage = (
-  //   event: React.ChangeEvent<HTMLSelectElement>,
-  // ) => {
-  //   setRowsPerPage(parseInt(event.target.value, 10))
-  //   setPage(0)
-  // }
 
   const handleSettled = (current: SearchUserOrderResponse) => {
     setCurrentData(current)
@@ -73,122 +57,111 @@ export default function SettledTable() {
     }
   }, [settledData])
 
+  const columns: Column<SearchUserOrderResponse>[] = [
+    {
+      field: 'projectName',
+      headerName: 'TOKEN',
+      renderCell: ({ row }) => (
+        <div className={'flex'}>
+          <Image
+            src={row.projectAvatarUrl}
+            className={'mr-2.5 rounded-full'}
+            alt={row.projectName}
+            width={'24'}
+            height={'24'}
+          />
+          {row.projectName}
+          <sup>{`#${row.projectId}`}</sup>
+        </div>
+      ),
+    },
+    {
+      field: 'createTime',
+      headerName: 'TIME',
+      renderCell: ({ row }) => {
+        return (
+          <time>
+            {row.createTime
+              ? dayjs(row.createTime).format('MM/DD HH:mm:ss')
+              : ''}
+          </time>
+        )
+      },
+    },
+    {
+      field: 'amount',
+      headerName: 'VALUE (USDB)',
+      renderCell: ({ row }) => row.amount * row.price,
+    },
+    {
+      field: 'amount',
+      headerName: 'AMOUNT',
+    },
+    {
+      field: 'type',
+      headerName: 'TYPE',
+      renderCell: ({ row }) => (row.type === 1 ? 'BUY' : 'SELL'),
+    },
+    {
+      field: 'deliverDeadline',
+      headerName: 'COUNTDOWN',
+      renderCell: ({ row }) => <Countdown deadline={row.deliverDeadline} />,
+    },
+    {
+      field: 'action',
+      headerName: 'ACTION',
+      renderCell: ({ row }) => {
+        const beforeDate = isBeforeDate(row.deliverDeadline)
+        return (
+          (beforeDate === null || beforeDate) && (
+            <button
+              type={'button'}
+              disabled={beforeDate === null}
+              onClick={beforeDate ? () => handleSettled(row) : undefined}
+              className={clsx(
+                'h-[28px] w-[77px] rounded border border-solid border-black px-3 py-[5px] text-xs',
+                {
+                  'bg-[#EB2F96]': beforeDate,
+                  'border-none bg-[#3D3D3D] text-[#9B9B9B]':
+                    beforeDate === null,
+                },
+              )}
+            >
+              {'Settle'}
+            </button>
+          )
+        )
+      },
+    },
+  ]
+
   return (
     <div>
-      <table className={'table'}>
-        <thead>
-          <tr className={trBorderClasses}>
-            <th className={thClasses}>{'TOKEN'}</th>
-            <th className={thClasses}>{'TIME'}</th>
-            <th className={thClasses}>{'VALUE (USDB)'}</th>
-            <th className={thClasses}>{'AMOUNT'}</th>
-            <th className={thClasses}>{'TYPE'}</th>
-            <th className={thClasses}>{'COUNTDOWN'}</th>
-            <th className={thClasses}>{'ACTION'}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {settledData.map((item, index, arr) => {
-            const beforeDate = isBeforeDate(item.deliverDeadline)
-            return (
-              <tr
-                key={item.id}
-                className={
-                  index === arr.length - 1
-                    ? 'hover'
-                    : clsx(trBorderClasses, 'hover')
-                }
-              >
-                <td className={tdClasses}>
-                  <div className={'flex'}>
-                    <Image
-                      src={item.projectAvatarUrl}
-                      className={'mr-2.5 rounded-full'}
-                      alt={item.projectName}
-                      width={'24'}
-                      height={'24'}
-                    />
-                    {item.projectName}
-                    <sup>{`#${item.projectId}`}</sup>
-                  </div>
-                </td>
-                <td className={tdClasses}>
-                  <time>
-                    {item.createTime
-                      ? dayjs(item.createTime).format('MM/DD HH:mm:ss')
-                      : 'Invalid Date'}
-                  </time>
-                </td>
-                <td className={tdClasses}>{item.amount * item.price}</td>
-                <td className={tdClasses}>{item.amount}</td>
-                <td
-                  className={clsx(
-                    tdClasses,
-                    item.type === 1 ? 'text-[#FFC300]' : 'text-[#EB2F96]',
-                  )}
-                >
-                  {item.type === 1 ? 'BUY' : 'SELL'}
-                </td>
-                <Countdown deadline={item.deliverDeadline} />
-                <td className={tdClasses}>
-                  {(beforeDate === null || beforeDate) && (
-                    <button
-                      type={'button'}
-                      disabled={beforeDate === null}
-                      onClick={
-                        beforeDate ? () => handleSettled(item) : undefined
-                      }
-                      className={clsx(
-                        'h-[28px] w-[77px] rounded border border-solid border-black px-3 py-[5px] text-xs',
-                        {
-                          'bg-[#EB2F96]': beforeDate,
-                          'border-none bg-[#3D3D3D] text-[#9B9B9B]':
-                            beforeDate === null,
-                        },
-                      )}
-                    >
-                      {'Settle'}
-                    </button>
-                  )}
-                </td>
-              </tr>
-            )
-          })}
-        </tbody>
-        <DepositModal
-          open={depositModalOpen}
-          setOpen={setDepositModalOpen}
-          currentData={currentData}
-          onSuccess={() => {
-            setDepositSuccessfulModalOpen(true)
-            queryClient.invalidateQueries({
-              queryKey: [searchUserOrderUrl, 2],
-            })
-          }}
-        />
-        <DepositSuccessfulModal
-          open={depositSuccessfulModalOpen}
-          setOpen={setDepositSuccessfulModalOpen}
-        />
-        <SettleConfirmDialog
-          open={settledModalOpen}
-          setOpen={setSettledModalOpen}
-        />
-        {/* <tfoot className={'bg-[var(--body-background-color)]'}>
-        <tr>
-          <TablePagination
-            toolbarClassName={'ml-auto'}
-            count={100}
-            colSpan={7}
-            onPageChange={handleChangePage}
-            page={page}
-            rowsPerPage={rowsPerPage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </tr>
-      </tfoot> */}
-      </table>
-      {!correctConnected && (
+      <DataGrid<SearchUserOrderResponse>
+        columns={columns}
+        rows={settledData}
+        loading={isPending}
+      />
+      <DepositModal
+        open={depositModalOpen}
+        setOpen={setDepositModalOpen}
+        currentData={currentData}
+        onSuccess={() => {
+          setDepositSuccessfulModalOpen(true)
+          queryClient.invalidateQueries({
+            queryKey: [searchUserOrderUrl, 2],
+          })
+        }}
+      />
+      <DepositSuccessfulModal
+        open={depositSuccessfulModalOpen}
+        setOpen={setDepositSuccessfulModalOpen}
+      />
+      <SettleConfirmDialog
+        open={settledModalOpen}
+        setOpen={setSettledModalOpen}
+      />
+      {!correctConnected && completed && (
         <Button
           bgColorClass={'bg-[#FFC300]'}
           className={'mx-auto mt-32 !w-auto px-4 text-xs text-black'}
@@ -226,5 +199,5 @@ function Countdown({ deadline }: { deadline: string | null }) {
 
   const displayCountdown = `${hours}:${minutes}:${seconds}`
 
-  return <td className={tdClasses}>{deadline ? displayCountdown : ''}</td>
+  return deadline ? displayCountdown : ''
 }

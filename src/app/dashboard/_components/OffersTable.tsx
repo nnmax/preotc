@@ -1,5 +1,4 @@
 import Image from 'next/image'
-import clsx from 'clsx'
 import dayjs from 'dayjs'
 import { useSendTransaction } from 'wagmi'
 import { parseEther } from 'viem'
@@ -11,14 +10,15 @@ import { cancelOrder, cancelOrderUrl } from '@/api/cancel-order'
 import WalletBlackSvg from '@/images/wallet-black.svg'
 import Button from '@/components/Button'
 import useCorrectConnected from '@/hooks/useCorrectConnected'
-import { tdClasses, thClasses, trBorderClasses } from '../classes'
-// import TablePagination from './TablePagination/TablePagination'
+import DataGrid from '@/app/dashboard/_components/DataGrid/DataGrid'
+import type { Column } from '@/app/dashboard/_components/DataGrid/DataGrid'
+import type { SearchUserOrderResponse } from '@/api'
 
 export default function OffersTable() {
-  const { correctConnected } = useCorrectConnected()
+  const { correctConnected, completed } = useCorrectConnected()
   const { openConnectModal } = useConnectModal()
   const queryClient = useQueryClient()
-  const { data: offers = [] } = useQuery({
+  const { data: offers = [], isPending } = useQuery({
     enabled: correctConnected,
     queryKey: [searchUserOrderUrl, 1],
     queryFn: () => {
@@ -34,22 +34,6 @@ export default function OffersTable() {
     })
   const { sendTransactionAsync, isPending: sendingTransaction } =
     useSendTransaction()
-  // const [page, setPage] = useState(0)
-  // const [rowsPerPage, setRowsPerPage] = useState(10)
-
-  // const handleChangePage = (
-  //   event: React.MouseEvent<HTMLButtonElement> | null,
-  //   newPage: number,
-  // ) => {
-  //   setPage(newPage)
-  // }
-
-  // const handleChangeRowsPerPage = (
-  //   event: React.ChangeEvent<HTMLSelectElement>,
-  // ) => {
-  //   setRowsPerPage(parseInt(event.target.value, 10))
-  //   setPage(0)
-  // }
 
   const handleCancel = async (orderId: number) => {
     const { cancelOrderCallData } = await cancelOrderAsync({
@@ -75,93 +59,89 @@ export default function OffersTable() {
     })
   }
 
+  const columns: Column<SearchUserOrderResponse>[] = [
+    {
+      field: 'projectName',
+      headerName: 'TOKEN',
+      renderCell: ({ row }) => {
+        return (
+          <div className={'flex justify-center'}>
+            <Image
+              src={row.projectAvatarUrl}
+              className={'mr-2.5 rounded-full'}
+              alt={row.projectName}
+              width={'24'}
+              height={'24'}
+            />
+            {row.projectName}
+            <sup>{`#${row.projectId}`}</sup>
+          </div>
+        )
+      },
+    },
+    {
+      field: 'createTime',
+      headerName: 'TIME',
+      renderCell: ({ row }) => {
+        return (
+          <time>
+            {row.createTime
+              ? dayjs(row.createTime).format('MM/DD HH:mm:ss')
+              : 'Invalid Date'}
+          </time>
+        )
+      },
+    },
+    {
+      field: 'amount',
+      headerName: 'VALUE (USDB)',
+      renderCell: ({ row }) => {
+        return row.amount * row.price
+      },
+    },
+    {
+      field: 'amount',
+      headerName: 'AMOUNT',
+    },
+    {
+      field: 'type',
+      headerName: 'TYPE',
+      renderCell: ({ row }) => {
+        return row.type === 1 ? 'BUY' : 'SELL'
+      },
+    },
+    {
+      field: 'id',
+      headerName: 'ACTION',
+      renderCell: ({ row }) => {
+        return (
+          <button
+            onClick={() => handleCancel(row.id)}
+            type={'button'}
+            disabled={cancelingOrder || sendingTransaction}
+            className={
+              'rounded border border-solid border-[#aaa] px-3 py-[5px] text-xs text-[#aaa]'
+            }
+          >
+            {cancelingOrder || sendingTransaction ? (
+              <span className={'loading loading-dots'} />
+            ) : (
+              'Cancel'
+            )}
+          </button>
+        )
+      },
+    },
+  ]
+
   return (
     <div>
-      <table className={'table'}>
-        <thead>
-          <tr className={trBorderClasses}>
-            <th className={thClasses}>{'TOKEN'}</th>
-            <th className={thClasses}>{'TIME'}</th>
-            <th className={thClasses}>{'VALUE (USDB)'}</th>
-            <th className={thClasses}>{'AMOUNT'}</th>
-            <th className={thClasses}>{'TYPE'}</th>
-            <th className={thClasses}>{'ACTION'}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {offers.map((item, index, arr) => (
-            <tr
-              key={item.id}
-              className={
-                index === arr.length - 1
-                  ? 'hover'
-                  : clsx(trBorderClasses, 'hover')
-              }
-            >
-              <td className={tdClasses}>
-                <div className={'flex'}>
-                  <Image
-                    src={item.projectAvatarUrl}
-                    className={'mr-2.5 rounded-full'}
-                    alt={item.projectName}
-                    width={'24'}
-                    height={'24'}
-                  />
-                  {item.projectName}
-                  <sup>{`#${item.projectId}`}</sup>
-                </div>
-              </td>
-              <td className={tdClasses}>
-                <time>
-                  {item.createTime
-                    ? dayjs(item.createTime).format('MM/DD HH:mm:ss')
-                    : 'Invalid Date'}
-                </time>
-              </td>
-              <td className={tdClasses}>{item.amount * item.price}</td>
-              <td className={tdClasses}>{item.amount}</td>
-              <td
-                className={clsx(
-                  tdClasses,
-                  item.type === 1 ? 'text-[#FFC300]' : 'text-[#EB2F96]',
-                )}
-              >
-                {item.type === 1 ? 'Buy' : 'Sell'}
-              </td>
-              <td className={tdClasses}>
-                <button
-                  onClick={() => handleCancel(item.id)}
-                  type={'button'}
-                  disabled={cancelingOrder || sendingTransaction}
-                  className={
-                    'rounded border border-solid border-[#aaa] px-3 py-[5px] text-xs text-[#aaa]'
-                  }
-                >
-                  {cancelingOrder || sendingTransaction ? (
-                    <span className={'loading loading-dots'} />
-                  ) : (
-                    'Cancel'
-                  )}
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-        {/* <tfoot className={'bg-[var(--body-background-color)]'}>
-        <tr>
-          <TablePagination
-            toolbarClassName={'ml-auto'}
-            count={100}
-            colSpan={7}
-            onPageChange={handleChangePage}
-            page={page}
-            rowsPerPage={rowsPerPage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </tr>
-      </tfoot> */}
-      </table>
-      {!correctConnected && (
+      <DataGrid<SearchUserOrderResponse>
+        columns={columns}
+        rows={offers}
+        loading={isPending}
+      />
+      {!correctConnected && completed && (
         <Button
           bgColorClass={'bg-[#FFC300]'}
           className={'mx-auto mt-32 !w-auto px-4 text-xs text-black'}

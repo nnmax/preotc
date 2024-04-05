@@ -7,13 +7,22 @@ export default function useCorrectConnected() {
   const [correctConnected, setCorrectConnected] = useState(false)
   const { address } = useAccount()
   const connections = useConnections()
+  const [completed, setCompleted] = useState(false)
 
   useEffect(() => {
-    if (!address || !connections.length) return
+    setCompleted(false)
+    if (!address || !connections.length) {
+      setCompleted(true)
+      return
+    }
     const walletName = connections[0].connector.name.toLowerCase() as WalletType
-    if (walletName === 'BTC') return
+    if (walletName === 'BTC') {
+      setCompleted(true)
+      return
+    }
+    setCompleted(true)
     setCorrectConnected(true)
   }, [connections, address])
 
-  return { correctConnected }
+  return { correctConnected, completed }
 }
