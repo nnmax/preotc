@@ -49,7 +49,7 @@ export default function AppBar() {
             {!!len && (
               <span
                 className={
-                  'absolute h-[18px] translate-x-2 rounded-[10px] bg-[#FF2626] px-2 text-xs'
+                  'ml-1 inline-block h-[18px] rounded-[10px] bg-[#FF2626] px-2 text-xs'
                 }
               >
                 {len}

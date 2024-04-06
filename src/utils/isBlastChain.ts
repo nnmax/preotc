@@ -1,7 +1,7 @@
 import { blast } from 'wagmi/chains'
 import { BLAST_TESTNET_CHAIN_ID } from '@/constant'
 
-export default function isBlastChain(chainId: number) {
+export default function isBlastChain(chainId: number | undefined) {
   return (
     chainId === blast.id ||
     (process.env.NEXT_PUBLIC_IS_DEV === 'true'

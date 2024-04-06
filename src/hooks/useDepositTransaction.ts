@@ -2,20 +2,14 @@
 import { useCallback } from 'react'
 import { toast } from 'react-toastify'
 import { parseEther } from 'viem/utils'
-import {
-  useAccount,
-  useChainId,
-  useSendTransaction,
-  useSwitchChain,
-} from 'wagmi'
+import { useAccount, useSendTransaction, useSwitchChain } from 'wagmi'
 import { blast } from 'wagmi/chains'
 import isBlastChain from '@/utils/isBlastChain'
 import { BLAST_TESTNET_CHAIN_ID } from '@/constant'
 import type { MakeOrderResponse, TakeOrderResponse } from '@/api'
 
 export default function useDepositTransaction() {
-  const chainId = useChainId()
-  const { address } = useAccount()
+  const { address, chainId } = useAccount()
   const { switchChainAsync } = useSwitchChain()
   const { sendTransactionAsync, isPending: sendingTransaction } =
     useSendTransaction()

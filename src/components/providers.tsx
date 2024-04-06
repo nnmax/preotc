@@ -14,6 +14,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { WagmiProvider } from 'wagmi'
 import { ReactQueryStreamedHydration } from '@tanstack/react-query-next-experimental'
 import BlastIcon from '@/images/blast-icon.svg'
+import EthIcon from '@/images/eth-20x20.png'
+import BaseIcon from '@/images/base-20x20.png'
+import ZkSyncIcon from '@/images/zkSync.png'
 import { BLAST_TESTNET_CHAIN_ID } from '@/constant'
 import type { Chain } from 'wagmi/chains'
 
@@ -56,7 +59,11 @@ const config = getDefaultConfig({
     },
   ],
   chains: [
-    mainnet,
+    {
+      ...mainnet,
+      iconUrl: EthIcon.src,
+      iconBackground: '#000',
+    },
     {
       ...blast,
       iconUrl: BlastIcon.src,
@@ -71,8 +78,16 @@ const config = getDefaultConfig({
           },
         ]
       : []),
-    base,
-    zkSync,
+    {
+      ...base,
+      iconUrl: BaseIcon.src,
+      iconBackground: '#000',
+    },
+    {
+      ...zkSync,
+      iconUrl: ZkSyncIcon.src,
+      iconBackground: '#000',
+    },
   ],
   ssr: true,
 })

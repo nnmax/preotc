@@ -9,14 +9,13 @@ import {
   useConfig,
   useAccountEffect,
   useConnections,
-  useChainId,
   useDisconnect,
 } from 'wagmi'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { verifyMessage } from 'wagmi/actions'
 import { Popover, Transition } from '@headlessui/react'
 import WalletSvg from '@/images/wallet.svg'
-import EthIcon from '@/images/eth-24x24.png'
+import EthIcon from '@/images/eth-20x20.png'
 import EthYellowIcon from '@/images/eth-yellow.png'
 import USDBSvg from '@/images/USDB.svg'
 import ArrowDownSvg from '@/images/arrow-down.svg'
@@ -150,8 +149,8 @@ export default function ConnectWalletToolbar() {
   useSign()
   const [walletType, setWalletType] = useState<WalletType>()
   const connections = useConnections()
-  const { address } = useAccount()
-  const chainId = useChainId()
+  const { address, chainId, chain: chainOut } = useAccount()
+
   const { disconnect } = useDisconnect()
   const { recentWalletState, setRecentWalletState } = useRecentWallets({
     walletType,
@@ -256,30 +255,32 @@ export default function ConnectWalletToolbar() {
                   </span>
                 </Box>
               )}
-              <Box className={'min-w-[136px] justify-start text-xs'}>
-                <Image
-                  src={
-                    getIcon({
-                      walletType,
-                      blastChain: isBlastChain(chainId),
-                      isEthBalance: true,
-                    }).src
-                  }
-                  alt={
-                    getIcon({
-                      walletType,
-                      blastChain: isBlastChain(chainId),
-                      isEthBalance: true,
-                    }).alt
-                  }
-                  width={'20'}
-                  height={'20'}
-                  className={'mr-2'}
-                />
-                <span title={account.balanceFormatted}>
-                  {account.displayBalance}
-                </span>
-              </Box>
+              {!!chainOut && (
+                <Box className={'min-w-[136px] justify-start text-xs'}>
+                  <Image
+                    src={
+                      getIcon({
+                        walletType,
+                        blastChain: isBlastChain(chainId),
+                        isEthBalance: true,
+                      }).src
+                    }
+                    alt={
+                      getIcon({
+                        walletType,
+                        blastChain: isBlastChain(chainId),
+                        isEthBalance: true,
+                      }).alt
+                    }
+                    width={'20'}
+                    height={'20'}
+                    className={'mr-2'}
+                  />
+                  <span title={account.balanceFormatted}>
+                    {account.displayBalance}
+                  </span>
+                </Box>
+              )}
               {walletType === 'ETH' && (
                 <Box button onClick={openChainModal}>
                   {chain?.hasIcon && (
