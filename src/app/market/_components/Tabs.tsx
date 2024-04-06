@@ -7,7 +7,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useAccount } from 'wagmi'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { useSuspenseQuery } from '@tanstack/react-query'
-import { Suspense } from 'react'
+import { Suspense, useState } from 'react'
 import TelegramAlertButton from '@/components/TelegramAlertButton'
 import BuyPanel from '@/app/market/_components/BuyPanel'
 import SellPanel from '@/app/market/_components/SellPanel'
@@ -18,6 +18,9 @@ import ToggleButton from '@/components/ToggleButton'
 export default function Tabs() {
   const searchParams = useSearchParams()
   const defaultIndex = searchParams.get('tab') === 'sell' ? 1 : 0
+  const [project, setProject] = useState<string | null>(
+    searchParams.get('project'),
+  )
 
   return (
     <Tab.Group defaultIndex={defaultIndex}>
@@ -37,7 +40,7 @@ export default function Tabs() {
           </Tab.List>
 
           <Suspense fallback={<span className={'loading loading-dots'} />}>
-            <Filter />
+            <Filter value={project} setValue={setProject} />
           </Suspense>
         </div>
 
@@ -46,12 +49,12 @@ export default function Tabs() {
       <Tab.Panels>
         <Tab.Panel className={tabPanelClasses}>
           <Suspense fallback={<span className={'loading loading-dots'} />}>
-            <BuyPanel />
+            <BuyPanel project={project} />
           </Suspense>
         </Tab.Panel>
         <Tab.Panel className={tabPanelClasses}>
           <Suspense fallback={<span className={'loading loading-dots'} />}>
-            <SellPanel />
+            <SellPanel project={project} />
           </Suspense>
         </Tab.Panel>
       </Tab.Panels>
@@ -65,7 +68,11 @@ const tabClasses =
 const tabPanelClasses =
   'grid gap-4 min-[1440px]:grid-cols-4 min-[1920px]:grid-cols-5 min-[1104px]:grid-cols-3 min-[768px]:grid-cols-2'
 
-function Filter() {
+function Filter(props: {
+  value: string | null
+  setValue: (value: string | null) => void
+}) {
+  const { setValue, value } = props
   const { data: projects } = useSuspenseQuery({
     queryKey: [listProjectUrl],
     queryFn: listProject,
@@ -73,7 +80,6 @@ function Filter() {
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const router = useRouter()
-  const value = searchParams.get('project')
 
   const createQueryString = (name: string, _value: string | null) => {
     const params = new URLSearchParams(searchParams.toString())
@@ -86,6 +92,7 @@ function Filter() {
   }
 
   const handleToggleButtonChange = (_value: string | null) => {
+    setValue(_value)
     router.push((pathname + '?' + createQueryString('project', _value)) as any)
   }
 

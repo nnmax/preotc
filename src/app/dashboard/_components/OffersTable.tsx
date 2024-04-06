@@ -4,29 +4,24 @@ import { useSendTransaction } from 'wagmi'
 import { parseEther } from 'viem'
 import { toast } from 'react-toastify'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { searchUserOrder, searchUserOrderUrl } from '@/api'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { searchUserOrderUrl } from '@/api'
 import { cancelOrder, cancelOrderUrl } from '@/api/cancel-order'
 import WalletBlackSvg from '@/images/wallet-black.svg'
 import Button from '@/components/Button'
-import useCorrectConnected from '@/hooks/useCorrectConnected'
 import DataGrid from '@/app/dashboard/_components/DataGrid/DataGrid'
+import type { TableCommonProps } from '@/app/dashboard/types'
 import type { Column } from '@/app/dashboard/_components/DataGrid/DataGrid'
 import type { SearchUserOrderResponse } from '@/api'
 
-export default function OffersTable() {
-  const { correctConnected, completed } = useCorrectConnected()
+export default function OffersTable({
+  rows,
+  completed,
+  correctConnected,
+  isPending,
+}: TableCommonProps) {
   const { openConnectModal } = useConnectModal()
   const queryClient = useQueryClient()
-  const { data: offers = [], isPending } = useQuery({
-    enabled: correctConnected,
-    queryKey: [searchUserOrderUrl, 1],
-    queryFn: () => {
-      return searchUserOrder({
-        dashboardType: 1,
-      })
-    },
-  })
   const { mutateAsync: cancelOrderAsync, isPending: cancelingOrder } =
     useMutation({
       mutationKey: [cancelOrderUrl],
@@ -140,7 +135,7 @@ export default function OffersTable() {
     <div>
       <DataGrid<SearchUserOrderResponse>
         columns={columns}
-        rows={offers}
+        rows={rows}
         loading={isPending}
       />
       {!correctConnected && completed && (

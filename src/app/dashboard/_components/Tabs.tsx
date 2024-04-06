@@ -1,7 +1,11 @@
 'use client'
 import { Tab } from '@headlessui/react'
-import { Suspense } from 'react'
+import { useState } from 'react'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useQuery } from '@tanstack/react-query'
 import TelegramAlertButton from '@/components/TelegramAlertButton'
+import useCorrectConnected from '@/hooks/useCorrectConnected'
+import { searchUserOrder, searchUserOrderUrl } from '@/api'
 import SettledTable from './SettledTable'
 import OffersTable from './OffersTable'
 import CompletedTable from './CompletedTable'
@@ -9,10 +13,36 @@ import CompletedTable from './CompletedTable'
 const tabClasses =
   'flex-1 aria-selected:bg-[#FFC300] aria-selected:text-black transition-colors'
 
+type TabIndex = 0 | 1 | 2
+
 export default function Tabs() {
+  const { correctConnected, completed } = useCorrectConnected()
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
+  const router = useRouter()
+  const [tabIndex, setTabIndex] = useState<TabIndex>(
+    Number(searchParams.get('tab') ?? 0) as TabIndex,
+  )
+  const dashboardType = tabIndex === 0 ? 2 : tabIndex === 1 ? 1 : 3
+  const { data, isPending } = useQuery({
+    enabled: correctConnected,
+    queryKey: [searchUserOrderUrl, dashboardType],
+    queryFn: () => {
+      return searchUserOrder({
+        dashboardType,
+      })
+    },
+  })
+
   return (
     <div className={'flex flex-col items-center'}>
-      <Tab.Group>
+      <Tab.Group
+        defaultIndex={tabIndex}
+        onChange={(selectedIndex): void => {
+          setTabIndex(selectedIndex as TabIndex)
+          router.push((pathname + `?tab=${selectedIndex}`) as any)
+        }}
+      >
         <div className={'relative flex w-full justify-center py-4 pt-6'}>
           <Tab.List
             className={
@@ -32,19 +62,28 @@ export default function Tabs() {
         <div className={'w-full max-w-[1260px] overflow-x-auto'}>
           <Tab.Panels>
             <Tab.Panel>
-              <Suspense fallback={<span className={'loading loading-dots'} />}>
-                <SettledTable />
-              </Suspense>
+              <SettledTable
+                rows={data}
+                isPending={isPending}
+                correctConnected={correctConnected}
+                completed={completed}
+              />
             </Tab.Panel>
             <Tab.Panel>
-              <Suspense fallback={<span className={'loading loading-dots'} />}>
-                <OffersTable />
-              </Suspense>
+              <OffersTable
+                rows={data}
+                isPending={isPending}
+                correctConnected={correctConnected}
+                completed={completed}
+              />
             </Tab.Panel>
             <Tab.Panel>
-              <Suspense fallback={<span className={'loading loading-dots'} />}>
-                <CompletedTable />
-              </Suspense>
+              <CompletedTable
+                rows={data}
+                isPending={isPending}
+                correctConnected={correctConnected}
+                completed={completed}
+              />
             </Tab.Panel>
           </Tab.Panels>
         </div>

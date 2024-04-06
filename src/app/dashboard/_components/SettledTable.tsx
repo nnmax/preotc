@@ -1,42 +1,37 @@
 import Image from 'next/image'
 import clsx from 'clsx'
 import { useEffect, useState } from 'react'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQueryClient } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
-import { searchUserOrder, searchUserOrderUrl } from '@/api'
+import { searchUserOrderUrl } from '@/api'
 import useCountdown from '@/hooks/useCountdown'
 import DepositSuccessfulModal from '@/app/dashboard/_components/DepositSuccessfulModal'
 import SettleConfirmDialog from '@/app/dashboard/_components/SettleConfirmDialog'
 import { SettledConfirmLocalStorageKey } from '@/constant'
 import WalletBlackSvg from '@/images/wallet-black.svg'
 import Button from '@/components/Button'
-import useCorrectConnected from '@/hooks/useCorrectConnected'
 import DataGrid from '@/app/dashboard/_components/DataGrid/DataGrid'
 import getSettledStatus from '@/utils/getSettledStatus'
 import DepositModal from './DepositModal'
+import type { TableCommonProps } from '@/app/dashboard/types'
 import type { Column } from '@/app/dashboard/_components/DataGrid/DataGrid'
 import type { SearchUserOrderResponse } from '@/api'
-// import TablePagination from './TablePagination/TablePagination'
 
-export default function SettledTable() {
+export default function SettledTable({
+  rows,
+  completed,
+  correctConnected,
+  isPending,
+}: TableCommonProps) {
   const [depositModalOpen, setDepositModalOpen] = useState(false)
   const [settledModalOpen, setSettledModalOpen] = useState(false)
-  const { correctConnected, completed } = useCorrectConnected()
+
   const { openConnectModal } = useConnectModal()
   const queryClient = useQueryClient()
   const [depositSuccessfulModalOpen, setDepositSuccessfulModalOpen] =
     useState(false)
   const [currentData, setCurrentData] = useState<SearchUserOrderResponse>()
-  const { data: settledData = [], isPending } = useQuery({
-    enabled: correctConnected,
-    queryKey: [searchUserOrderUrl, 2],
-    queryFn: () => {
-      return searchUserOrder({
-        dashboardType: 2,
-      })
-    },
-  })
 
   const handleSettled = (current: SearchUserOrderResponse) => {
     setCurrentData(current)
@@ -45,10 +40,8 @@ export default function SettledTable() {
 
   useEffect(() => {
     if (
-      settledData &&
-      settledData.some((item) =>
-        getSettledStatus(item.deliverDeadline, item.type),
-      )
+      rows &&
+      rows.some((item) => getSettledStatus(item.deliverDeadline, item.type))
     ) {
       const settledConfirm = window.localStorage.getItem(
         SettledConfirmLocalStorageKey,
@@ -57,7 +50,7 @@ export default function SettledTable() {
         setSettledModalOpen(true)
       }
     }
-  }, [settledData])
+  }, [rows])
 
   const columns: Column<SearchUserOrderResponse>[] = [
     {
@@ -144,7 +137,7 @@ export default function SettledTable() {
     <div>
       <DataGrid<SearchUserOrderResponse>
         columns={columns}
-        rows={settledData}
+        rows={rows}
         loading={isPending}
       />
       <DepositModal

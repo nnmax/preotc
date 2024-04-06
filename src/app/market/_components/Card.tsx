@@ -74,6 +74,7 @@ export default function Card(props: { data: SearchMarketOrderResponse }) {
       <div className={'flex items-center justify-between pt-2'}>
         <span
           className={'text-xs text-[rgba(155,155,155,0.6)]'}
+          suppressHydrationWarning
           title={
             data.createTime
               ? dayjs(data.createTime).toDate().toLocaleString()

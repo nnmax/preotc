@@ -10,7 +10,7 @@
     "postinstall": "husky install",
     "prettier": "prettier --write .",
     "prettier:ci": "prettier --check .",
-    "typecheck": "tsc --noEmit"
+    "tsc": "tsc --noEmit"
   },
   "resolutions": {
     "eslint-plugin-react-hooks": "next"

@@ -1,27 +1,20 @@
 import Image from 'next/image'
-import { useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import WalletBlackSvg from '@/images/wallet-black.svg'
-import { searchUserOrder, searchUserOrderUrl } from '@/api'
 import Button from '@/components/Button'
-import useCorrectConnected from '@/hooks/useCorrectConnected'
 import DataGrid from '@/app/dashboard/_components/DataGrid/DataGrid'
+import type { TableCommonProps } from '@/app/dashboard/types'
 import type { Column } from '@/app/dashboard/_components/DataGrid/DataGrid'
 import type { SearchUserOrderResponse } from '@/api'
 
-export default function CompletedTable() {
-  const { correctConnected, completed } = useCorrectConnected()
+export default function CompletedTable({
+  rows,
+  completed,
+  correctConnected,
+  isPending,
+}: TableCommonProps) {
   const { openConnectModal } = useConnectModal()
-  const { data: completedData = [], isPending } = useQuery({
-    enabled: correctConnected,
-    queryKey: [searchUserOrderUrl, 3],
-    queryFn: () => {
-      return searchUserOrder({
-        dashboardType: 3,
-      })
-    },
-  })
 
   const columns: Column<SearchUserOrderResponse>[] = [
     {
@@ -82,7 +75,7 @@ export default function CompletedTable() {
     <div>
       <DataGrid<SearchUserOrderResponse>
         columns={columns}
-        rows={completedData}
+        rows={rows}
         loading={isPending}
       />
       {!correctConnected && completed && (
