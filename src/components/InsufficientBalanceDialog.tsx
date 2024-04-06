@@ -15,10 +15,28 @@ export default function InsufficientBalanceDialog({
     <Dialog
       open={open}
       onClose={onClose}
-      panelClassName={'max-w-[359px] flex items-center'}
+      panelClassName={
+        '!max-w-[412px] flex flex-col items-center text-xs leading-6'
+      }
     >
-      <Image src={ErrorSvg} width={'28'} height={'28'} alt={'check'} />
-      <p className={'ml-4 text-xs leading-5'}>{'Insufficient balance!'}</p>
+      <div className={'mb-4 flex items-center'}>
+        <Image src={ErrorSvg} width={'28'} height={'28'} alt={'check'} />
+        <p className={'ml-4'}>{'Insufficient balance!'}</p>
+      </div>
+      <p>
+        <span className={'text-[#FFC300]'}>{'How to get USDB?'}</span>{' '}
+        {'Bridge USDT/ USDC/ DAI to the Blast Network'}
+        {'on '}
+        <a
+          href={'https://blast.io'}
+          target={'_blank'}
+          rel={'noreferrer'}
+          className={'text-[#FFC300] underline'}
+        >
+          {'blast.io'}
+        </a>
+        {'.'}
+      </p>
     </Dialog>
   )
 }

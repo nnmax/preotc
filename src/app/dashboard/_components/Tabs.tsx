@@ -9,6 +9,7 @@ import { searchUserOrder, searchUserOrderUrl } from '@/api'
 import SettledTable from './SettledTable'
 import OffersTable from './OffersTable'
 import CompletedTable from './CompletedTable'
+import type { Route } from 'next'
 
 const tabClasses =
   'flex-1 aria-selected:bg-[#FFC300] aria-selected:text-black transition-colors'
@@ -40,7 +41,7 @@ export default function Tabs() {
         defaultIndex={tabIndex}
         onChange={(selectedIndex): void => {
           setTabIndex(selectedIndex as TabIndex)
-          router.push((pathname + `?tab=${selectedIndex}`) as any)
+          router.push((pathname + `?tab=${selectedIndex}`) as Route)
         }}
       >
         <div className={'relative flex w-full justify-center py-4 pt-6'}>
