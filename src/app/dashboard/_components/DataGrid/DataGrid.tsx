@@ -87,7 +87,7 @@ export default function DataGrid<
               {loading ? (
                 <span className={'loading loading-dots'} />
               ) : (
-                'No rows'
+                'No Data'
               )}
             </td>
           </tr>
