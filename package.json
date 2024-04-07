@@ -16,13 +16,13 @@
     "eslint-plugin-react-hooks": "next"
   },
   "dependencies": {
-    "@floating-ui/react": "0.26.10",
+    "@floating-ui/react": "0.26.11",
     "@headlessui/react": "1.7.18",
     "@rainbow-me/rainbowkit": "2.0.5",
-    "@tanstack/react-query": "5.28.14",
-    "@tanstack/react-query-next-experimental": "5.28.14",
+    "@tanstack/react-query": "5.29.0",
+    "@tanstack/react-query-next-experimental": "5.29.0",
     "clsx": "2.1.0",
-    "daisyui": "4.9.0",
+    "daisyui": "4.10.1",
     "dayjs": "1.11.10",
     "lodash-es": "4.17.21",
     "next": "14.1.4",
@@ -32,13 +32,13 @@
     "react-toastify": "10.0.5",
     "sharp": "0.33.3",
     "viem": "2.9.9",
-    "wagmi": "2.5.18"
+    "wagmi": "2.5.19"
   },
   "devDependencies": {
     "@nnmax/eslint-config-react": "3.2.1",
     "@tanstack/eslint-plugin-query": "5.28.11",
     "@types/lodash-es": "^4.17.12",
-    "@types/node": "20.12.4",
+    "@types/node": "20.12.5",
     "@types/react": "18.2.74",
     "@types/react-dom": "18.2.24",
     "@typescript-eslint/eslint-plugin": "7.5.0",
@@ -55,7 +55,7 @@
     "prettier": "3.2.5",
     "prettier-plugin-tailwindcss": "0.5.13",
     "tailwindcss": "3.4.3",
-    "typescript": "5.4.3"
+    "typescript": "5.4.4"
   },
   "packageManager": "yarn@4.1.1",
   "lint-staged": {
