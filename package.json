@@ -31,6 +31,7 @@
     "react-hook-form": "7.51.2",
     "react-toastify": "10.0.5",
     "sharp": "0.33.3",
+    "socket.io-client": "4.7.5",
     "viem": "2.9.9",
     "wagmi": "2.5.19"
   },

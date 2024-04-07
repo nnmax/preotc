@@ -9,11 +9,11 @@ import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { Suspense, useState } from 'react'
 import TelegramAlertButton from '@/components/TelegramAlertButton'
-import BuyPanel from '@/app/market/_components/BuyPanel'
-import SellPanel from '@/app/market/_components/SellPanel'
 import { listProject, listProjectUrl } from '@/api'
 import ToggleButtonGroup from '@/components/ToggleButtonGroup'
 import ToggleButton from '@/components/ToggleButton'
+import BuyPanel from './BuyPanel'
+import SellPanel from './SellPanel'
 
 export default function Tabs() {
   const searchParams = useSearchParams()

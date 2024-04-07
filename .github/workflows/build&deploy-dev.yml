@@ -16,6 +16,7 @@ env:
   CONTAINER_NAME: app
   API_ENDPOINT: https://dev-api.preotc.xyz
   NEXT_PUBLIC_IS_DEV: true
+  NEXT_PUBLIC_SOCKET_ENDPOINT: wss://wscb4957cc-081a-42f1-938a-d0b8e23a7aff.flipgod.xyz
 
 jobs:
   deploy:
@@ -44,11 +45,12 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
           API_ENDPOINT: ${{env.API_ENDPOINT}}
           NEXT_PUBLIC_IS_DEV: ${{env.NEXT_PUBLIC_IS_DEV}}
+          NEXT_PUBLIC_SOCKET_ENDPOINT: ${{env.NEXT_PUBLIC_SOCKET_ENDPOINT}}
         run: |
           # Build a docker container and
           # push it to ECR so that it can
           # be deployed to ECS.
-          docker build --build-arg API_ENDPOINT --build-arg NEXT_PUBLIC_IS_DEV -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker build --build-arg API_ENDPOINT --build-arg NEXT_PUBLIC_IS_DEV --build-arg NEXT_PUBLIC_SOCKET_ENDPOINT -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 

@@ -26,6 +26,8 @@ ARG API_ENDPOINT
 ENV API_ENDPOINT $API_ENDPOINT
 ARG NEXT_PUBLIC_IS_DEV
 ENV NEXT_PUBLIC_IS_DEV $NEXT_PUBLIC_IS_DEV
+ARG NEXT_PUBLIC_SOCKET_ENDPOINT
+ENV NEXT_PUBLIC_SOCKET_ENDPOINT $NEXT_PUBLIC_SOCKET_ENDPOINT
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry

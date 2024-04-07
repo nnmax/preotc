@@ -1,14 +1,16 @@
 'use client'
-import { useSuspenseQuery } from '@tanstack/react-query'
+import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query'
 import { fetchSearchMarketOrder, SearchMarketOrderUrl } from '@/api'
-import Card from './Card'
-import type { SearchMarketOrderParams } from '@/api'
+import useListenSocket from '@/hooks/useListenSocket'
+import Panel from './Panel'
+import type { SearchMarketOrderParams, SearchMarketOrderResponse } from '@/api'
 
 export default function BuyPanel({ project }: { project: string | null }) {
   const queryVariables: SearchMarketOrderParams = {
     type: 'Buying',
     projectId: project ? Number(project) : undefined,
   }
+  const queryClient = useQueryClient()
   const { data } = useSuspenseQuery({
     queryKey: [SearchMarketOrderUrl, queryVariables],
     queryFn: () => {
@@ -16,7 +18,17 @@ export default function BuyPanel({ project }: { project: string | null }) {
     },
   })
 
-  if (!data || !data.length) return <p>{'No Data'}</p>
+  useListenSocket({
+    onNewMarket(revicedData) {
+      if (revicedData.type !== 1) return
+      queryClient.setQueryData<SearchMarketOrderResponse[]>(
+        [SearchMarketOrderUrl, queryVariables],
+        (oldData) => {
+          return [revicedData, ...(oldData ?? [])]
+        },
+      )
+    },
+  })
 
-  return data.map((item) => <Card key={item.id} data={item} />)
+  return <Panel data={data} />
 }

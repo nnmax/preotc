@@ -9,9 +9,6 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   swcMinify: true,
-  experimental: {
-    typedRoutes: true,
-  },
   typescript: {
     // Disabling on production builds because we're running checks on PRs via GitHub Actions.
     ignoreBuildErrors: true,
