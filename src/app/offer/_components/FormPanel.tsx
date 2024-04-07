@@ -22,6 +22,8 @@ import useDepositTransaction from '@/hooks/useDepositTransaction'
 import DepositSuccessfulDialog from '@/components/DepositSuccessfulDialog'
 import InsufficientBalanceDialog from '@/components/InsufficientBalanceDialog'
 import isSameAddress from '@/utils/isSameAddress'
+import { USDB_LIMIT } from '@/constant'
+import DangerSvg from '@/images/danger.svg'
 import FirstStepPanel from './FirstStepPanel'
 import SecondStepPanel from './SecondStepPanel'
 
@@ -45,6 +47,7 @@ export default function FormPanel() {
   const [successfulDialogOpen, setSuccessfulDialogOpen] = useState(false)
   const [balanceDialogOpen, setBalanceDialogOpen] = useState(false)
   const same = isSameAddress(data, address)
+  const invalid = (data?.price ?? 0) * rangeValue < USDB_LIMIT
 
   useEffect(() => {
     if (data?.amount) {
@@ -125,14 +128,14 @@ export default function FormPanel() {
       <Button
         bgColorClass={
           type === 'buy'
-            ? rangeValue <= 0
+            ? invalid
               ? 'bg-[#1B3F93]'
-              : 'bg-[#1058FF]'
-            : rangeValue <= 0
+              : 'bg-[#004DFF]'
+            : invalid
               ? 'bg-[#8F2760]'
               : 'bg-[#EB2F96]'
         }
-        disabled={rangeValue <= 0}
+        disabled={invalid}
         onClick={handleValid}
         loading={takingOrder}
         className={'mt-8'}
@@ -175,6 +178,18 @@ export default function FormPanel() {
         avatarUrl={data?.projectAvatarUrl}
       />
       {stepPanel}
+      {invalid && (
+        <div className={'relative'}>
+          <p
+            className={
+              'absolute flex items-center pl-10 text-xs leading-[30px] text-white'
+            }
+          >
+            <Image src={DangerSvg} alt={'danger'} className={'mr-[10px]'} />
+            {'The value of each order must be greater than $100.'}
+          </p>
+        </div>
+      )}
       {address ? (
         stepButton
       ) : (

@@ -20,6 +20,7 @@ import useDepositTransaction from '@/hooks/useDepositTransaction'
 import DepositSuccessfulDialog from '@/components/DepositSuccessfulDialog'
 import InsufficientBalanceDialog from '@/components/InsufficientBalanceDialog'
 import { FirstStepPanel } from '@/app/create/_components/FirstStepPanel'
+import { USDB_LIMIT } from '@/constant'
 import type { Dispatch, SetStateAction } from 'react'
 import type { FormValues } from '@/app/create/types'
 import type { FieldErrors } from 'react-hook-form'
@@ -30,8 +31,6 @@ export interface PanelProps {
   step: number
   setStep: Dispatch<SetStateAction<number>>
 }
-
-const USDB_LIMIT = 100
 
 export default function Panel({ tab, step, setStep }: PanelProps) {
   const { selectOptions, selectedProject } = useSelectProps()
@@ -175,14 +174,16 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
       )}
       {stepPanel}
       {invalid && (
-        <p
-          className={
-            'absolute flex items-center pl-10 text-xs leading-[30px] text-white'
-          }
-        >
-          <Image src={DangerSvg} alt={'danger'} className={'mr-[10px]'} />
-          {'The value of each order must be greater than $100.'}
-        </p>
+        <div className={'relative'}>
+          <p
+            className={
+              'absolute flex items-center pl-10 text-xs leading-[30px] text-white'
+            }
+          >
+            <Image src={DangerSvg} alt={'danger'} className={'mr-[10px]'} />
+            {'The value of each order must be greater than $100.'}
+          </p>
+        </div>
       )}
       {stepButton}
       <DepositSuccessfulDialog
