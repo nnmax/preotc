@@ -42,14 +42,16 @@ export default function useDepositTransaction() {
         if (!switched) return null
       }
 
-      const approved = await sendTransactionAsync({
-        to: orderResponse.approveCallData.destination,
-        value: parseEther(orderResponse.approveCallData.value.toString()),
-        data: orderResponse.approveCallData.callData,
-        gas: process.env.NEXT_PUBLIC_IS_DEV === 'true' ? null : undefined,
-      }).catch(handleWeb3Error)
+      if (orderResponse.approveCallData) {
+        const approved = await sendTransactionAsync({
+          to: orderResponse.approveCallData.destination,
+          value: parseEther(orderResponse.approveCallData.value.toString()),
+          data: orderResponse.approveCallData.callData,
+          gas: process.env.NEXT_PUBLIC_IS_DEV === 'true' ? null : undefined,
+        }).catch(handleWeb3Error)
 
-      if (!approved) return null
+        if (!approved) return null
+      }
 
       const txHash = await sendTransactionAsync({
         to: orderResponse.depositCallData.destination,
