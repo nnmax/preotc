@@ -27,17 +27,17 @@ export default function OfferIntroduce({ className }: { className?: string }) {
     >
       <p>
         {
-          '1. In order to ensure that the seller will complete the settlement of the tokens in time, the seller needs to deposit '
+          '1. In order to ensure that the seller will complete the settlement in time, The seller needs to deposit '
         }
-        <span>{'2x'}</span> {'the deal amount of USDB.'}
+        <span>{'twice'}</span> {'the deal amount of USDB.'}
       </p>
       <p>
         {
-          '2. Please pay close attention to the settlement time of the tokens after the deal is completed, once the settlement process is opened, the seller will have '
+          '2. Please pay close attention to the settlement time, once the settlement process is started, the seller will have '
         }
-        <span>{'72 hours'}</span>{' '}
+        <span>{'72 hours'}</span>
         {
-          "to settle the token, if it is not completed before the deadline, it will be regarded as a breach of contract, and the seller's deposit will be regarded as the compensation for the buyer!"
+          " to settle the tokens, if it is not completed before the deadline, it will be regarded as a breach of contract, and the seller's deposit will be regarded as the compensation for the buyer!"
         }
       </p>
       <p>

@@ -11,7 +11,7 @@ import {
   useConnections,
   useDisconnect,
 } from 'wagmi'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { verifyMessage } from 'wagmi/actions'
 import { Popover, Transition } from '@headlessui/react'
 import WalletSvg from '@/images/wallet.svg'
@@ -150,6 +150,7 @@ export default function ConnectWalletToolbar() {
   const [walletType, setWalletType] = useState<WalletType>()
   const connections = useConnections()
   const { address, chainId, chain: chainOut } = useAccount()
+  const queryClient = useQueryClient()
 
   const { disconnect } = useDisconnect()
   const { recentWalletState, setRecentWalletState } = useRecentWallets({
@@ -168,17 +169,17 @@ export default function ConnectWalletToolbar() {
     mutationFn: disconnectWallet,
   })
 
-  const handleDisconnect = (close: () => void) => {
+  const handleDisconnect = (close?: () => void) => {
     disconnect()
     disconnectWalletFn()
     logout()
-    close()
+    close?.()
+    queryClient.invalidateQueries()
   }
 
   useAccountEffect({
     onDisconnect() {
-      logout()
-      disconnectWalletFn()
+      handleDisconnect()
     },
   })
 
@@ -413,10 +414,7 @@ export default function ConnectWalletToolbar() {
                             <PanelItem
                               icon={LogoutSvg}
                               button
-                              onClick={() => {
-                                disconnect()
-                                close()
-                              }}
+                              onClick={() => handleDisconnect(close)}
                             >
                               <p className={'text-[#A5A5A5]'}>{'Disconnect'}</p>
                             </PanelItem>

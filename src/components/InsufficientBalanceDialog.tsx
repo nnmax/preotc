@@ -21,7 +21,7 @@ export default function InsufficientBalanceDialog({
     >
       <div className={'mb-4 flex items-center'}>
         <Image src={ErrorSvg} width={'28'} height={'28'} alt={'check'} />
-        <p className={'ml-4'}>{'Insufficient balance!'}</p>
+        <p className={'ml-4'}>{'Insufficient Balance!'}</p>
       </div>
       <p>
         <span className={'text-[#FFC300]'}>{'How to get USDB?'}</span>{' '}
