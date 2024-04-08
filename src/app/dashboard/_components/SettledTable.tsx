@@ -57,7 +57,7 @@ export default function SettledTable({
       field: 'projectName',
       headerName: 'TOKEN',
       renderCell: ({ row }) => (
-        <div className={'flex'}>
+        <div className={'flex items-center'}>
           <Image
             src={row.projectAvatarUrl}
             className={'mr-2.5 rounded-full'}

@@ -60,7 +60,7 @@ export default function OffersTable({
       headerName: 'TOKEN',
       renderCell: ({ row }) => {
         return (
-          <div className={'flex justify-center'}>
+          <div className={'flex items-center'}>
             <Image
               src={row.projectAvatarUrl}
               className={'mr-2.5 rounded-full'}

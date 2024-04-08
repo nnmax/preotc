@@ -193,7 +193,7 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
           <>
             {'Congratulations! '}
             <br />
-            {'you have successfully created an order!'}
+            {'You have successfully created an order!'}
           </>
         }
         onClose={() => {
