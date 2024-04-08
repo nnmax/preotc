@@ -8,7 +8,7 @@ import { useAccount } from 'wagmi'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { Suspense, useState } from 'react'
-import TelegramAlertButton from '@/components/TelegramAlertButton'
+// import TelegramAlertButton from '@/components/TelegramAlertButton'
 import { listProject, listProjectUrl } from '@/api'
 import ToggleButtonGroup from '@/components/ToggleButtonGroup'
 import ToggleButton from '@/components/ToggleButton'
@@ -154,7 +154,7 @@ function TabsRightActions() {
       >
         {'Create Offer'}
       </Link>
-      <TelegramAlertButton />
+      {/* <TelegramAlertButton /> */}
     </div>
   )
 }

@@ -3,7 +3,7 @@ import { Tab } from '@headlessui/react'
 import { useState } from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
-import TelegramAlertButton from '@/components/TelegramAlertButton'
+// import TelegramAlertButton from '@/components/TelegramAlertButton'
 import useCorrectConnected from '@/hooks/useCorrectConnected'
 import { searchUserOrder, searchUserOrderUrl } from '@/api'
 import SettledTable from './SettledTable'
@@ -55,9 +55,9 @@ export default function Tabs() {
             <Tab className={tabClasses}>{'Deals Completed'}</Tab>
           </Tab.List>
 
-          <div className={'absolute right-0 flex h-[36px] w-fit'}>
+          {/* <div className={'absolute right-0 flex h-[36px] w-fit'}>
             <TelegramAlertButton />
-          </div>
+          </div> */}
         </div>
 
         <div className={'w-full max-w-[1260px] overflow-x-auto'}>

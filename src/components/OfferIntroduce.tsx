@@ -1,25 +1,25 @@
-'use client'
+// 'use client'
 import clsx from 'clsx'
-import { useQuery } from '@tanstack/react-query'
-import { useAccount } from 'wagmi'
-import TelegramAlertButton from '@/components/TelegramAlertButton'
-import {
-  fetchGetCurrentLoginUser,
-  getCurrentLoginUser,
-} from '@/api/get-current-login-user'
-import { LoggedInLocalStorageKey } from '@/constant'
+// import { useQuery } from '@tanstack/react-query'
+// import { useAccount } from 'wagmi'
+// import TelegramAlertButton from '@/components/TelegramAlertButton'
+// import {
+//   fetchGetCurrentLoginUser,
+//   getCurrentLoginUser,
+// } from '@/api/get-current-login-user'
+// import { LoggedInLocalStorageKey } from '@/constant'
 
 export default function OfferIntroduce({ className }: { className?: string }) {
-  const address = useAccount().address
-  const { data: userInfo } = useQuery({
-    enabled:
-      Boolean(address) &&
-      Boolean(window.localStorage.getItem(LoggedInLocalStorageKey)),
-    queryKey: [getCurrentLoginUser],
-    queryFn: () => {
-      return fetchGetCurrentLoginUser()
-    },
-  })
+  // const address = useAccount().address
+  // const { data: userInfo } = useQuery({
+  //   enabled:
+  //     Boolean(address) &&
+  //     Boolean(window.localStorage.getItem(LoggedInLocalStorageKey)),
+  //   queryKey: [getCurrentLoginUser],
+  //   queryFn: () => {
+  //     return fetchGetCurrentLoginUser()
+  //   },
+  // })
 
   return (
     <div
@@ -52,14 +52,14 @@ export default function OfferIntroduce({ className }: { className?: string }) {
         </a>
         {'.'}
       </p>
-      {!userInfo || userInfo.tgStatus ? null : (
+      {/* {!userInfo || userInfo.tgStatus ? null : (
         <p>
           {
             '4. Please connect your telegram to ensure that you can receive timely alerts such as settlement notifications, confirmation notifications and deals completion!'
           }
         </p>
       )}
-      <TelegramAlertButton type={2} />
+      <TelegramAlertButton type={2} /> */}
     </div>
   )
 }
