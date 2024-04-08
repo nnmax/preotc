@@ -9,7 +9,6 @@ import {
   useConfig,
   useAccountEffect,
   useConnections,
-  useDisconnect,
 } from 'wagmi'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { verifyMessage } from 'wagmi/actions'
@@ -24,11 +23,10 @@ import {
   ConnectWalletUrl,
   getUsdbBalanceUrl,
   getUsdbBalance,
-  disconnectWalletUrl,
-  disconnectWallet,
 } from '@/api'
 import {
   ActiveWalletLocalStorageKey,
+  LoggedInLocalStorageKey,
   MessageLocalStorageKey,
   RecentWalletsLocalStorageKey,
   SignatureLocalStorageKey,
@@ -41,7 +39,7 @@ import ConnectSvg from '@/images/connect-different-wallet.svg'
 import BlastIcon from '@/images/blast-icon.svg'
 import isBlastChain from '@/utils/isBlastChain'
 import type { WalletType } from '@/types'
-import type { SetStateAction } from 'react'
+import type { Dispatch, SetStateAction } from 'react'
 import type { StaticImport } from 'next/dist/shared/lib/get-img-props'
 import type { Hex } from 'viem'
 import type { ConnectWalletParams } from '@/api'
@@ -146,32 +144,26 @@ function useRecentWallets(options: { walletType: WalletType | undefined }) {
 }
 
 export default function ConnectWalletToolbar() {
-  useSign()
+  const [loggedIn, setLoggedIn] = useState<boolean>(false)
+  useSign(setLoggedIn)
   const [walletType, setWalletType] = useState<WalletType>()
   const connections = useConnections()
   const { address, chainId, chain: chainOut } = useAccount()
   const queryClient = useQueryClient()
 
-  const { disconnect } = useDisconnect()
   const { recentWalletState, setRecentWalletState } = useRecentWallets({
     walletType,
   })
   const { data: usdbBalance } = useQuery({
-    enabled: Boolean(address) && isBlastChain(chainId),
+    enabled: Boolean(address) && isBlastChain(chainId) && loggedIn,
     queryKey: [getUsdbBalanceUrl, address],
     queryFn: () => {
       if (!address) throw new Error('address is required')
       return getUsdbBalance({ address })
     },
   })
-  const { mutate: disconnectWalletFn } = useMutation({
-    mutationKey: [disconnectWalletUrl],
-    mutationFn: disconnectWallet,
-  })
 
   const handleDisconnect = (close?: () => void) => {
-    disconnect()
-    disconnectWalletFn()
     logout()
     close?.()
     queryClient.invalidateQueries()
@@ -182,6 +174,10 @@ export default function ConnectWalletToolbar() {
       handleDisconnect()
     },
   })
+
+  useEffect(() => {
+    setLoggedIn(Boolean(window.localStorage.getItem(LoggedInLocalStorageKey)))
+  }, [])
 
   useEffect(() => {
     if (connections.length === 0) return
@@ -446,7 +442,7 @@ export default function ConnectWalletToolbar() {
   )
 }
 
-function useSign() {
+function useSign(setLoggedIn: Dispatch<SetStateAction<boolean>>) {
   const { address } = useAccount()
   const { mutateAsync } = useMutation({
     mutationKey: [ConnectWalletUrl],
@@ -485,15 +481,17 @@ function useSign() {
       })
       window.localStorage.setItem(SignatureLocalStorageKey, signature)
       window.localStorage.setItem(MessageLocalStorageKey, message)
-      mutateAsync({
+      await mutateAsync({
         address,
         signature,
         message,
       })
+      window.localStorage.setItem(LoggedInLocalStorageKey, 'true')
+      setLoggedIn(true)
     }
 
     run()
-  }, [address, config, mutateAsync, signMessageAsync])
+  }, [address, config, mutateAsync, signMessageAsync, setLoggedIn])
 }
 
 const Box = forwardRef<

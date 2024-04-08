@@ -1,3 +1,4 @@
+export const LoggedInLocalStorageKey = 'loggedIn'
 export const SignatureLocalStorageKey = 'signature'
 export const MessageLocalStorageKey = 'message'
 export const ActiveWalletLocalStorageKey = 'activeWallet'

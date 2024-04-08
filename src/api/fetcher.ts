@@ -25,6 +25,7 @@ export default function fetcher<ResponseData = unknown>(
       'Content-Type': 'application/json',
       ...rest?.headers,
     },
+    credentials: 'include',
   })
     .then<CommonResponse<ResponseData>>((response) => {
       if (response.ok) {
@@ -38,6 +39,7 @@ export default function fetcher<ResponseData = unknown>(
       }
       if (data.code === 401) {
         logout()
+        throw data
       }
       if (
         disabledErrorToast === true ||

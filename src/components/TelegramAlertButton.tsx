@@ -19,6 +19,7 @@ import {
   getCurrentLoginUser,
 } from '@/api/get-current-login-user'
 import Tooltip from '@/components/Tooltip'
+import { LoggedInLocalStorageKey } from '@/constant'
 
 const info =
   'Please connect your telegram to ensure that you can receive timely alerts such as settlement notifications and successful deals!'
@@ -29,7 +30,9 @@ export default function TelegramAlertButton({ type }: { type?: 1 | 2 }) {
   const [code, setCode] = useState<string>('')
   const [connected, setConnected] = useState<boolean>(false)
   const { data: userInfo } = useQuery({
-    enabled: Boolean(address),
+    enabled:
+      Boolean(address) &&
+      Boolean(window.localStorage.getItem(LoggedInLocalStorageKey)),
     queryKey: [getCurrentLoginUser],
     queryFn: () => {
       return fetchGetCurrentLoginUser()

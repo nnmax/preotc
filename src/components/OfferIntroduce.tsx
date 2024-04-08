@@ -7,11 +7,14 @@ import {
   fetchGetCurrentLoginUser,
   getCurrentLoginUser,
 } from '@/api/get-current-login-user'
+import { LoggedInLocalStorageKey } from '@/constant'
 
 export default function OfferIntroduce({ className }: { className?: string }) {
   const address = useAccount().address
   const { data: userInfo } = useQuery({
-    enabled: Boolean(address),
+    enabled:
+      Boolean(address) &&
+      Boolean(window.localStorage.getItem(LoggedInLocalStorageKey)),
     queryKey: [getCurrentLoginUser],
     queryFn: () => {
       return fetchGetCurrentLoginUser()

@@ -42,7 +42,7 @@ const blastSepolia: Chain = {
   },
 }
 
-const config = getDefaultConfig({
+export const config = getDefaultConfig({
   appName: 'Preotc',
   projectId: '60f242737f175a70e868fe0dda3a1f40',
   wallets: [
