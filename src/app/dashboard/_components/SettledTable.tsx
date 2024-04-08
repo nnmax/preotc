@@ -22,7 +22,7 @@ export default function SettledTable({
   rows,
   completed,
   correctConnected,
-  isPending,
+  isLoading,
 }: TableCommonProps) {
   const [depositModalOpen, setDepositModalOpen] = useState(false)
   const [settledModalOpen, setSettledModalOpen] = useState(false)
@@ -138,7 +138,7 @@ export default function SettledTable({
       <DataGrid<SearchUserOrderResponse>
         columns={columns}
         rows={rows}
-        loading={isPending}
+        loading={isLoading}
       />
       <DepositModal
         open={depositModalOpen}

@@ -53,7 +53,7 @@ export default function SecondStepPanel(props: SecondStepPanelProps) {
       >{`$ ${price.toLocaleString()}`}</span>
       <p className={'mt-8 flex items-center justify-between leading-4'}>
         <span className={'text-[#737373]'}>{'PreOTC fee'}</span>
-        <span className={'ml-auto mr-2'}>{`${fee}%`}</span>
+        <span className={'ml-auto mr-2'}>{`${fee * 100}%`}</span>
         {type === 'sell' && (
           <Tooltip placement={'top-end'} title={info}>
             <Image

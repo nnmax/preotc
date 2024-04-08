@@ -25,7 +25,7 @@ export default function Tabs() {
     Number(searchParams.get('tab') ?? 0) as TabIndex,
   )
   const dashboardType = tabIndex === 0 ? 2 : tabIndex === 1 ? 1 : 3
-  const { data, isPending } = useQuery({
+  const { data, isLoading } = useQuery({
     enabled: correctConnected,
     queryKey: [searchUserOrderUrl, dashboardType],
     queryFn: () => {
@@ -65,7 +65,7 @@ export default function Tabs() {
             <Tab.Panel>
               <SettledTable
                 rows={data}
-                isPending={isPending}
+                isLoading={isLoading}
                 correctConnected={correctConnected}
                 completed={completed}
               />
@@ -73,7 +73,7 @@ export default function Tabs() {
             <Tab.Panel>
               <OffersTable
                 rows={data}
-                isPending={isPending}
+                isLoading={isLoading}
                 correctConnected={correctConnected}
                 completed={completed}
               />
@@ -81,7 +81,7 @@ export default function Tabs() {
             <Tab.Panel>
               <CompletedTable
                 rows={data}
-                isPending={isPending}
+                isLoading={isLoading}
                 correctConnected={correctConnected}
                 completed={completed}
               />

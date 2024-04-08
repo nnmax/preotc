@@ -4,5 +4,5 @@ export interface TableCommonProps {
   rows: SearchUserOrderResponse[] | undefined
   completed: boolean
   correctConnected: boolean
-  isPending: boolean
+  isLoading: boolean
 }

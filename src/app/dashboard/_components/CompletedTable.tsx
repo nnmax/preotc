@@ -12,7 +12,7 @@ export default function CompletedTable({
   rows,
   completed,
   correctConnected,
-  isPending,
+  isLoading,
 }: TableCommonProps) {
   const { openConnectModal } = useConnectModal()
 
@@ -76,7 +76,7 @@ export default function CompletedTable({
       <DataGrid<SearchUserOrderResponse>
         columns={columns}
         rows={rows}
-        loading={isPending}
+        loading={isLoading}
       />
       {!correctConnected && completed && (
         <Button

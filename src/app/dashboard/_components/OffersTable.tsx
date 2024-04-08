@@ -18,7 +18,7 @@ export default function OffersTable({
   rows,
   completed,
   correctConnected,
-  isPending,
+  isLoading,
 }: TableCommonProps) {
   const { openConnectModal } = useConnectModal()
   const queryClient = useQueryClient()
@@ -136,7 +136,7 @@ export default function OffersTable({
       <DataGrid<SearchUserOrderResponse>
         columns={columns}
         rows={rows}
-        loading={isPending}
+        loading={isLoading}
       />
       {!correctConnected && completed && (
         <Button
