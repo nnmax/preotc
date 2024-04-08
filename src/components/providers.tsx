@@ -2,8 +2,8 @@
 import React from 'react'
 import { RainbowKitProvider, getDefaultConfig } from '@rainbow-me/rainbowkit'
 import {
-  metaMaskWallet,
-  rainbowWallet,
+  // metaMaskWallet,
+  // rainbowWallet,
   coinbaseWallet,
   walletConnectWallet,
   okxWallet,
@@ -49,8 +49,8 @@ export const config = getDefaultConfig({
     {
       groupName: 'Popular',
       wallets: [
-        metaMaskWallet,
-        rainbowWallet,
+        // metaMaskWallet,
+        // rainbowWallet,
         coinbaseWallet,
         walletConnectWallet,
         okxWallet,
