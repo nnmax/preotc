@@ -10,6 +10,10 @@ import { cancelOrder, cancelOrderUrl } from '@/api/cancel-order'
 import WalletBlackSvg from '@/images/wallet-black.svg'
 import Button from '@/components/Button'
 import DataGrid from '@/app/dashboard/_components/DataGrid/DataGrid'
+import {
+  submitCancelOrder,
+  submitCancelOrderUrl,
+} from '@/api/submit-cancel-order'
 import type { TableCommonProps } from '@/app/dashboard/types'
 import type { Column } from '@/app/dashboard/_components/DataGrid/DataGrid'
 import type { SearchUserOrderResponse } from '@/api'
@@ -27,6 +31,13 @@ export default function OffersTable({
       mutationKey: [cancelOrderUrl],
       mutationFn: cancelOrder,
     })
+  const {
+    mutateAsync: submitCancelOrderAsync,
+    isPending: submittingCancelOrder,
+  } = useMutation({
+    mutationKey: [submitCancelOrderUrl],
+    mutationFn: submitCancelOrder,
+  })
   const { sendTransactionAsync, isPending: sendingTransaction } =
     useSendTransaction()
 
@@ -35,7 +46,7 @@ export default function OffersTable({
       orderId,
     })
 
-    await sendTransactionAsync({
+    const txHash = await sendTransactionAsync({
       to: cancelOrderCallData.destination,
       data: cancelOrderCallData.callData,
       value: parseEther(cancelOrderCallData.value.toString()),
@@ -46,6 +57,11 @@ export default function OffersTable({
         error?.shortMessage ?? error?.message ?? 'TransactionExecutionError',
       )
       throw error
+    })
+
+    await submitCancelOrderAsync({
+      orderId,
+      txHash,
     })
 
     toast.success('Order canceled successfully')
@@ -120,7 +136,7 @@ export default function OffersTable({
               'rounded border border-solid border-[#aaa] px-3 py-[5px] text-xs text-[#aaa]'
             }
           >
-            {cancelingOrder || sendingTransaction ? (
+            {cancelingOrder || sendingTransaction || submittingCancelOrder ? (
               <span className={'loading loading-dots'} />
             ) : (
               'Cancel'
