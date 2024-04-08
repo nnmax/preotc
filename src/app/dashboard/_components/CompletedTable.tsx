@@ -31,7 +31,7 @@ export default function CompletedTable({
               height={'24'}
             />
             {row.projectName}
-            <sup>{`#${row.projectId}`}</sup>
+            <sup>{`#${row.id}`}</sup>
           </div>
         )
       },

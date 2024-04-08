@@ -66,7 +66,7 @@ export default function SettledTable({
             height={'24'}
           />
           {row.projectName}
-          <sup>{`#${row.projectId}`}</sup>
+          <sup>{`#${row.id}`}</sup>
         </div>
       ),
     },

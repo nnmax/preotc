@@ -69,7 +69,7 @@ export default function OffersTable({
               height={'24'}
             />
             {row.projectName}
-            <sup>{`#${row.projectId}`}</sup>
+            <sup>{`#${row.id}`}</sup>
           </div>
         )
       },
