@@ -22,8 +22,7 @@ import useDepositTransaction from '@/hooks/useDepositTransaction'
 import DepositSuccessfulDialog from '@/components/DepositSuccessfulDialog'
 import InsufficientBalanceDialog from '@/components/InsufficientBalanceDialog'
 import isSameAddress from '@/utils/isSameAddress'
-import { USDB_LIMIT } from '@/constant'
-import DangerSvg from '@/images/danger.svg'
+import { PERCENTAGE_LIMIT, USDB_LIMIT } from '@/constant'
 import FirstStepPanel from './FirstStepPanel'
 import SecondStepPanel from './SecondStepPanel'
 
@@ -47,7 +46,8 @@ export default function FormPanel() {
   const [successfulDialogOpen, setSuccessfulDialogOpen] = useState(false)
   const [balanceDialogOpen, setBalanceDialogOpen] = useState(false)
   const same = isSameAddress(data, address)
-  const invalid = (data?.price ?? 0) * rangeValue < USDB_LIMIT
+  const min = Math.min(data ? data.amount * PERCENTAGE_LIMIT : 0, USDB_LIMIT)
+  const invalid = rangeValue < min
 
   useEffect(() => {
     if (data?.amount) {
@@ -120,6 +120,7 @@ export default function FormPanel() {
         rangeValue={rangeValue}
         setRangeValue={setRangeValue}
         max={data?.amount ?? 0}
+        min={min}
         pricePerToken={data?.price}
         unit={data?.singularUnit}
       />
@@ -178,18 +179,6 @@ export default function FormPanel() {
         avatarUrl={data?.projectAvatarUrl}
       />
       {stepPanel}
-      {invalid && (
-        <div className={'relative'}>
-          <p
-            className={
-              'absolute flex items-center pl-10 text-xs leading-[30px] text-white'
-            }
-          >
-            <Image src={DangerSvg} alt={'danger'} className={'mr-[10px]'} />
-            {'The value of each order must be greater than $100.'}
-          </p>
-        </div>
-      )}
       {address ? (
         stepButton
       ) : (

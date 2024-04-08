@@ -8,3 +8,4 @@ export const stepPanelClasses = 'rounded-[10px] bg-[#162024] p-6 mb-12 mt-4'
 export const NewMarketEvent = 'NEW_MARKET'
 export const BLAST_TESTNET_CHAIN_ID = 168587773
 export const USDB_LIMIT = 100
+export const PERCENTAGE_LIMIT = 0.1

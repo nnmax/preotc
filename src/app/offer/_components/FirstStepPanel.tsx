@@ -5,7 +5,8 @@ interface FirstStepPanelProps {
   type: 'buy' | 'sell'
   rangeValue: number
   setRangeValue: React.Dispatch<React.SetStateAction<number>>
-  max: number | undefined
+  max: number
+  min: number
   pricePerToken: number | undefined
   unit: string | undefined
 }
@@ -15,6 +16,7 @@ export default function FirstStepPanel({
   rangeValue,
   setRangeValue,
   max,
+  min,
   pricePerToken,
   unit,
 }: FirstStepPanelProps) {
@@ -50,8 +52,8 @@ export default function FirstStepPanel({
         <input
           type={'range'}
           className={'range flex-1'}
-          min={0}
-          max={max ?? 0}
+          min={min}
+          max={max}
           onChange={handleRangeChange}
           value={rangeValue}
           style={{
