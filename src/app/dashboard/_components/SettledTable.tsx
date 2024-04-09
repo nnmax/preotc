@@ -105,7 +105,7 @@ export default function SettledTable({
       field: 'amount',
       headerName: 'VALUE (USDB)',
       renderCell: ({ row }) =>
-        new Decimal(row.amount).mul(row.price).toNumber(),
+        new Decimal(row.amount ?? 0).mul(row.price ?? 0).toNumber(),
     },
     {
       field: 'amount',

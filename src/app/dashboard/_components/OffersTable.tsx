@@ -109,7 +109,7 @@ export default function OffersTable({
       field: 'amount',
       headerName: 'VALUE (USDB)',
       renderCell: ({ row }) => {
-        return new Decimal(row.amount).mul(row.price).toNumber()
+        return new Decimal(row.amount ?? 0).mul(row.price ?? 0).toNumber()
       },
     },
     {

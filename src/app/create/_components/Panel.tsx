@@ -38,7 +38,7 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
     'pricePerToken',
     'projectId',
   ])
-  const price = new Decimal(amount).mul(pricePerToken).toNumber() || 0
+  const price = new Decimal(amount ?? 0).mul(pricePerToken ?? 0).toNumber()
   const invalid = price < USDB_LIMIT
   const [successfulDialogOpen, setSuccessfulDialogOpen] = useState(false)
   const [balanceDialogOpen, setBalanceDialogOpen] = useState(false)

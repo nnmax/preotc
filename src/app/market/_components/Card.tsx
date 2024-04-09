@@ -64,7 +64,7 @@ export default function Card(props: { data: MarketOrderData }) {
             title={(data.amount * data.price).toString()}
           >
             {numberFormatter.format(
-              new Decimal(data.amount).mul(data.price).toNumber(),
+              new Decimal(data.amount ?? 0).mul(data.price ?? 0).toNumber(),
             )}
             <Image src={USDBSvg} alt={'USDB'} width={'14'} className={'ml-1'} />
           </span>
