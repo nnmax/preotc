@@ -8,7 +8,7 @@ import { searchUserOrderUrl } from '@/api'
 import useCountdown from '@/hooks/useCountdown'
 import DepositSuccessfulModal from '@/app/dashboard/_components/DepositSuccessfulModal'
 import SettleConfirmDialog from '@/app/dashboard/_components/SettleConfirmDialog'
-import { SettledConfirmLocalStorageKey } from '@/constant'
+import { SettledOrderIdsStorageKey } from '@/constant'
 import WalletBlackSvg from '@/images/wallet-black.svg'
 import Button from '@/components/Button'
 import DataGrid from '@/app/dashboard/_components/DataGrid/DataGrid'
@@ -39,16 +39,34 @@ export default function SettledTable({
   }
 
   useEffect(() => {
-    if (
-      rows &&
-      rows.some((item) => getSettledStatus(item.deliverDeadline, item.type))
-    ) {
-      const settledConfirm = window.localStorage.getItem(
-        SettledConfirmLocalStorageKey,
+    const settledIds = (rows ?? [])
+      .filter((row) => getSettledStatus(row.deliverDeadline, row.type))
+      .map((row) => row.id)
+    if (settledIds.length <= 0) return
+
+    const settledIdsFromStorageRaw = window.localStorage.getItem(
+      SettledOrderIdsStorageKey,
+    )
+    let settledIdsFromStorage: number[] = []
+
+    try {
+      settledIdsFromStorage = settledIdsFromStorageRaw
+        ? JSON.parse(settledIdsFromStorageRaw)
+        : []
+    } catch (error) {
+      settledIdsFromStorage = []
+    }
+
+    const count = settledIds.filter(
+      (item) => !settledIdsFromStorage.includes(item),
+    ).length
+
+    if (count > 0) {
+      setSettledModalOpen(true)
+      window.localStorage.setItem(
+        SettledOrderIdsStorageKey,
+        JSON.stringify(settledIds),
       )
-      if (!settledConfirm) {
-        setSettledModalOpen(true)
-      }
     }
   }, [rows])
 

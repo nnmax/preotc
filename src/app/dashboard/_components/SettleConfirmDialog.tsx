@@ -1,5 +1,4 @@
 import Dialog from '@/components/Dialog'
-import { SettledConfirmLocalStorageKey } from '@/constant'
 
 interface SettleConfirmDialogProps {
   open: boolean
@@ -11,7 +10,6 @@ export default function SettleConfirmDialog(props: SettleConfirmDialogProps) {
 
   const handleClose = () => {
     setOpen(false)
-    window.localStorage.setItem(SettledConfirmLocalStorageKey, 'true')
   }
 
   return (
