@@ -2,6 +2,8 @@
 import { useSearchParams } from 'next/navigation'
 import OfferLayout from '@/components/OfferLayout'
 
+export const dynamic = 'force-dynamic'
+
 export default function Layout({ children }: { children: React.ReactNode }) {
   const searchParams = useSearchParams()
   const type = searchParams.get('type')
