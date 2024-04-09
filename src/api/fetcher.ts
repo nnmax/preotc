@@ -2,7 +2,7 @@ import { toast } from 'react-toastify'
 import logout from '@/utils/logout'
 import type { CommonResponse } from '@/api/types'
 
-const API_ENDPOINT = process.env.API_ENDPOINT
+const NEXT_PUBLIC_API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT
 
 interface FetcherOptions<ResponseData> extends RequestInit {
   disabledErrorToast?:
@@ -17,7 +17,7 @@ export default function fetcher<ResponseData = unknown>(
   const { disabledErrorToast, ...rest } = options || {}
   let url = input
   if (typeof window === 'undefined') {
-    url = API_ENDPOINT + input
+    url = NEXT_PUBLIC_API_ENDPOINT + input
   }
   return fetch(url, {
     ...rest,

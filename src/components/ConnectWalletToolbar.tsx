@@ -120,6 +120,10 @@ function useRecentWallets(options: { walletType: WalletType | undefined }) {
   )
 
   useEffect(() => {
+    console.log(
+      'NEXT_PUBLIC_API_ENDPOINT',
+      process.env.NEXT_PUBLIC_API_ENDPOINT,
+    )
     try {
       let recentWallets: WalletRaw[] = JSON.parse(
         window.localStorage.getItem(RecentWalletsLocalStorageKey) ?? '[]',
