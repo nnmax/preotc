@@ -7,8 +7,6 @@ import { useConnectModal } from '@rainbow-me/rainbowkit'
 import Decimal from 'decimal.js'
 import useCountdown from '@/hooks/useCountdown'
 import DepositSuccessfulModal from '@/app/dashboard/_components/DepositSuccessfulModal'
-import SettleConfirmDialog from '@/app/dashboard/_components/SettleConfirmDialog'
-import { SettledOrderIdsStorageKey } from '@/constant'
 import WalletBlackSvg from '@/images/wallet-black.svg'
 import Button from '@/components/Button'
 import DataGrid from '@/app/dashboard/_components/DataGrid/DataGrid'
@@ -25,7 +23,6 @@ export default function SettledTable({
   isLoading,
 }: TableCommonProps) {
   const [depositModalOpen, setDepositModalOpen] = useState(false)
-  const [settledModalOpen, setSettledModalOpen] = useState(false)
 
   const { openConnectModal } = useConnectModal()
   const queryClient = useQueryClient()
@@ -37,38 +34,6 @@ export default function SettledTable({
     setCurrentData(current)
     setDepositModalOpen(true)
   }
-
-  useEffect(() => {
-    const settledIds = (rows ?? [])
-      .filter((row) => getSettledStatus(row.deliverDeadline, row.type))
-      .map((row) => row.id)
-    if (settledIds.length <= 0) return
-
-    const settledIdsFromStorageRaw = window.localStorage.getItem(
-      SettledOrderIdsStorageKey,
-    )
-    let settledIdsFromStorage: number[] = []
-
-    try {
-      settledIdsFromStorage = settledIdsFromStorageRaw
-        ? JSON.parse(settledIdsFromStorageRaw)
-        : []
-    } catch (error) {
-      settledIdsFromStorage = []
-    }
-
-    const count = settledIds.filter(
-      (item) => !settledIdsFromStorage.includes(item),
-    ).length
-
-    if (count > 0) {
-      setSettledModalOpen(true)
-      window.localStorage.setItem(
-        SettledOrderIdsStorageKey,
-        JSON.stringify(settledIds),
-      )
-    }
-  }, [rows])
 
   const columns: Column<UserOrderData>[] = [
     {
@@ -175,10 +140,6 @@ export default function SettledTable({
       <DepositSuccessfulModal
         open={depositSuccessfulModalOpen}
         setOpen={setDepositSuccessfulModalOpen}
-      />
-      <SettleConfirmDialog
-        open={settledModalOpen}
-        setOpen={setSettledModalOpen}
       />
       {!correctConnected && completed && (
         <Button
