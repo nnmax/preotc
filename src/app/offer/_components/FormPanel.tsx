@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { toNumber } from 'lodash-es'
 import { toast } from 'react-toastify'
+import Decimal from 'decimal.js'
 import WalletSvg from '@/images/wallet.svg'
 import DangerSvg from '@/images/danger.svg'
 import Button from '@/components/Button'
@@ -41,7 +42,9 @@ export default function FormPanel() {
   const [successfulDialogOpen, setSuccessfulDialogOpen] = useState(false)
   const [balanceDialogOpen, setBalanceDialogOpen] = useState(false)
   const same = isSameAddress(data, address)
-  const min = data ? data.amount * PERCENTAGE_LIMIT : 0
+  const min = data
+    ? new Decimal(data.amount).mul(PERCENTAGE_LIMIT).toNumber()
+    : 0
   const lessThanUsdbLimit = (data?.price ?? 0) * rangeValue < USDB_LIMIT
   const invalid = rangeValue < min || lessThanUsdbLimit
 

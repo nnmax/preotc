@@ -6,6 +6,7 @@ import { toast } from 'react-toastify'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
+import Decimal from 'decimal.js'
 import WalletBlackSvg from '@/images/wallet-black.svg'
 import Button from '@/components/Button'
 import DataGrid from '@/app/dashboard/_components/DataGrid/DataGrid'
@@ -108,7 +109,7 @@ export default function OffersTable({
       field: 'amount',
       headerName: 'VALUE (USDB)',
       renderCell: ({ row }) => {
-        return row.amount * row.price
+        return new Decimal(row.amount).mul(row.price).toNumber()
       },
     },
     {

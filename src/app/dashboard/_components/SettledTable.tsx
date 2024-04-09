@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
+import Decimal from 'decimal.js'
 import useCountdown from '@/hooks/useCountdown'
 import DepositSuccessfulModal from '@/app/dashboard/_components/DepositSuccessfulModal'
 import SettleConfirmDialog from '@/app/dashboard/_components/SettleConfirmDialog'
@@ -103,7 +104,8 @@ export default function SettledTable({
     {
       field: 'amount',
       headerName: 'VALUE (USDB)',
-      renderCell: ({ row }) => row.amount * row.price,
+      renderCell: ({ row }) =>
+        new Decimal(row.amount).mul(row.price).toNumber(),
     },
     {
       field: 'amount',

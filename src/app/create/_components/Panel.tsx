@@ -4,6 +4,7 @@ import { useFormContext } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import { capitalize } from 'lodash-es'
 import { useRouter } from 'next/navigation'
+import Decimal from 'decimal.js'
 import DangerSvg from '@/images/danger.svg'
 import Button from '@/components/Button'
 import SecondStepPanel from '@/app/offer/_components/SecondStepPanel'
@@ -37,7 +38,7 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
     'pricePerToken',
     'projectId',
   ])
-  const price = amount * pricePerToken || 0
+  const price = new Decimal(amount).mul(pricePerToken).toNumber() || 0
   const invalid = price < USDB_LIMIT
   const [successfulDialogOpen, setSuccessfulDialogOpen] = useState(false)
   const [balanceDialogOpen, setBalanceDialogOpen] = useState(false)

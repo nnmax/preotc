@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import dayjs from 'dayjs'
+import Decimal from 'decimal.js'
 import USDBSvg from '@/images/USDB.svg'
 import RightSVG from '@/images/right.svg'
 import LinkButton from '@/app/market/_components/LinkButton'
@@ -42,11 +43,8 @@ export default function Card(props: { data: MarketOrderData }) {
           <span className={'mb-4 text-xs text-[rgba(155,155,155,0.6)]'}>
             {'Offer'}
           </span>
-          <span
-            className={'mb-4 flex items-center leading-[14px]'}
-            title={data.amount.toString()}
-          >
-            {`${numberFormatter.format(data.amount)} ${data.pluralUnit}`}
+          <span className={'mb-4 flex items-center leading-[14px]'}>
+            {`${data.amount} ${data.pluralUnit}`}
           </span>
           <span className={'text-xs leading-3 text-white'}>
             {`$ ${data.price} / ${data.singularUnit}`}
@@ -65,7 +63,9 @@ export default function Card(props: { data: MarketOrderData }) {
             className={'flex items-center text-[#FFC300]'}
             title={(data.amount * data.price).toString()}
           >
-            {numberFormatter.format(data.amount * data.price)}
+            {numberFormatter.format(
+              new Decimal(data.amount).mul(data.price).toNumber(),
+            )}
             <Image src={USDBSvg} alt={'USDB'} width={'14'} className={'ml-1'} />
           </span>
         </div>
