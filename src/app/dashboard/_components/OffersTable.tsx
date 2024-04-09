@@ -5,6 +5,7 @@ import { parseEther } from 'viem'
 import { toast } from 'react-toastify'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useState } from 'react'
 import { searchUserOrderUrl } from '@/api'
 import { cancelOrder, cancelOrderUrl } from '@/api/cancel-order'
 import WalletBlackSvg from '@/images/wallet-black.svg'
@@ -26,48 +27,50 @@ export default function OffersTable({
 }: TableCommonProps) {
   const { openConnectModal } = useConnectModal()
   const queryClient = useQueryClient()
-  const { mutateAsync: cancelOrderAsync, isPending: cancelingOrder } =
-    useMutation({
-      mutationKey: [cancelOrderUrl],
-      mutationFn: cancelOrder,
-    })
-  const {
-    mutateAsync: submitCancelOrderAsync,
-    isPending: submittingCancelOrder,
-  } = useMutation({
+  const [submitting, setSubmitting] = useState(false)
+  const { mutateAsync: cancelOrderAsync } = useMutation({
+    mutationKey: [cancelOrderUrl],
+    mutationFn: cancelOrder,
+  })
+  const { mutateAsync: submitCancelOrderAsync } = useMutation({
     mutationKey: [submitCancelOrderUrl],
     mutationFn: submitCancelOrder,
   })
-  const { sendTransactionAsync, isPending: sendingTransaction } =
-    useSendTransaction()
+  const { sendTransactionAsync } = useSendTransaction()
 
   const handleCancel = async (orderId: number) => {
-    const { cancelOrderCallData } = await cancelOrderAsync({
-      orderId,
-    })
+    try {
+      setSubmitting(true)
+      const { cancelOrderCallData } = await cancelOrderAsync({
+        orderId,
+      })
 
-    const txHash = await sendTransactionAsync({
-      to: cancelOrderCallData.destination,
-      data: cancelOrderCallData.callData,
-      value: parseEther(cancelOrderCallData.value.toString()),
-      gas: process.env.NEXT_PUBLIC_IS_DEV === 'true' ? null : undefined,
-    }).catch((error) => {
-      console.log(error)
-      toast.error(
-        error?.shortMessage ?? error?.message ?? 'TransactionExecutionError',
-      )
-      throw error
-    })
+      const txHash = await sendTransactionAsync({
+        to: cancelOrderCallData.destination,
+        data: cancelOrderCallData.callData,
+        value: parseEther(cancelOrderCallData.value.toString()),
+        gas: process.env.NEXT_PUBLIC_IS_DEV === 'true' ? null : undefined,
+      }).catch((error) => {
+        console.log(error)
+        toast.error(
+          error?.shortMessage ?? error?.message ?? 'TransactionExecutionError',
+        )
+        throw error
+      })
 
-    await submitCancelOrderAsync({
-      orderId,
-      txHash,
-    })
+      await submitCancelOrderAsync({
+        orderId,
+        txHash,
+      })
 
-    toast.success('Order canceled successfully')
-    queryClient.invalidateQueries({
-      queryKey: [searchUserOrderUrl, 1],
-    })
+      await queryClient.invalidateQueries({
+        queryKey: [searchUserOrderUrl, 1],
+      })
+      setSubmitting(false)
+      toast.success('Order canceled successfully')
+    } catch (error) {
+      setSubmitting(false)
+    }
   }
 
   const columns: Column<SearchUserOrderResponse>[] = [
@@ -128,20 +131,11 @@ export default function OffersTable({
       headerName: 'ACTION',
       renderCell: ({ row }) => {
         return (
-          <button
+          <CancelButton
             onClick={() => handleCancel(row.id)}
-            type={'button'}
-            disabled={cancelingOrder || sendingTransaction}
-            className={
-              'rounded border border-solid border-[#aaa] px-3 py-[5px] text-xs text-[#aaa]'
-            }
-          >
-            {cancelingOrder || sendingTransaction || submittingCancelOrder ? (
-              <span className={'loading loading-dots'} />
-            ) : (
-              'Cancel'
-            )}
-          </button>
+            id={row.id}
+            loading={submitting}
+          />
         )
       },
     },
@@ -170,5 +164,39 @@ export default function OffersTable({
         </Button>
       )}
     </div>
+  )
+}
+
+function CancelButton({
+  onClick,
+  id,
+  loading,
+}: {
+  onClick: () => void
+  id: number
+  loading: boolean
+}) {
+  const [clickedId, setClickedId] = useState<number>()
+
+  return (
+    <button
+      onClick={(event) => {
+        const rowId = Number(event.currentTarget.dataset.rowId)
+        setClickedId(rowId)
+        onClick()
+      }}
+      data-row-id={id}
+      type={'button'}
+      disabled={clickedId === id && loading}
+      className={
+        'h-7 w-20 rounded border border-solid border-aaa/50 text-xs text-aaa'
+      }
+    >
+      {clickedId === id && loading ? (
+        <span className={'loading loading-dots'} />
+      ) : (
+        'Cancel'
+      )}
+    </button>
   )
 }

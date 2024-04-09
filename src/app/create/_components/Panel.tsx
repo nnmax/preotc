@@ -70,8 +70,11 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
       projectId: values.projectId,
       type: capitalize(tab) as MakeOrderParams['type'],
     }).catch((error) => {
+      // USDB 余额不足
       if (error?.code === 668800011) {
         setBalanceDialogOpen(true)
+      } else if (error?.code === 668800006) {
+        toast.error('The value of each order must be greater than $100.')
       } else {
         toast.error(error?.prompt)
       }

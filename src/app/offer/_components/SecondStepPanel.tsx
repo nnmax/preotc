@@ -19,27 +19,16 @@ const info =
 export default function SecondStepPanel(props: SecondStepPanelProps) {
   const { type, amount, pricePerToken, price, fee } = props
   const labelText = type === 'buy' ? 'Buying' : 'Selling'
-  const labelBg = type === 'buy' ? 'bg-[#FFC300]' : 'bg-[#EB2F96]'
+  const labelClasses = clsx('self-start rounded-[3px] px-2 text-sm leading-6', {
+    'bg-[#FFC300] text-black': type === 'buy',
+    'bg-[#EB2F96] text-white': type === 'sell',
+  })
 
   return (
     <div className={clsx(stepPanelClasses, 'flex flex-col')}>
-      <span
-        className={clsx(
-          labelBg,
-          'self-start rounded-[3px] px-2 text-sm leading-6 text-black',
-        )}
-      >
-        {labelText}
-      </span>
+      <span className={labelClasses}>{labelText}</span>
       <span className={'mb-6 mt-4 text-sm leading-[14px]'}>{amount}</span>
-      <span
-        className={clsx(
-          labelBg,
-          'self-start rounded-[3px] px-2 text-sm leading-6 text-black',
-        )}
-      >
-        {'Price Per Token'}
-      </span>
+      <span className={labelClasses}>{'Price Per Token'}</span>
       <p className={'mb-6 mt-4 flex items-center justify-between text-sm'}>
         <span>{pricePerToken}</span>
         <span className={'flex text-[#9E9E9E]'}>

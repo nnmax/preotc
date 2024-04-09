@@ -8,6 +8,7 @@ import { toNumber } from 'lodash-es'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 import WalletSvg from '@/images/wallet.svg'
+import DangerSvg from '@/images/danger.svg'
 import Button from '@/components/Button'
 import TokenHeader from '@/components/TokenHeader'
 import {
@@ -46,8 +47,9 @@ export default function FormPanel() {
   const [successfulDialogOpen, setSuccessfulDialogOpen] = useState(false)
   const [balanceDialogOpen, setBalanceDialogOpen] = useState(false)
   const same = isSameAddress(data, address)
-  const min = Math.min(data ? data.amount * PERCENTAGE_LIMIT : 0, USDB_LIMIT)
-  const invalid = rangeValue < min
+  const min = data ? data.amount * PERCENTAGE_LIMIT : 0
+  const lessThanUsdbLimit = (data?.price ?? 0) * rangeValue < USDB_LIMIT
+  const invalid = rangeValue < min || lessThanUsdbLimit
 
   useEffect(() => {
     if (data?.amount) {
@@ -80,8 +82,11 @@ export default function FormPanel() {
       orderId: data!.id,
       type: type === 'buy' ? 'Buying' : 'Selling',
     }).catch((error) => {
+      // USDB 余额不足
       if (error?.code === 668800011) {
         setBalanceDialogOpen(true)
+      } else if (error?.code === 668800006) {
+        toast.error('The value of each order must be greater than $100.')
       } else {
         toast.error(error?.prompt)
       }
@@ -179,6 +184,18 @@ export default function FormPanel() {
         avatarUrl={data?.projectAvatarUrl}
       />
       {stepPanel}
+      {lessThanUsdbLimit && (
+        <div className={'relative'}>
+          <p
+            className={
+              'absolute flex items-center pl-10 text-xs leading-[30px] text-white'
+            }
+          >
+            <Image src={DangerSvg} alt={'danger'} className={'mr-[10px]'} />
+            {'The value of each order must be greater than $100.'}
+          </p>
+        </div>
+      )}
       {address ? (
         stepButton
       ) : (
