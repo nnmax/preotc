@@ -154,6 +154,7 @@ export default function ConnectWalletToolbar() {
     address,
     query: {
       enabled: Boolean(address) && isBlastChain(chainId) && loggedIn,
+      refetchInterval: 5000,
     },
   })
 
