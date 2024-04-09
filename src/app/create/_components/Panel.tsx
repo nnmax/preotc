@@ -153,7 +153,7 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
         onClick={handleDeposit}
         loading={sendingTransaction || depositMakingOrder}
       >
-        {`Deposit ${(price * (tab === 'selling' ? 2 : 1)).toLocaleString()} USDB`}
+        {`Deposit ${new Decimal(price).mul(tab === 'selling' ? 2 : 1).toNumber()} USDB`}
       </Button>
     )
   }
