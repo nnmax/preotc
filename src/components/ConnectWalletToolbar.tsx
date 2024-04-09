@@ -468,7 +468,11 @@ function useSign(setLoggedIn: Dispatch<SetStateAction<boolean>>) {
       const signature = await signMessageAsync({
         message,
         account: address,
+      }).catch(() => {
+        logout()
+        return null
       })
+      if (!signature) return
       window.localStorage.setItem(SignatureLocalStorageKey, signature)
       window.localStorage.setItem(MessageLocalStorageKey, message)
       connectWalletAsync({
