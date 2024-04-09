@@ -5,25 +5,18 @@ import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { useEffect, useState } from 'react'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { toNumber } from 'lodash-es'
-import { useMutation, useQuery } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 import WalletSvg from '@/images/wallet.svg'
 import DangerSvg from '@/images/danger.svg'
 import Button from '@/components/Button'
 import TokenHeader from '@/components/TokenHeader'
-import {
-  depositTakeOrder,
-  depositTakeOrderUrl,
-  getMarketOrderById,
-  getMarketOrderByIdUrl,
-  takeOrder,
-  takeOrderUrl,
-} from '@/api'
 import useDepositTransaction from '@/hooks/useDepositTransaction'
 import DepositSuccessfulDialog from '@/components/DepositSuccessfulDialog'
 import InsufficientBalanceDialog from '@/components/InsufficientBalanceDialog'
 import isSameAddress from '@/utils/isSameAddress'
 import { PERCENTAGE_LIMIT, USDB_LIMIT } from '@/constant'
+import { useDepositTakeOrder, useTakeOrder } from '@/api/mutation'
+import { useMarketOrderById } from '@/api/query'
 import FirstStepPanel from './FirstStepPanel'
 import SecondStepPanel from './SecondStepPanel'
 
@@ -31,10 +24,10 @@ export default function FormPanel() {
   const searchParams = useSearchParams()
   const { id } = useParams()
   const type = searchParams.get('type') as 'buy' | 'sell'
-  const { data, isPending } = useQuery({
-    queryKey: [getMarketOrderByIdUrl, id],
-    queryFn: () => {
-      return getMarketOrderById({ id: toNumber(id) })
+  const { data, isPending } = useMarketOrderById({
+    id: toNumber(id),
+    query: {
+      enabled: !!id,
     },
   })
 
@@ -62,19 +55,13 @@ export default function FormPanel() {
   }, [router, same])
 
   const {
-    mutateAsync: takeOrderAsync,
+    takeOrderAsync,
     isPending: takingOrder,
     data: takeOrderResponse,
-  } = useMutation({
-    mutationKey: [takeOrderUrl],
-    mutationFn: takeOrder,
-  })
+  } = useTakeOrder()
 
-  const { mutateAsync: depositTakeOrderAsync, isPending: depositTakingOrder } =
-    useMutation({
-      mutationKey: [depositTakeOrderUrl],
-      mutationFn: depositTakeOrder,
-    })
+  const { depositTakeOrderAsync, isPending: depositTakingOrder } =
+    useDepositTakeOrder()
 
   const handleValid = async () => {
     await takeOrderAsync({

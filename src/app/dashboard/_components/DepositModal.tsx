@@ -1,17 +1,12 @@
 import Image from 'next/image'
-import { useMutation } from '@tanstack/react-query'
 import Dialog from '@/components/Dialog'
-import {
-  settledDeposit,
-  settledDepositUrl,
-  type SearchUserOrderResponse,
-} from '@/api'
-import type { SettledDepositParams } from '@/api'
+import { useSettledDeposit } from '@/api/mutation'
+import type { UserOrderData } from '@/api/query'
 
 interface DepositModalProps {
   open: boolean
   setOpen: (open: boolean) => void
-  currentData: SearchUserOrderResponse | undefined
+  currentData: UserOrderData | undefined
   onSuccess?: () => void
 }
 
@@ -21,12 +16,7 @@ export default function DepositModal({
   currentData,
   onSuccess,
 }: DepositModalProps) {
-  const { mutateAsync: settledDepositAsync, isPending } = useMutation({
-    mutationKey: [settledDepositUrl],
-    mutationFn: (variables: SettledDepositParams) => {
-      return settledDeposit(variables)
-    },
-  })
+  const { settledDepositAsync, isPending } = useSettledDeposit()
 
   const handleDeposit = async () => {
     await settledDepositAsync({

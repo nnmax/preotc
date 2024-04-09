@@ -4,9 +4,9 @@ import Link from 'next/link'
 import { useAccount } from 'wagmi'
 import { useMemo } from 'react'
 import isSameAddress from '@/utils/isSameAddress'
-import type { SearchMarketOrderResponse } from '@/api'
+import type { MarketOrderData } from '@/api/query'
 
-export default function LinkButton(props: { data: SearchMarketOrderResponse }) {
+export default function LinkButton(props: { data: MarketOrderData }) {
   const { data } = props
   const { address } = useAccount()
   const same = isSameAddress(data, address)

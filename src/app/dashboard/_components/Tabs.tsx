@@ -2,10 +2,9 @@
 import { Tab } from '@headlessui/react'
 import { useState } from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { useQuery } from '@tanstack/react-query'
 // import TelegramAlertButton from '@/components/TelegramAlertButton'
 import useCorrectConnected from '@/hooks/useCorrectConnected'
-import { searchUserOrder, searchUserOrderUrl } from '@/api'
+import { useUserOrder } from '@/api/query'
 import SettledTable from './SettledTable'
 import OffersTable from './OffersTable'
 import CompletedTable from './CompletedTable'
@@ -25,14 +24,9 @@ export default function Tabs() {
     Number(searchParams.get('tab') ?? 0) as TabIndex,
   )
   const dashboardType = tabIndex === 0 ? 2 : tabIndex === 1 ? 1 : 3
-  const { data, isLoading } = useQuery({
-    enabled: correctConnected,
-    queryKey: [searchUserOrderUrl, dashboardType],
-    queryFn: () => {
-      return searchUserOrder({
-        dashboardType,
-      })
-    },
+  const { data, isLoading } = useUserOrder({
+    dashboardType,
+    query: { enabled: correctConnected },
   })
 
   return (

@@ -6,7 +6,7 @@ import { useAccount, useSendTransaction, useSwitchChain } from 'wagmi'
 import { blast } from 'wagmi/chains'
 import isBlastChain from '@/utils/isBlastChain'
 import { BLAST_TESTNET_CHAIN_ID } from '@/constant'
-import type { MakeOrderResponse, TakeOrderResponse } from '@/api'
+import type { MakeOrderData, TakeOrderData } from '@/api/mutation'
 
 export default function useDepositTransaction() {
   const { address, chainId } = useAccount()
@@ -24,7 +24,8 @@ export default function useDepositTransaction() {
     async ({
       orderResponse,
     }: {
-      orderResponse: MakeOrderResponse | TakeOrderResponse | undefined
+      // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents, @typescript-eslint/no-duplicate-type-constituents
+      orderResponse: MakeOrderData | TakeOrderData | undefined
     }) => {
       if (!orderResponse || !address) {
         toast.error('Failed to make order')

@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 import USDBSvg from '@/images/USDB.svg'
 import RightSVG from '@/images/right.svg'
 import LinkButton from '@/app/market/_components/LinkButton'
-import type { SearchMarketOrderResponse } from '@/api'
+import type { MarketOrderData } from '@/api/query'
 
 dayjs.extend(relativeTime)
 
@@ -13,7 +13,7 @@ const cardClasses =
 
 const numberFormatter = Intl.NumberFormat('en', { notation: 'compact' })
 
-export default function Card(props: { data: SearchMarketOrderResponse }) {
+export default function Card(props: { data: MarketOrderData }) {
   const { data } = props
 
   return (

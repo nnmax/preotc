@@ -1,32 +1,24 @@
 'use client'
-import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query'
-import { fetchSearchMarketOrder, SearchMarketOrderUrl } from '@/api'
+import { useQueryClient } from '@tanstack/react-query'
 import useListenSocket from '@/hooks/useListenSocket'
+import { useMarketOrder } from '@/api/query'
 import Panel from './Panel'
-import type { SearchMarketOrderParams, SearchMarketOrderResponse } from '@/api'
+import type { MarketOrderData, MarketOrderParams } from '@/api/query'
 
 export default function BuyPanel({ project }: { project: string | null }) {
-  const queryVariables: SearchMarketOrderParams = {
+  const queryVariables: MarketOrderParams = {
     type: 'Buying',
     projectId: project ? Number(project) : undefined,
   }
   const queryClient = useQueryClient()
-  const { data } = useSuspenseQuery({
-    queryKey: [SearchMarketOrderUrl, queryVariables],
-    queryFn: () => {
-      return fetchSearchMarketOrder(queryVariables)
-    },
-  })
+  const { data, queryKey } = useMarketOrder(queryVariables)
 
   useListenSocket({
     onNewMarket(revicedData) {
       if (revicedData.type !== 1) return
-      queryClient.setQueryData<SearchMarketOrderResponse[]>(
-        [SearchMarketOrderUrl, queryVariables],
-        (oldData) => {
-          return [revicedData, ...(oldData ?? [])]
-        },
-      )
+      queryClient.setQueryData<MarketOrderData[]>(queryKey, (oldData) => {
+        return [revicedData, ...(oldData ?? [])]
+      })
     },
   })
 

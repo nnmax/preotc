@@ -1,8 +1,8 @@
 import type { Hex } from 'viem'
-import type { SearchMarketOrderResponse } from '@/api'
+import type { MarketOrderData } from '@/api/query'
 
 export default function isSameAddress(
-  data: SearchMarketOrderResponse | undefined,
+  data: MarketOrderData | undefined,
   address: Hex | undefined,
 ) {
   if (!data) return false

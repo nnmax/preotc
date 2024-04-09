@@ -4,20 +4,15 @@ import { useSendTransaction } from 'wagmi'
 import { parseEther } from 'viem'
 import { toast } from 'react-toastify'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
-import { searchUserOrderUrl } from '@/api'
-import { cancelOrder, cancelOrderUrl } from '@/api/cancel-order'
 import WalletBlackSvg from '@/images/wallet-black.svg'
 import Button from '@/components/Button'
 import DataGrid from '@/app/dashboard/_components/DataGrid/DataGrid'
-import {
-  submitCancelOrder,
-  submitCancelOrderUrl,
-} from '@/api/submit-cancel-order'
+import { userOrderKey, type UserOrderData } from '@/api/query'
+import { useCancelOrder, useSubmitCancelOrder } from '@/api/mutation'
 import type { TableCommonProps } from '@/app/dashboard/types'
 import type { Column } from '@/app/dashboard/_components/DataGrid/DataGrid'
-import type { SearchUserOrderResponse } from '@/api'
 
 export default function OffersTable({
   rows,
@@ -28,14 +23,8 @@ export default function OffersTable({
   const { openConnectModal } = useConnectModal()
   const queryClient = useQueryClient()
   const [submitting, setSubmitting] = useState(false)
-  const { mutateAsync: cancelOrderAsync } = useMutation({
-    mutationKey: [cancelOrderUrl],
-    mutationFn: cancelOrder,
-  })
-  const { mutateAsync: submitCancelOrderAsync } = useMutation({
-    mutationKey: [submitCancelOrderUrl],
-    mutationFn: submitCancelOrder,
-  })
+  const { submitCancelOrderAsync } = useSubmitCancelOrder()
+  const { cancelOrderAsync } = useCancelOrder()
   const { sendTransactionAsync } = useSendTransaction()
 
   const handleCancel = async (orderId: number) => {
@@ -64,16 +53,20 @@ export default function OffersTable({
       })
 
       await queryClient.invalidateQueries({
-        queryKey: [searchUserOrderUrl, 1],
+        queryKey: userOrderKey({
+          dashboardType: 1,
+        }),
       })
-      setSubmitting(false)
+
       toast.success('Order canceled successfully')
     } catch (error) {
+      //
+    } finally {
       setSubmitting(false)
     }
   }
 
-  const columns: Column<SearchUserOrderResponse>[] = [
+  const columns: Column<UserOrderData>[] = [
     {
       field: 'projectName',
       headerName: 'TOKEN',
@@ -143,7 +136,7 @@ export default function OffersTable({
 
   return (
     <div>
-      <DataGrid<SearchUserOrderResponse>
+      <DataGrid<UserOrderData>
         columns={columns}
         rows={rows}
         loading={isLoading}

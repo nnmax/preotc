@@ -1,23 +1,17 @@
 // 'use client'
 import clsx from 'clsx'
-// import { useQuery } from '@tanstack/react-query'
 // import { useAccount } from 'wagmi'
 // import TelegramAlertButton from '@/components/TelegramAlertButton'
-// import {
-//   fetchGetCurrentLoginUser,
-//   getCurrentLoginUser,
-// } from '@/api/get-current-login-user'
+// import { useUser } from '@/api/query'
 // import { LoggedInLocalStorageKey } from '@/constant'
 
 export default function OfferIntroduce({ className }: { className?: string }) {
   // const address = useAccount().address
-  // const { data: userInfo } = useQuery({
-  //   enabled:
-  //     Boolean(address) &&
-  //     Boolean(window.localStorage.getItem(LoggedInLocalStorageKey)),
-  //   queryKey: [getCurrentLoginUser],
-  //   queryFn: () => {
-  //     return fetchGetCurrentLoginUser()
+  // const { data: user } = useUser({
+  //   query: {
+  //     enabled:
+  //       Boolean(address) &&
+  //       Boolean(window.localStorage.getItem(LoggedInLocalStorageKey)),
   //   },
   // })
 
@@ -52,7 +46,7 @@ export default function OfferIntroduce({ className }: { className?: string }) {
         </a>
         {'.'}
       </p>
-      {/* {!userInfo || userInfo.tgStatus ? null : (
+      {/* {!user || user.tgStatus ? null : (
         <p>
           {
             '4. Please connect your telegram to ensure that you can receive timely alerts such as settlement notifications, confirmation notifications and deals completion!'

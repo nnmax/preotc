@@ -1,0 +1,43 @@
+import fetcher from '@/api/fetcher'
+import { use{{#if suspense}}Suspense{{/if}}Query } from '@/utils/query'
+import type { {{#if suspense}}Suspense{{/if}}QueryParameter } from '@/types'
+import type { DefaultError } from '@tanstack/react-query'
+
+export const {{name}}Api = '{{url}}'
+
+export type {{pascalCase name}}Params = Record<string, unknown>
+
+export type {{pascalCase name}}Data = null
+
+export type {{pascalCase name}}Options = Partial<{{pascalCase name}}Params>
+
+export function {{name}}Key(options: {{pascalCase name}}Options) {
+  return [{{name}}Api, options] as const
+}
+
+export type Use{{pascalCase name}}Params<
+  SelectData = {{pascalCase name}}Data{{#if withArray}}[]{{/if}},
+> = {{pascalCase name}}Options &
+  {{#if suspense}}Suspense{{/if}}QueryParameter<
+    {{pascalCase name}}Data{{#if withArray}}[]{{/if}},
+    DefaultError,
+    SelectData,
+    ReturnType<typeof {{name}}Key>
+  >
+
+export function use{{pascalCase name}}<
+  SelectData = {{pascalCase name}}Data{{#if withArray}}[]{{/if}},
+>(parameters: Use{{pascalCase name}}Params<SelectData> = {}) {
+  const { query = {}, ...rest } = parameters
+
+  return use{{#if suspense}}Suspense{{/if}}Query({
+    ...query,
+    queryKey: {{name}}Key(rest),
+    queryFn({ queryKey }) {
+      return fetcher(queryKey[0], {
+        body: JSON.stringify(queryKey[1]),
+        method: '{{method}}',
+      })
+    },
+  })
+}

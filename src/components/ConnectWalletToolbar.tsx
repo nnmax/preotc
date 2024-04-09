@@ -10,20 +10,15 @@ import {
   useAccountEffect,
   useConnections,
 } from 'wagmi'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQueryClient } from '@tanstack/react-query'
 import { verifyMessage } from 'wagmi/actions'
 import { Popover, Transition } from '@headlessui/react'
+import { isNumber } from 'lodash-es'
 import WalletSvg from '@/images/wallet.svg'
 import EthIcon from '@/images/eth-20x20.png'
 import EthYellowIcon from '@/images/eth-yellow.png'
 import USDBSvg from '@/images/USDB.svg'
 import ArrowDownSvg from '@/images/arrow-down.svg'
-import {
-  fetchConnectWalletUrl,
-  ConnectWalletUrl,
-  getUsdbBalanceUrl,
-  getUsdbBalance,
-} from '@/api'
 import {
   ActiveWalletLocalStorageKey,
   LoggedInLocalStorageKey,
@@ -38,11 +33,12 @@ import SOLSvg from '@/images/sol.svg'
 import ConnectSvg from '@/images/connect-different-wallet.svg'
 import BlastIcon from '@/images/blast-icon.svg'
 import isBlastChain from '@/utils/isBlastChain'
+import { useConnectWallet } from '@/api/mutation'
+import { useUsdbBalance } from '@/api/query'
 import type { WalletType } from '@/types'
 import type { Dispatch, SetStateAction } from 'react'
 import type { StaticImport } from 'next/dist/shared/lib/get-img-props'
 import type { Hex } from 'viem'
-import type { ConnectWalletParams } from '@/api'
 
 function getWalletChainType(walletName: string): WalletType {
   if (walletName.indexOf('phantom') !== -1) return 'SOL'
@@ -154,12 +150,10 @@ export default function ConnectWalletToolbar() {
   const { recentWalletState, setRecentWalletState } = useRecentWallets({
     walletType,
   })
-  const { data: usdbBalance } = useQuery({
-    enabled: Boolean(address) && isBlastChain(chainId) && loggedIn,
-    queryKey: [getUsdbBalanceUrl, address],
-    queryFn: () => {
-      if (!address) throw new Error('address is required')
-      return getUsdbBalance({ address })
+  const { data: usdbBalance } = useUsdbBalance({
+    address,
+    query: {
+      enabled: Boolean(address) && isBlastChain(chainId) && loggedIn,
     },
   })
 
@@ -238,7 +232,7 @@ export default function ConnectWalletToolbar() {
                 <span title={'0'}>{'0'}</span>
                 <span className={'ml-2.5 text-[#FFC300]'}>{'PTS'}</span>
               </Box> */}
-              {isBlastChain(chainId) && usdbBalance && (
+              {isBlastChain(chainId) && isNumber(usdbBalance) && (
                 <Box className={'min-w-[136px] justify-start text-xs'}>
                   <Image
                     src={USDBSvg}
@@ -247,8 +241,8 @@ export default function ConnectWalletToolbar() {
                     height={'20'}
                     className={'mr-2'}
                   />
-                  <span title={usdbBalance.usdbBalance.toString()}>
-                    {usdbBalance.usdbBalance.toLocaleString()}
+                  <span title={usdbBalance.toString()}>
+                    {usdbBalance.toLocaleString()}
                   </span>
                 </Box>
               )}
@@ -444,12 +438,7 @@ export default function ConnectWalletToolbar() {
 
 function useSign(setLoggedIn: Dispatch<SetStateAction<boolean>>) {
   const { address } = useAccount()
-  const { mutateAsync } = useMutation({
-    mutationKey: [ConnectWalletUrl],
-    mutationFn: (params: ConnectWalletParams) => {
-      return fetchConnectWalletUrl(params)
-    },
-  })
+  const { connectWalletAsync } = useConnectWallet()
   const { signMessageAsync } = useSignMessage()
   const config = useConfig()
 
@@ -471,7 +460,7 @@ function useSign(setLoggedIn: Dispatch<SetStateAction<boolean>>) {
         if (verified) return
       }
 
-      const res = await mutateAsync({
+      const res = await connectWalletAsync({
         address,
       })
       const message = typeof res === 'string' ? res : ''
@@ -481,7 +470,7 @@ function useSign(setLoggedIn: Dispatch<SetStateAction<boolean>>) {
       })
       window.localStorage.setItem(SignatureLocalStorageKey, signature)
       window.localStorage.setItem(MessageLocalStorageKey, message)
-      await mutateAsync({
+      connectWalletAsync({
         address,
         signature,
         message,
@@ -491,7 +480,7 @@ function useSign(setLoggedIn: Dispatch<SetStateAction<boolean>>) {
     }
 
     run()
-  }, [address, config, mutateAsync, signMessageAsync, setLoggedIn])
+  }, [address, config, connectWalletAsync, signMessageAsync, setLoggedIn])
 }
 
 const Box = forwardRef<

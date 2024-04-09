@@ -1,19 +1,16 @@
 'use client'
-import { useSuspenseQuery } from '@tanstack/react-query'
 import { useEffect, useMemo, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import Image from 'next/image'
-import { listProject, listProjectUrl, type ListProjectResponse } from '@/api'
+import { type ProjectsData } from '@/api/query'
+import { useProjects } from '@/api/query'
 import type { SelectOption } from '@/components/Select'
 import type { FormValues } from '@/app/create/types'
 
 export function useSelectProps() {
   const { watch, setValue } = useFormContext<FormValues>()
-  const [selectedProject, setSelectedProject] = useState<ListProjectResponse>()
-  const { data: projects } = useSuspenseQuery({
-    queryKey: [listProjectUrl],
-    queryFn: listProject,
-  })
+  const [selectedProject, setSelectedProject] = useState<ProjectsData>()
+  const { data: projects } = useProjects()
 
   const selectOptions = projects.map<SelectOption<number>>((project) => ({
     name: (

@@ -1,10 +1,12 @@
 import { useRef } from 'react'
-import type { SearchMarketOrderResponse } from '@/api'
+// import { io } from 'socket.io-client'
+// import { NewMarketEvent } from '@/constant'
+import type { MarketOrderData } from '@/api/query'
 
 export default function useListenSocket({
   onNewMarket,
 }: {
-  onNewMarket?: (data: SearchMarketOrderResponse) => void
+  onNewMarket?: (data: MarketOrderData) => void
 }) {
   const onNewMarketRef = useRef(onNewMarket)
   onNewMarketRef.current = onNewMarket

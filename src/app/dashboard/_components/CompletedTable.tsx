@@ -6,7 +6,7 @@ import Button from '@/components/Button'
 import DataGrid from '@/app/dashboard/_components/DataGrid/DataGrid'
 import type { TableCommonProps } from '@/app/dashboard/types'
 import type { Column } from '@/app/dashboard/_components/DataGrid/DataGrid'
-import type { SearchUserOrderResponse } from '@/api'
+import type { UserOrderData } from '@/api/query'
 
 export default function CompletedTable({
   rows,
@@ -16,7 +16,7 @@ export default function CompletedTable({
 }: TableCommonProps) {
   const { openConnectModal } = useConnectModal()
 
-  const columns: Column<SearchUserOrderResponse>[] = [
+  const columns: Column<UserOrderData>[] = [
     {
       field: 'projectName',
       headerName: 'TOKEN',
@@ -73,7 +73,7 @@ export default function CompletedTable({
 
   return (
     <div>
-      <DataGrid<SearchUserOrderResponse>
+      <DataGrid<UserOrderData>
         columns={columns}
         rows={rows}
         loading={isLoading}

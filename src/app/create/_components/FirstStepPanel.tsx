@@ -3,7 +3,7 @@ import { Controller } from 'react-hook-form'
 import Image from 'next/image'
 import Select from '@/components/Select'
 import USDBSvg from '@/images/USDB.svg'
-import type { ListProjectResponse } from '@/api'
+import type { ProjectsData } from '@/api/query'
 import type { PanelProps } from '@/app/create/_components/Panel'
 import type { FormValues } from '@/app/create/types'
 import type { SelectOption } from '@/components/Select'
@@ -14,7 +14,7 @@ interface FirstStepPanelProps extends Pick<PanelProps, 'tab'> {
   onSubmit: React.FormEventHandler<HTMLFormElement>
   register: UseFormRegister<FormValues>
   selectOptions: SelectOption<number>[]
-  selectedProject: ListProjectResponse | undefined
+  selectedProject?: ProjectsData
   price: number
 }
 

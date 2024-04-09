@@ -2,23 +2,14 @@
 import Image from 'next/image'
 import { useAccount } from 'wagmi'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
-import { useMutation, useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 import TelegramSVG from '@/images/telegram.svg'
 import InfoSVG from '@/images/info.svg'
 import TelegramSvg from '@/images/telegram.svg'
-import {
-  fetchGenerateTelegramInvitationLink,
-  fetchGetTelegramInvitationInfo,
-  generateTelegramInvitationLinkUrl,
-  getTelegramInvitationInfoUrl,
-} from '@/api'
-import {
-  fetchGetCurrentLoginUser,
-  getCurrentLoginUser,
-} from '@/api/get-current-login-user'
 import Tooltip from '@/components/Tooltip'
+import { useGenTgLink } from '@/api/mutation'
+import { useTgLinkInfo, useUser } from '@/api/query'
 import { LoggedInLocalStorageKey } from '@/constant'
 
 const info =
@@ -29,40 +20,31 @@ export default function TelegramAlertButton({ type }: { type?: 1 | 2 }) {
   const { openConnectModal } = useConnectModal()
   const [code, setCode] = useState<string>('')
   const [connected, setConnected] = useState<boolean>(false)
-  const { data: userInfo } = useQuery({
-    enabled:
-      Boolean(address) &&
-      Boolean(window.localStorage.getItem(LoggedInLocalStorageKey)),
-    queryKey: [getCurrentLoginUser],
-    queryFn: () => {
-      return fetchGetCurrentLoginUser()
+  const { data: user } = useUser({
+    query: {
+      enabled:
+        Boolean(address) &&
+        Boolean(window.localStorage.getItem(LoggedInLocalStorageKey)),
     },
   })
-  const { mutateAsync: fetchLink, isPending: fetchingLink } = useMutation({
-    mutationKey: [generateTelegramInvitationLinkUrl],
-    mutationFn: () => {
-      return fetchGenerateTelegramInvitationLink()
-    },
-  })
+  const { genTgLinkAsync, isPending: fetchingLink } = useGenTgLink()
 
   // useQuery 返回的 isRefetching 不满足要求
   const [isRefetching, setIsRefetching] = useState(false)
-  useQuery({
-    gcTime: 0,
-    enabled: Boolean(code),
-    queryKey: [getTelegramInvitationInfoUrl, code],
-    queryFn: () => {
-      return fetchGetTelegramInvitationInfo(code)
-    },
-    refetchInterval(query) {
-      if (query.state.data === 0) {
-        setIsRefetching(false)
-        setConnected(true)
-        setCode('')
-        toast.success('You have successfully linked to Telegram')
-        return false
-      }
-      return 1000
+  useTgLinkInfo({
+    invitaitonCode: code,
+    query: {
+      enabled: Boolean(code),
+      refetchInterval(query) {
+        if (query.state.data === 0) {
+          setIsRefetching(false)
+          setConnected(true)
+          setCode('')
+          toast.success('You have successfully linked to Telegram')
+          return false
+        }
+        return 1000
+      },
     },
   })
 
@@ -72,7 +54,7 @@ export default function TelegramAlertButton({ type }: { type?: 1 | 2 }) {
       return
     }
 
-    const response = await fetchLink()
+    const response = await genTgLinkAsync()
 
     if (response?.invitationLink) {
       setIsRefetching(true)
@@ -82,9 +64,7 @@ export default function TelegramAlertButton({ type }: { type?: 1 | 2 }) {
     }
   }
 
-  if (!userInfo || userInfo?.tgStatus || connected) {
-    return null
-  }
+  if (!user || user?.tgStatus || connected) return null
 
   if (type === 2) {
     return (

@@ -6,12 +6,11 @@ import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useAccount } from 'wagmi'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
-import { useSuspenseQuery } from '@tanstack/react-query'
 import { Suspense, useState } from 'react'
 // import TelegramAlertButton from '@/components/TelegramAlertButton'
-import { listProject, listProjectUrl } from '@/api'
 import ToggleButtonGroup from '@/components/ToggleButtonGroup'
 import ToggleButton from '@/components/ToggleButton'
+import { useProjects } from '@/api/query'
 import BuyPanel from './BuyPanel'
 import SellPanel from './SellPanel'
 
@@ -73,10 +72,7 @@ function Filter(props: {
   setValue: (value: string | null) => void
 }) {
   const { setValue, value } = props
-  const { data: projects } = useSuspenseQuery({
-    queryKey: [listProjectUrl],
-    queryFn: listProject,
-  })
+  const { data: projects } = useProjects()
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const router = useRouter()

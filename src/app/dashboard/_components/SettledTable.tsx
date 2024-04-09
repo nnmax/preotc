@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
-import { searchUserOrderUrl } from '@/api'
 import useCountdown from '@/hooks/useCountdown'
 import DepositSuccessfulModal from '@/app/dashboard/_components/DepositSuccessfulModal'
 import SettleConfirmDialog from '@/app/dashboard/_components/SettleConfirmDialog'
@@ -13,10 +12,10 @@ import WalletBlackSvg from '@/images/wallet-black.svg'
 import Button from '@/components/Button'
 import DataGrid from '@/app/dashboard/_components/DataGrid/DataGrid'
 import getSettledStatus from '@/utils/getSettledStatus'
+import { userOrderKey, type UserOrderData } from '@/api/query'
 import DepositModal from './DepositModal'
 import type { TableCommonProps } from '@/app/dashboard/types'
 import type { Column } from '@/app/dashboard/_components/DataGrid/DataGrid'
-import type { SearchUserOrderResponse } from '@/api'
 
 export default function SettledTable({
   rows,
@@ -31,9 +30,9 @@ export default function SettledTable({
   const queryClient = useQueryClient()
   const [depositSuccessfulModalOpen, setDepositSuccessfulModalOpen] =
     useState(false)
-  const [currentData, setCurrentData] = useState<SearchUserOrderResponse>()
+  const [currentData, setCurrentData] = useState<UserOrderData>()
 
-  const handleSettled = (current: SearchUserOrderResponse) => {
+  const handleSettled = (current: UserOrderData) => {
     setCurrentData(current)
     setDepositModalOpen(true)
   }
@@ -70,7 +69,7 @@ export default function SettledTable({
     }
   }, [rows])
 
-  const columns: Column<SearchUserOrderResponse>[] = [
+  const columns: Column<UserOrderData>[] = [
     {
       field: 'projectName',
       headerName: 'TOKEN',
@@ -153,7 +152,7 @@ export default function SettledTable({
 
   return (
     <div>
-      <DataGrid<SearchUserOrderResponse>
+      <DataGrid<UserOrderData>
         columns={columns}
         rows={rows}
         loading={isLoading}
@@ -165,7 +164,9 @@ export default function SettledTable({
         onSuccess={() => {
           setDepositSuccessfulModalOpen(true)
           queryClient.invalidateQueries({
-            queryKey: [searchUserOrderUrl, 2],
+            queryKey: userOrderKey({
+              dashboardType: 2,
+            }),
           })
         }}
       />

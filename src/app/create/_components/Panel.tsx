@@ -1,17 +1,10 @@
 import Image from 'next/image'
-import { useMutation } from '@tanstack/react-query'
 import { useId, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import { capitalize } from 'lodash-es'
 import { useRouter } from 'next/navigation'
 import DangerSvg from '@/images/danger.svg'
-import {
-  depositMakeOrder,
-  depositMakeOrderUrl,
-  makeOrder,
-  makeOrderUrl,
-} from '@/api'
 import Button from '@/components/Button'
 import SecondStepPanel from '@/app/offer/_components/SecondStepPanel'
 import TokenHeader from '@/components/TokenHeader'
@@ -21,10 +14,11 @@ import DepositSuccessfulDialog from '@/components/DepositSuccessfulDialog'
 import InsufficientBalanceDialog from '@/components/InsufficientBalanceDialog'
 import { FirstStepPanel } from '@/app/create/_components/FirstStepPanel'
 import { USDB_LIMIT } from '@/constant'
+import { useDepositMakeOrder, useMakeOrder } from '@/api/mutation'
 import type { Dispatch, SetStateAction } from 'react'
 import type { FormValues } from '@/app/create/types'
 import type { FieldErrors } from 'react-hook-form'
-import type { MakeOrderParams } from '@/api'
+import type { MakeOrderParams } from '@/api/mutation'
 
 export interface PanelProps {
   tab: 'buying' | 'selling'
@@ -49,19 +43,13 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
   const { depositTransaction, sendingTransaction } = useDepositTransaction()
 
   const {
-    mutateAsync: makeOrderAsync,
+    makeOrderAsync,
     isPending: makingOrder,
     data: makeOrderResponse,
-  } = useMutation({
-    mutationKey: [makeOrderUrl],
-    mutationFn: makeOrder,
-  })
+  } = useMakeOrder()
 
-  const { mutateAsync: depositMakeOrderAsync, isPending: depositMakingOrder } =
-    useMutation({
-      mutationKey: [depositMakeOrderUrl],
-      mutationFn: depositMakeOrder,
-    })
+  const { depositMakeOrderAsync, isPending: depositMakingOrder } =
+    useDepositMakeOrder()
 
   const handleValid = async (values: FormValues) => {
     await makeOrderAsync({

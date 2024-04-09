@@ -16,6 +16,7 @@ const config = {
       },
     ],
     'react/no-unknown-property': ['error', { ignore: ['jsx', 'global'] }],
+    '@typescript-eslint/consistent-type-definitions': ['off'],
   },
   parserOptions: {
     project: './tsconfig.json',

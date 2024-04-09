@@ -1,7 +1,7 @@
-import type { SearchUserOrderResponse } from '@/api'
+import type { UserOrderData } from '@/api/query'
 
 export interface TableCommonProps {
-  rows: SearchUserOrderResponse[] | undefined
+  rows: UserOrderData[] | undefined
   completed: boolean
   correctConnected: boolean
   isLoading: boolean

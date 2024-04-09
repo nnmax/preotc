@@ -1,25 +1,19 @@
 'use client'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useQuery } from '@tanstack/react-query'
 import ConnectWalletToolbar from '@/components/ConnectWalletToolbar'
 import LinkTab from '@/components/LinkTab'
 import NavTabs from '@/components/NavTabs'
 import LogoSvg from '@/images/logo.svg'
 import useCorrectConnected from '@/hooks/useCorrectConnected'
-import { searchUserOrder, searchUserOrderUrl } from '@/api'
 import getSettledStatus from '@/utils/getSettledStatus'
+import { useUserOrder } from '@/api/query'
 
 export default function AppBar() {
   const { correctConnected } = useCorrectConnected()
-  const { data: settledData = [] } = useQuery({
-    enabled: correctConnected,
-    queryKey: [searchUserOrderUrl, 2],
-    queryFn: () => {
-      return searchUserOrder({
-        dashboardType: 2,
-      })
-    },
+  const { data: settledData = [] } = useUserOrder({
+    dashboardType: 2,
+    query: { enabled: correctConnected },
   })
 
   const len = settledData.filter((item) =>
