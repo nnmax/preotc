@@ -1,6 +1,4 @@
-import { useEffect, useRef } from 'react'
-import { io } from 'socket.io-client'
-import { NewMarketEvent } from '@/constant'
+import { useRef } from 'react'
 import type { SearchMarketOrderResponse } from '@/api'
 
 export default function useListenSocket({
@@ -11,19 +9,19 @@ export default function useListenSocket({
   const onNewMarketRef = useRef(onNewMarket)
   onNewMarketRef.current = onNewMarket
 
-  useEffect(() => {
-    const socket = io(process.env.NEXT_PUBLIC_SOCKET_ENDPOINT, {
-      transports: ['websocket'],
-      closeOnBeforeunload: true,
-    })
+  // useEffect(() => {
+  //   const socket = io(process.env.NEXT_PUBLIC_SOCKET_ENDPOINT, {
+  //     transports: ['websocket'],
+  //     closeOnBeforeunload: true,
+  //   })
 
-    if (onNewMarketRef.current)
-      socket.on(NewMarketEvent, onNewMarketRef.current)
+  //   if (onNewMarketRef.current)
+  //     socket.on(NewMarketEvent, onNewMarketRef.current)
 
-    return () => {
-      if (onNewMarketRef.current)
-        socket.off(NewMarketEvent, onNewMarketRef.current)
-      socket.disconnect()
-    }
-  }, [])
+  //   return () => {
+  //     if (onNewMarketRef.current)
+  //       socket.off(NewMarketEvent, onNewMarketRef.current)
+  //     socket.disconnect()
+  //   }
+  // }, [])
 }
