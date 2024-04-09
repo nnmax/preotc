@@ -15,10 +15,10 @@ export default function fetcher<ResponseData = unknown>(
   options?: FetcherOptions<ResponseData>,
 ) {
   const { disabledErrorToast, ...rest } = options || {}
-  const url = NEXT_PUBLIC_API_ENDPOINT + input
-  // if (typeof window === 'undefined') {
-  //   url = NEXT_PUBLIC_API_ENDPOINT + input
-  // }
+  let url = input
+  if (typeof window === 'undefined') {
+    url = NEXT_PUBLIC_API_ENDPOINT + input
+  }
   return fetch(url, {
     ...rest,
     headers: {
