@@ -2,23 +2,16 @@
 import { useCallback } from 'react'
 import { toast } from 'react-toastify'
 import { parseEther } from 'viem/utils'
-import { useAccount, useSendTransaction, useSwitchChain } from 'wagmi'
-import { blast } from 'wagmi/chains'
-import isBlastChain from '@/utils/isBlastChain'
-import { BLAST_TESTNET_CHAIN_ID } from '@/constant'
+import { useAccount, useSendTransaction } from 'wagmi'
+import handleWeb3Error from '@/utils/handleWeb3Error'
+import useCheckChain from '@/hooks/useCheckChain'
 import type { MakeOrderData, TakeOrderData } from '@/api/mutation'
 
 export default function useDepositTransaction() {
-  const { address, chainId } = useAccount()
-  const { switchChainAsync } = useSwitchChain()
+  const { address } = useAccount()
   const { sendTransactionAsync, isPending: sendingTransaction } =
     useSendTransaction()
-
-  const handleWeb3Error = useCallback((error: any) => {
-    console.log(error)
-    toast.error(error?.shortMessage ?? error?.message ?? 'SwitchChainError')
-    return null
-  }, [])
+  const { checkChain } = useCheckChain()
 
   const depositTransaction = useCallback(
     async ({
@@ -32,16 +25,7 @@ export default function useDepositTransaction() {
         return null
       }
 
-      if (!isBlastChain(chainId)) {
-        const switched = await switchChainAsync({
-          chainId:
-            process.env.NEXT_PUBLIC_IS_DEV === 'true'
-              ? BLAST_TESTNET_CHAIN_ID
-              : blast.id,
-        }).catch(handleWeb3Error)
-
-        if (!switched) return null
-      }
+      if (!(await checkChain())) return null
 
       if (orderResponse.approveCallData) {
         const approved = await sendTransactionAsync({
@@ -63,7 +47,7 @@ export default function useDepositTransaction() {
 
       return txHash
     },
-    [address, chainId, sendTransactionAsync, switchChainAsync, handleWeb3Error],
+    [address, checkChain, sendTransactionAsync],
   )
 
   return {

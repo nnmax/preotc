@@ -1,19 +1,17 @@
 import Image from 'next/image'
 import dayjs from 'dayjs'
-import { useAccount, useSendTransaction, useSwitchChain } from 'wagmi'
+import { useSendTransaction } from 'wagmi'
 import { parseEther } from 'viem'
 import { toast } from 'react-toastify'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { useQueryClient } from '@tanstack/react-query'
-import { useCallback, useState } from 'react'
-import { blast } from 'wagmi/chains'
+import { useState } from 'react'
 import WalletBlackSvg from '@/images/wallet-black.svg'
 import Button from '@/components/Button'
 import DataGrid from '@/app/dashboard/_components/DataGrid/DataGrid'
 import { userOrderKey, type UserOrderData } from '@/api/query'
 import { useCancelOrder, useSubmitCancelOrder } from '@/api/mutation'
-import isBlastChain from '@/utils/isBlastChain'
-import { BLAST_TESTNET_CHAIN_ID } from '@/constant'
+import useCheckChain from '@/hooks/useCheckChain'
 import type { TableCommonProps } from '@/app/dashboard/types'
 import type { Column } from '@/app/dashboard/_components/DataGrid/DataGrid'
 
@@ -29,29 +27,13 @@ export default function OffersTable({
   const { submitCancelOrderAsync } = useSubmitCancelOrder()
   const { cancelOrderAsync } = useCancelOrder()
   const { sendTransactionAsync } = useSendTransaction()
-  const { chainId } = useAccount()
-  const { switchChainAsync } = useSwitchChain()
-
-  const handleWeb3Error = useCallback((error: any) => {
-    console.log(error)
-    toast.error(error?.shortMessage ?? error?.message ?? 'SwitchChainError')
-    return null
-  }, [])
+  const { checkChain } = useCheckChain()
 
   const handleCancel = async (orderId: number) => {
     try {
       setSubmitting(true)
 
-      if (!isBlastChain(chainId)) {
-        const switched = await switchChainAsync({
-          chainId:
-            process.env.NEXT_PUBLIC_IS_DEV === 'true'
-              ? BLAST_TESTNET_CHAIN_ID
-              : blast.id,
-        }).catch(handleWeb3Error)
-
-        if (!switched) return null
-      }
+      if (!(await checkChain())) return
 
       const { cancelOrderCallData } = await cancelOrderAsync({
         orderId,
