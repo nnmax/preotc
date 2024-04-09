@@ -2,12 +2,12 @@
 import React from 'react'
 import { RainbowKitProvider, getDefaultConfig } from '@rainbow-me/rainbowkit'
 import {
-  // metaMaskWallet,
-  // rainbowWallet,
+  metaMaskWallet,
+  rainbowWallet,
   coinbaseWallet,
   walletConnectWallet,
-  okxWallet,
-  phantomWallet,
+  // okxWallet,
+  // phantomWallet,
 } from '@rainbow-me/rainbowkit/wallets'
 import { base, mainnet, blast, zkSync } from 'wagmi/chains'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -49,12 +49,12 @@ export const config = getDefaultConfig({
     {
       groupName: 'Popular',
       wallets: [
-        // metaMaskWallet,
-        // rainbowWallet,
+        metaMaskWallet,
+        rainbowWallet,
         coinbaseWallet,
         walletConnectWallet,
-        okxWallet,
-        phantomWallet,
+        // okxWallet,
+        // phantomWallet,
       ],
     },
   ],
