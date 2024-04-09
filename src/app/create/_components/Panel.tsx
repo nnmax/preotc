@@ -15,6 +15,7 @@ import InsufficientBalanceDialog from '@/components/InsufficientBalanceDialog'
 import { FirstStepPanel } from '@/app/create/_components/FirstStepPanel'
 import { USDB_LIMIT } from '@/constant'
 import { useDepositMakeOrder, useMakeOrder } from '@/api/mutation'
+import useCheckChain from '@/hooks/useCheckChain'
 import type { Dispatch, SetStateAction } from 'react'
 import type { FormValues } from '@/app/create/types'
 import type { FieldErrors } from 'react-hook-form'
@@ -41,6 +42,7 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
   const [successfulDialogOpen, setSuccessfulDialogOpen] = useState(false)
   const [balanceDialogOpen, setBalanceDialogOpen] = useState(false)
   const { depositTransaction, sendingTransaction } = useDepositTransaction()
+  const { checkChain } = useCheckChain()
 
   const {
     makeOrderAsync,
@@ -52,6 +54,8 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
     useDepositMakeOrder()
 
   const handleValid = async (values: FormValues) => {
+    if (!(await checkChain())) return
+
     await makeOrderAsync({
       amount: values.amount,
       price: values.pricePerToken,

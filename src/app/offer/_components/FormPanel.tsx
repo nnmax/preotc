@@ -17,6 +17,7 @@ import isSameAddress from '@/utils/isSameAddress'
 import { PERCENTAGE_LIMIT, USDB_LIMIT } from '@/constant'
 import { useDepositTakeOrder, useTakeOrder } from '@/api/mutation'
 import { useMarketOrderById } from '@/api/query'
+import useCheckChain from '@/hooks/useCheckChain'
 import FirstStepPanel from './FirstStepPanel'
 import SecondStepPanel from './SecondStepPanel'
 
@@ -60,10 +61,14 @@ export default function FormPanel() {
     data: takeOrderResponse,
   } = useTakeOrder()
 
+  const { checkChain } = useCheckChain()
+
   const { depositTakeOrderAsync, isPending: depositTakingOrder } =
     useDepositTakeOrder()
 
   const handleValid = async () => {
+    if (!(await checkChain())) return
+
     await takeOrderAsync({
       amount: rangeValue,
       orderId: data!.id,

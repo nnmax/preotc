@@ -4,14 +4,12 @@ import { toast } from 'react-toastify'
 import { parseEther } from 'viem/utils'
 import { useAccount, useSendTransaction } from 'wagmi'
 import handleWeb3Error from '@/utils/handleWeb3Error'
-import useCheckChain from '@/hooks/useCheckChain'
 import type { MakeOrderData, TakeOrderData } from '@/api/mutation'
 
 export default function useDepositTransaction() {
   const { address } = useAccount()
   const { sendTransactionAsync, isPending: sendingTransaction } =
     useSendTransaction()
-  const { checkChain } = useCheckChain()
 
   const depositTransaction = useCallback(
     async ({
@@ -24,8 +22,6 @@ export default function useDepositTransaction() {
         toast.error('Failed to make order')
         return null
       }
-
-      if (!(await checkChain())) return null
 
       if (orderResponse.approveCallData) {
         const approved = await sendTransactionAsync({
@@ -47,7 +43,7 @@ export default function useDepositTransaction() {
 
       return txHash
     },
-    [address, checkChain, sendTransactionAsync],
+    [address, sendTransactionAsync],
   )
 
   return {
