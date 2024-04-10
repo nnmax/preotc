@@ -7,14 +7,13 @@ import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import Decimal from 'decimal.js'
-import { estimateGas } from 'wagmi/actions'
 import WalletBlackSvg from '@/images/wallet-black.svg'
 import Button from '@/components/Button'
 import DataGrid from '@/app/dashboard/_components/DataGrid/DataGrid'
 import { userOrderKey, type UserOrderData } from '@/api/query'
 import { useCancelOrder, useSubmitCancelOrder } from '@/api/mutation'
 import useCheckChain from '@/hooks/useCheckChain'
-import { config } from '@/components/providers'
+import { GAS_LIMIT } from '@/constant'
 import type { TableCommonProps } from '@/app/dashboard/types'
 import type { Column } from '@/app/dashboard/_components/DataGrid/DataGrid'
 
@@ -42,19 +41,11 @@ export default function OffersTable({
         orderId,
       })
 
-      const gas = await estimateGas(config, {
-        to: cancelOrderCallData.destination,
-        data: cancelOrderCallData.callData,
-        value: parseEther(cancelOrderCallData.value.toString()),
-      })
-
-      console.log('cancel estimateGas', gas)
-
       const txHash = await sendTransactionAsync({
         to: cancelOrderCallData.destination,
         data: cancelOrderCallData.callData,
         value: parseEther(cancelOrderCallData.value.toString()),
-        gas,
+        gas: GAS_LIMIT,
       }).catch((error) => {
         console.log(error)
         toast.error(

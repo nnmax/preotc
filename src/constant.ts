@@ -9,3 +9,4 @@ export const NewMarketEvent = 'NEW_MARKET'
 export const BLAST_TESTNET_CHAIN_ID = 168587773
 export const USDB_LIMIT = 100
 export const PERCENTAGE_LIMIT = 0.1
+export const GAS_LIMIT = 40_0000n
