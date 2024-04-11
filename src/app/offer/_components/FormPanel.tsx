@@ -180,16 +180,14 @@ export default function FormPanel() {
       />
       {stepPanel}
       {lessThanUsdbLimit && (
-        <div className={'relative'}>
-          <p
-            className={
-              'absolute flex items-center pl-10 text-xs leading-[30px] text-white'
-            }
-          >
-            <Image src={DangerSvg} alt={'danger'} className={'mr-[10px]'} />
-            {'The value of each order must be greater than $100.'}
-          </p>
-        </div>
+        <p
+          className={
+            'flex items-center pl-10 text-xs leading-[30px] text-white'
+          }
+        >
+          <Image src={DangerSvg} alt={'danger'} className={'mr-[10px]'} />
+          {'The value of each order must be greater than $100.'}
+        </p>
       )}
       {address ? (
         stepButton
