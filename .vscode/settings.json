@@ -37,5 +37,8 @@
   "svg.preview.background": "dark-transparent",
   "[dockerfile]": {
     "editor.defaultFormatter": "foxundermoon.shell-format"
+  },
+  "[svg]": {
+    "editor.defaultFormatter": "jock.svg"
   }
 }

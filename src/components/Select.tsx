@@ -4,7 +4,7 @@ import { Listbox, Transition } from '@headlessui/react'
 import Image from 'next/image'
 import clsx from 'clsx'
 import CheckIcon from '@/images/check-yellow.svg'
-import DownSvg from '@/images/down.svg'
+import ArrowDown from '@/components/Icons/ArrowDown'
 import useControlled from '@/hooks/useControlled'
 
 export interface SelectOption<ValueType = any> {
@@ -74,7 +74,7 @@ export default function Select<ValueType = any>(props: SelectProps<ValueType>) {
         <span className={'flex items-center truncate'}>
           {renderDisplayValue(value)}
         </span>
-        <Image src={DownSvg} alt={'down'} width={'16'} />
+        <ArrowDown className={'text-[#FFC300]'} />
       </Listbox.Button>
       <Transition
         as={Fragment}

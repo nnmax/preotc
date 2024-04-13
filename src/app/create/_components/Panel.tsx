@@ -30,7 +30,7 @@ export interface PanelProps {
 
 export default function Panel({ tab, step, setStep }: PanelProps) {
   const { selectOptions, selectedProject } = useSelectProps()
-  const { watch, handleSubmit, register } = useFormContext<FormValues>()
+  const { watch, handleSubmit } = useFormContext<FormValues>()
   const formId = useId()
   const router = useRouter()
   const [amount, pricePerToken, projectId] = watch([

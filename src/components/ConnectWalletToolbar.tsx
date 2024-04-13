@@ -18,7 +18,7 @@ import WalletSvg from '@/images/wallet.svg'
 import EthIcon from '@/images/eth-20x20.png'
 import EthYellowIcon from '@/images/eth-yellow.png'
 import USDBSvg from '@/images/USDB.svg'
-import ArrowDownSvg from '@/images/arrow-down.svg'
+import ArrowDown from '@/components/Icons/ArrowDown'
 import {
   ActiveWalletLocalStorageKey,
   LoggedInLocalStorageKey,
@@ -297,12 +297,7 @@ export default function ConnectWalletToolbar() {
                   <span className={'whitespace-nowrap'}>
                     {chain?.name || 'Select Chain'}
                   </span>
-                  <Image
-                    src={ArrowDownSvg}
-                    alt={'arrow-down'}
-                    height={'18'}
-                    className={'-mb-1 ml-2.5'}
-                  />
+                  <ArrowDown className={'-mb-1 ml-2.5 text-[#FFC300]'} />
                 </Box>
               )}
               <Popover className={'relative'}>
@@ -332,12 +327,7 @@ export default function ConnectWalletToolbar() {
                           {'...'}
                           {account.address.slice(-8)}
                         </span>
-                        <Image
-                          src={ArrowDownSvg}
-                          alt={'arrow-down'}
-                          height={'18'}
-                          className={'-mb-1 ml-2.5'}
-                        />
+                        <ArrowDown className={'-mb-1 ml-2.5 text-[#FFC300]'} />
                       </Popover.Button>
 
                       <Transition
