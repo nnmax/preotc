@@ -1,5 +1,5 @@
 'use client'
-import { createContext, useCallback, useMemo } from 'react'
+import { createContext, forwardRef, useCallback, useMemo } from 'react'
 
 interface ToggleButtonGroupContextType {
   onChange: ToggleButtonGroupProps['onChange']
@@ -25,32 +25,34 @@ interface ToggleButtonGroupProps
   ) => void
 }
 
-export default function ToggleButtonGroup(props: ToggleButtonGroupProps) {
-  const { children, onChange, value, className, ...restProps } = props
+export default forwardRef<HTMLDivElement, ToggleButtonGroupProps>(
+  function ToggleButtonGroup(props, ref) {
+    const { children, onChange, value, className, ...restProps } = props
 
-  const handleChange = useCallback<
-    Exclude<ToggleButtonGroupProps['onChange'], undefined>
-  >(
-    (buttonValue, event) => {
-      if (!onChange) return
+    const handleChange = useCallback<
+      Exclude<ToggleButtonGroupProps['onChange'], undefined>
+    >(
+      (buttonValue, event) => {
+        if (!onChange) return
 
-      onChange(value === buttonValue ? null : buttonValue, event)
-    },
-    [onChange, value],
-  )
+        onChange(value === buttonValue ? null : buttonValue, event)
+      },
+      [onChange, value],
+    )
 
-  const contextValue = useMemo(() => {
-    return {
-      onChange: handleChange,
-      value,
-    }
-  }, [handleChange, value])
+    const contextValue = useMemo(() => {
+      return {
+        onChange: handleChange,
+        value,
+      }
+    }, [handleChange, value])
 
-  return (
-    <div role={'group'} className={className} {...restProps}>
-      <ToggleButtonGroupContext.Provider value={contextValue}>
-        {children}
-      </ToggleButtonGroupContext.Provider>
-    </div>
-  )
-}
+    return (
+      <div role={'group'} className={className} {...restProps} ref={ref}>
+        <ToggleButtonGroupContext.Provider value={contextValue}>
+          {children}
+        </ToggleButtonGroupContext.Provider>
+      </div>
+    )
+  },
+)

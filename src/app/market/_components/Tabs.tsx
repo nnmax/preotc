@@ -1,5 +1,5 @@
 'use client'
-import { Tab } from '@headlessui/react'
+import { Popover, Tab, Transition } from '@headlessui/react'
 import clsx from 'clsx'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -24,7 +24,7 @@ export default function Tabs() {
   return (
     <Tab.Group defaultIndex={defaultIndex}>
       <div className={'flex justify-between py-6'}>
-        <div className={'flex w-full max-w-[70%]'}>
+        <div className={'flex'}>
           <Tab.List
             className={
               'mr-10 flex h-[36px] w-fit rounded border border-solid border-[#FFC300] text-center text-sm text-[#FFC300]'
@@ -67,6 +67,11 @@ const tabClasses =
 const tabPanelClasses =
   'grid gap-4 min-[1440px]:grid-cols-4 min-[1920px]:grid-cols-5 min-[1104px]:grid-cols-3 min-[768px]:grid-cols-2'
 
+const toggleButtonClasses =
+  'flex h-[36px] w-fit items-center rounded border border-solid border-aaa/50 px-2 text-xs aria-pressed:border-[#FFC300] aria-pressed:text-[#F8B62D]'
+
+const MORE_KEY = 'more'
+
 function Filter(props: {
   value: string | null
   setValue: (value: string | null) => void
@@ -92,37 +97,104 @@ function Filter(props: {
     router.push((pathname + '?' + createQueryString('project', _value)) as any)
   }
 
+  const showProjects = projects.slice(0, 5)
+  const hiddenProjects = projects.slice(5)
+
   return (
-    <div className={'w-full overflow-hidden'}>
-      <ToggleButtonGroup
-        className={
-          'no-scrollbar flex w-full items-center gap-x-[6px] overflow-x-auto overflow-y-hidden'
-        }
-        value={value}
-        onChange={handleToggleButtonChange}
-      >
-        {projects.map((project) => (
-          <ToggleButton
-            key={project.id}
-            value={project.id.toString()}
-            className={clsx(
-              'flex h-[36px] w-fit items-center rounded border border-solid border-aaa/50 px-2 text-xs aria-pressed:border-[#FFC300]',
-            )}
-          >
-            <div className={'mr-2 h-5 w-5'}>
-              <Image
-                className={'rounded-full'}
-                src={project.avatarUrl}
-                alt={project.name}
-                width={'20'}
-                height={'20'}
-              />
-            </div>
-            <span className={'whitespace-nowrap'}>{project.name}</span>
-          </ToggleButton>
-        ))}
-      </ToggleButtonGroup>
-    </div>
+    <ToggleButtonGroup
+      value={value}
+      onChange={handleToggleButtonChange}
+      className={'flex items-center gap-x-[6px]'}
+    >
+      {showProjects.map((project) => (
+        <ToggleButton
+          key={project.id}
+          value={project.id.toString()}
+          className={toggleButtonClasses}
+        >
+          <div className={'mr-2 h-5 w-5'}>
+            <Image
+              className={'rounded-full'}
+              src={project.avatarUrl}
+              alt={project.name}
+              width={'20'}
+              height={'20'}
+            />
+          </div>
+          <span className={'whitespace-nowrap'}>{project.name}</span>
+        </ToggleButton>
+      ))}
+
+      {hiddenProjects.length > 0 && (
+        <Popover className={'relative'}>
+          {() => {
+            return (
+              <>
+                <Popover.Button
+                  className={clsx(
+                    toggleButtonClasses,
+                    '!border-[#FFC300] !text-[#F8B62D]',
+                  )}
+                >
+                  {'More'}
+                </Popover.Button>
+
+                <Transition
+                  enter={'transition duration-100 ease-out'}
+                  enterFrom={'opacity-0'}
+                  enterTo={'opacity-100'}
+                  leave={'transition duration-75 ease-out'}
+                  leaveFrom={'scale-100 opacity-100'}
+                  leaveTo={'scale-95 opacity-0'}
+                >
+                  <Popover.Overlay
+                    className={'fixed inset-0 z-10 bg-black opacity-60'}
+                  />
+                </Transition>
+
+                <Transition
+                  enter={'transition duration-100 ease-out'}
+                  enterFrom={'transform scale-95 opacity-0'}
+                  enterTo={'transform scale-100 opacity-100'}
+                  leave={'transition duration-75 ease-out'}
+                  leaveFrom={'transform scale-100 opacity-100'}
+                  leaveTo={'transform scale-95 opacity-0'}
+                >
+                  <Popover.Panel
+                    className={
+                      'absolute right-0 z-10 translate-y-2 justify-start rounded-[10px] bg-[#2A3037] p-6'
+                    }
+                  >
+                    <div className={'flex gap-x-2 gap-y-4'}>
+                      {hiddenProjects.map((project) => (
+                        <ToggleButton
+                          key={project.id}
+                          value={project.id.toString()}
+                          className={toggleButtonClasses}
+                        >
+                          <div className={'mr-2 h-5 w-5'}>
+                            <Image
+                              className={'rounded-full'}
+                              src={project.avatarUrl}
+                              alt={project.name}
+                              width={'20'}
+                              height={'20'}
+                            />
+                          </div>
+                          <span className={'whitespace-nowrap'}>
+                            {project.name}
+                          </span>
+                        </ToggleButton>
+                      ))}
+                    </div>
+                  </Popover.Panel>
+                </Transition>
+              </>
+            )
+          }}
+        </Popover>
+      )}
+    </ToggleButtonGroup>
   )
 }
 
