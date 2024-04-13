@@ -43,7 +43,7 @@ export default function FormPanel() {
   const [balanceDialogOpen, setBalanceDialogOpen] = useState(false)
   const same = isSameAddress(data, address)
   const min = data
-    ? new Decimal(data.amount || 0).mul(PERCENTAGE_LIMIT).toNumber()
+    ? new Decimal(data.amount || 0).mul(PERCENTAGE_LIMIT).ceil().toNumber()
     : 0
   const lessThanUsdbLimit = (data?.price ?? 0) * rangeValue < USDB_LIMIT
   const invalid = rangeValue < min || lessThanUsdbLimit
