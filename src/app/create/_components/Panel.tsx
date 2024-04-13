@@ -108,6 +108,7 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
         formId={formId}
         onSubmit={handleSubmit(handleValid, handleInvalid)}
         tab={tab}
+        register={register}
         selectOptions={selectOptions}
         selectedProject={selectedProject}
         price={price}

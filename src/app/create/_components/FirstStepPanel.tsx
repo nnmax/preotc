@@ -1,26 +1,34 @@
 import clsx from 'clsx'
-import { Controller, useFormContext } from 'react-hook-form'
+import { Controller } from 'react-hook-form'
 import Image from 'next/image'
 import Select from '@/components/Select'
 import USDBSvg from '@/images/USDB.svg'
-import setMinNumber from '@/utils/setInputMinNumber'
 import type { ProjectsData } from '@/api/query'
 import type { PanelProps } from '@/app/create/_components/Panel'
 import type { FormValues } from '@/app/create/types'
 import type { SelectOption } from '@/components/Select'
+import type { UseFormRegister } from 'react-hook-form'
 
 interface FirstStepPanelProps extends Pick<PanelProps, 'tab'> {
   formId: string
   onSubmit: React.FormEventHandler<HTMLFormElement>
+  register: UseFormRegister<FormValues>
   selectOptions: SelectOption<number>[]
   selectedProject?: ProjectsData
   price: number
 }
 
 export function FirstStepPanel(props: FirstStepPanelProps) {
-  const { formId, onSubmit, tab, selectOptions, selectedProject, price } = props
+  const {
+    formId,
+    onSubmit,
+    tab,
+    register,
+    selectOptions,
+    selectedProject,
+    price,
+  } = props
 
-  const { register, setValue } = useFormContext<FormValues>()
   const amountLabelText = tab === 'buying' ? 'Buying' : 'Selling'
   const labelClasses = clsx(
     'flex items-center self-start rounded-[3px] px-2 text-sm leading-6',
@@ -43,22 +51,14 @@ export function FirstStepPanel(props: FirstStepPanelProps) {
             {...register('amount', {
               valueAsNumber: true,
               required: 'The amount is required',
-              onBlur(event) {
-                setMinNumber({
-                  setValue,
-                  field: 'amount',
-                  value: event.target.value,
-                  min: 1,
-                })
-              },
               min: {
-                value: 1,
-                message: 'The amount must be greater than 1',
+                value: 0,
+                message: 'The amount must be greater than 0',
               },
             })}
-            min={1}
+            min={0}
             required
-            step={1}
+            step={'any'}
             autoComplete={'off'}
             type={'number'}
             placeholder={'Enter Amount'}
@@ -108,24 +108,16 @@ export function FirstStepPanel(props: FirstStepPanelProps) {
             {...register('pricePerToken', {
               valueAsNumber: true,
               required: 'The unit price is required',
-              onBlur(event) {
-                setMinNumber({
-                  setValue,
-                  field: 'pricePerToken',
-                  value: event.target.value,
-                  min: 1,
-                })
-              },
               min: {
-                value: 1,
-                message: 'The unit price must be greater than 1',
+                value: 0,
+                message: 'The unit price must be greater than 0',
               },
             })}
-            min={1}
+            min={0}
             required
             autoComplete={'off'}
             type={'number'}
-            step={1}
+            step={'any'}
             placeholder={'Enter Unit Price'}
             className={clsx(
               'reset-input-number w-full appearance-none bg-transparent pl-[14px] pr-[96] text-sm leading-9 text-white',

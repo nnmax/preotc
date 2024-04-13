@@ -26,7 +26,7 @@ export default function FirstStepPanel({
   const rangeShdw = type === 'buy' ? '#FFC300' : '#EB2F96'
 
   const handleRangeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setRangeValue(Math.round(Number(e.target.value)))
+    setRangeValue(Number(e.target.value))
   }
 
   return (
@@ -54,7 +54,6 @@ export default function FirstStepPanel({
           className={'range flex-1'}
           min={min}
           max={max}
-          step={1}
           onChange={handleRangeChange}
           value={rangeValue}
           style={{
