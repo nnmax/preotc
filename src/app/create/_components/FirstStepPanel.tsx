@@ -109,15 +109,6 @@ export function FirstStepPanel(props: FirstStepPanelProps) {
             {...register('pricePerToken', {
               valueAsNumber: true,
               required: 'The unit price is required',
-              onBlur(event) {
-                if (selectedProject && selectedProject.decimals !== 0) return
-                setMinNumber({
-                  setValue,
-                  field: 'pricePerToken',
-                  value: event.target.value,
-                  min: 1,
-                })
-              },
               min: {
                 value: 0,
                 message: 'The unit price must be greater than 0',

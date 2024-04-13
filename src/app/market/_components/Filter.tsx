@@ -1,5 +1,5 @@
 'use client'
-import { Popover, Transition } from '@headlessui/react'
+import { Popover } from '@headlessui/react'
 import clsx from 'clsx'
 import Image from 'next/image'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
