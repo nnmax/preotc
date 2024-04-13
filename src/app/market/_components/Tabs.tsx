@@ -70,8 +70,6 @@ const tabPanelClasses =
 const toggleButtonClasses =
   'flex h-[36px] w-fit items-center rounded border border-solid border-aaa/50 px-2 text-xs aria-pressed:border-[#FFC300] aria-pressed:text-[#F8B62D]'
 
-const MORE_KEY = 'more'
-
 function Filter(props: {
   value: string | null
   setValue: (value: string | null) => void

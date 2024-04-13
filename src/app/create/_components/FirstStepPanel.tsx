@@ -44,6 +44,7 @@ export function FirstStepPanel(props: FirstStepPanelProps) {
               valueAsNumber: true,
               required: 'The amount is required',
               onBlur(event) {
+                if (selectedProject && selectedProject.decimals !== 0) return
                 setMinNumber({
                   setValue,
                   field: 'amount',
@@ -52,13 +53,13 @@ export function FirstStepPanel(props: FirstStepPanelProps) {
                 })
               },
               min: {
-                value: 1,
-                message: 'The amount must be greater than 1',
+                value: 0,
+                message: 'The amount must be greater than 0',
               },
             })}
-            min={1}
+            min={0}
             required
-            step={1}
+            step={'any'}
             autoComplete={'off'}
             type={'number'}
             placeholder={'Enter Amount'}
@@ -109,6 +110,7 @@ export function FirstStepPanel(props: FirstStepPanelProps) {
               valueAsNumber: true,
               required: 'The unit price is required',
               onBlur(event) {
+                if (selectedProject && selectedProject.decimals !== 0) return
                 setMinNumber({
                   setValue,
                   field: 'pricePerToken',
@@ -117,15 +119,15 @@ export function FirstStepPanel(props: FirstStepPanelProps) {
                 })
               },
               min: {
-                value: 1,
-                message: 'The unit price must be greater than 1',
+                value: 0,
+                message: 'The unit price must be greater than 0',
               },
             })}
-            min={1}
+            min={0}
             required
             autoComplete={'off'}
             type={'number'}
-            step={1}
+            step={'any'}
             placeholder={'Enter Unit Price'}
             className={clsx(
               'reset-input-number w-full appearance-none bg-transparent pl-[14px] pr-[96] text-sm leading-9 text-white',

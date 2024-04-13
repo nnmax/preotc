@@ -16,6 +16,7 @@ export type ProjectsData = {
   createTime: string
   singularUnit: string
   pluralUnit: string
+  decimals: number
 }
 
 export type ProjectsOptions = Partial<ProjectsParams>
