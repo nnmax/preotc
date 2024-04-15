@@ -1,5 +1,6 @@
 import fetcher from '@/api/fetcher'
 import { useQuery } from '@/utils/query'
+import useLoggedIn from '@/hooks/useLoggedIn'
 import type { MarketOrderData } from '@/api/query/marketOrder'
 import type { QueryParameter } from '@/types'
 import type { DefaultError } from '@tanstack/react-query'
@@ -37,8 +38,12 @@ export function useUserOrder<SelectData = UserOrderData[]>(
 ) {
   const { query = {}, ...rest } = parameters
 
+  const { loggedIn } = useLoggedIn()
+  const enabled = loggedIn && query.enabled
+
   return useQuery({
     ...query,
+    enabled,
     queryKey: userOrderKey(rest),
     queryFn({ queryKey }) {
       return fetcher(queryKey[0], {

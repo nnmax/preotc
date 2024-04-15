@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import { useAccount } from 'wagmi'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { Suspense, useState } from 'react'
-// import TelegramAlertButton from '@/components/TelegramAlertButton'
+import TelegramAlertButton from '@/components/TelegramAlertButton'
 import BuyPanel from './BuyPanel'
 import SellPanel from './SellPanel'
 import Filter from './Filter'
@@ -87,7 +87,7 @@ function TabsRightActions() {
       >
         {'Create Offer'}
       </Link>
-      {/* <TelegramAlertButton /> */}
+      <TelegramAlertButton />
     </div>
   )
 }

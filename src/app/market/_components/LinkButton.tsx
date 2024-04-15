@@ -2,7 +2,7 @@
 import clsx from 'clsx'
 import Link from 'next/link'
 import { useAccount } from 'wagmi'
-import { useMemo } from 'react'
+import { useEffect, useState } from 'react'
 import isSameAddress from '@/utils/isSameAddress'
 import type { MarketOrderData } from '@/api/query'
 
@@ -11,13 +11,18 @@ export default function LinkButton(props: { data: MarketOrderData }) {
   const { address } = useAccount()
   const same = isSameAddress(data, address)
   const isBuy = data.type === 2
+  const [Component, setComponent] = useState<'span' | typeof Link>('span')
+  const [componentProps, setComponentProps] = useState<any>({})
 
-  const Component = useMemo(() => {
-    if (same) return 'span'
-    return Link
+  useEffect(() => {
+    if (same) {
+      setComponent('span')
+    } else {
+      setComponent(Link)
+    }
   }, [same])
 
-  const componentProps = useMemo(() => {
+  useEffect(() => {
     const commonProps: any = {
       children: isBuy ? 'BUY' : 'SELL',
       href: isBuy
@@ -37,7 +42,7 @@ export default function LinkButton(props: { data: MarketOrderData }) {
 
     commonProps.className = className
 
-    return commonProps
+    setComponentProps(commonProps)
   }, [data.id, isBuy, same])
 
   return <Component {...componentProps} />

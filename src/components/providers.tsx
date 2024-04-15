@@ -18,6 +18,7 @@ import EthIcon from '@/images/eth-20x20.png'
 import BaseIcon from '@/images/base-20x20.png'
 import ZkSyncIcon from '@/images/zkSync.png'
 import { BLAST_TESTNET_CHAIN_ID } from '@/constant'
+import { LoggedInProvider } from '@/hooks/useLoggedIn'
 import type { Chain } from 'wagmi/chains'
 
 const blastSepolia: Chain = {
@@ -115,7 +116,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <WagmiProvider config={config}>
       <QueryClientProvider client={getQueryClient()}>
         <ReactQueryStreamedHydration>
-          <RainbowKitProvider>{children}</RainbowKitProvider>
+          <LoggedInProvider>
+            <RainbowKitProvider>{children}</RainbowKitProvider>
+          </LoggedInProvider>
         </ReactQueryStreamedHydration>
       </QueryClientProvider>
     </WagmiProvider>

@@ -53,4 +53,8 @@ export default function fetcher<ResponseData = unknown>(
       }
       return data.data
     })
+    .catch((error) => {
+      console.error(error)
+      throw error
+    })
 }

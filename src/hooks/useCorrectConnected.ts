@@ -1,7 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useAccount, useConnections } from 'wagmi'
-import { LoggedInLocalStorageKey } from '@/constant'
 import type { WalletType } from '@/types'
 
 export default function useCorrectConnected() {
@@ -22,9 +21,7 @@ export default function useCorrectConnected() {
       return
     }
     setCompleted(true)
-    setCorrectConnected(
-      Boolean(window.localStorage.getItem(LoggedInLocalStorageKey)),
-    )
+    setCorrectConnected(true)
   }, [connections, address])
 
   return { correctConnected, completed }
