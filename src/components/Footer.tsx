@@ -9,6 +9,8 @@ export default function Footer() {
       <Link
         href={'https://twitter.com/preotc_xyz'}
         className={'flex items-center gap-2'}
+        target={'_blank'}
+        rel={'noreferrer'}
       >
         <Image src={WhiteLogo} alt={''} />
         <div

@@ -1,6 +1,7 @@
 'use client'
 import clsx from 'clsx'
 import { useAccount } from 'wagmi'
+import Link from 'next/link'
 import TelegramAlertButton from '@/components/TelegramAlertButton'
 import { useUser } from '@/api/query'
 import useLoggedIn from '@/hooks/useLoggedIn'
@@ -40,9 +41,9 @@ export default function OfferIntroduce({ className }: { className?: string }) {
         {'3. '}
         <span>{'How to get USDB?'}</span>
         {' Bridge USDT/ USDC/ DAI to the Blast Network on '}
-        <a href={'https://blast.io'} target={'_blank'} rel={'noreferrer'}>
+        <Link href={'https://blast.io'} target={'_blank'} rel={'noreferrer'}>
           {'blast.io'}
-        </a>
+        </Link>
         {'.'}
       </p>
       {!user || user.tgStatus ? null : (

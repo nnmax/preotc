@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import Dialog from '@/components/Dialog'
 import ErrorSvg from '@/images/error.png'
 
@@ -27,14 +28,14 @@ export default function InsufficientBalanceDialog({
         <span className={'text-[#FFC300]'}>{'How to get USDB?'}</span>{' '}
         {'Bridge USDT/ USDC/ DAI to the Blast Network'}
         {'on '}
-        <a
+        <Link
           href={'https://blast.io'}
           target={'_blank'}
           rel={'noreferrer'}
           className={'text-[#FFC300] underline'}
         >
           {'blast.io'}
-        </a>
+        </Link>
         {'.'}
       </p>
     </Dialog>

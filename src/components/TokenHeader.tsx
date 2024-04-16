@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import XSvg from '@/images/x.svg'
 
 interface TokenHeaderProps {
@@ -28,17 +29,19 @@ export default function TokenHeader(props: TokenHeaderProps) {
             <span className={'ml-2.5 text-sm text-[#737373]'}>{`#${id}`}</span>
           )}
         </p>
-        <a
-          href={twitterUrl}
-          target={'_blank'}
-          rel={'noreferrer'}
-          aria-label={'X (Twitter)'}
-          className={
-            'flex w-5 items-center rounded-[3px] border border-solid border-[#737373] p-[2px]'
-          }
-        >
-          <Image src={XSvg} alt={''} width={'16'} height={'16'} />
-        </a>
+        {!!twitterUrl && (
+          <Link
+            href={twitterUrl}
+            target={'_blank'}
+            rel={'noreferrer'}
+            aria-label={'X (Twitter)'}
+            className={
+              'flex w-5 items-center rounded-[3px] border border-solid border-[#737373] p-[2px]'
+            }
+          >
+            <Image src={XSvg} alt={''} width={'16'} height={'16'} />
+          </Link>
+        )}
       </div>
     </div>
   )
