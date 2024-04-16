@@ -70,7 +70,7 @@ export default function AppBar() {
           <h1 className={'sr-only'}>{'PREOTC'}</h1>
           <Image
             src={LogoSvg}
-            alt={'logo'}
+            alt={''}
             width={132}
             height={24}
             className={'max-w-[132px]'}

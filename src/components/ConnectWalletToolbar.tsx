@@ -50,41 +50,23 @@ function getIcon(options: {
   walletType: WalletType | undefined
   blastChain?: boolean
   isEthBalance?: boolean
-}): {
-  src: string | StaticImport
-  alt: string
-} {
+}): string | StaticImport {
   const { walletType, blastChain, isEthBalance } = options
 
   if (blastChain) {
     if (isEthBalance) {
-      return {
-        src: EthYellowIcon,
-        alt: 'ETH',
-      }
+      return EthYellowIcon
     }
 
-    return {
-      src: BlastIcon,
-      alt: 'Blast',
-    }
+    return BlastIcon
   }
   if (walletType === 'SOL') {
-    return {
-      src: SOLSvg,
-      alt: 'SOL',
-    }
+    return SOLSvg
   }
   if (walletType === 'BTC') {
-    return {
-      src: BTCSvg,
-      alt: 'BTC',
-    }
+    return BTCSvg
   }
-  return {
-    src: EthIcon,
-    alt: 'ETH',
-  }
+  return EthIcon
 }
 
 interface WalletRaw {
@@ -233,7 +215,7 @@ export default function ConnectWalletToolbar() {
                 <Box className={'min-w-[136px] justify-start text-xs'}>
                   <Image
                     src={USDBSvg}
-                    alt={'USDB'}
+                    alt={''}
                     width={'20'}
                     height={'20'}
                     className={'mr-2'}
@@ -246,20 +228,12 @@ export default function ConnectWalletToolbar() {
               {!!chainOut && (
                 <Box className={'min-w-[136px] justify-start text-xs'}>
                   <Image
-                    src={
-                      getIcon({
-                        walletType,
-                        blastChain: isBlastChain(chainId),
-                        isEthBalance: true,
-                      }).src
-                    }
-                    alt={
-                      getIcon({
-                        walletType,
-                        blastChain: isBlastChain(chainId),
-                        isEthBalance: true,
-                      }).alt
-                    }
+                    src={getIcon({
+                      walletType,
+                      blastChain: isBlastChain(chainId),
+                      isEthBalance: true,
+                    })}
+                    alt={''}
                     width={'20'}
                     height={'20'}
                     className={'mr-2'}
@@ -302,18 +276,11 @@ export default function ConnectWalletToolbar() {
                     <>
                       <Popover.Button as={Box} button>
                         <Image
-                          src={
-                            getIcon({
-                              walletType,
-                              blastChain: isBlastChain(chainId),
-                            }).src
-                          }
-                          alt={
-                            getIcon({
-                              walletType,
-                              blastChain: isBlastChain(chainId),
-                            }).alt
-                          }
+                          src={getIcon({
+                            walletType,
+                            blastChain: isBlastChain(chainId),
+                          })}
+                          alt={''}
                           width={'24'}
                           height={'24'}
                           className={'mr-2'}
@@ -366,7 +333,7 @@ export default function ConnectWalletToolbar() {
                               <PanelItem
                                 key={index}
                                 address={item.address}
-                                icon={getIcon({ walletType }).src}
+                                icon={getIcon({ walletType })}
                                 title={item.type}
                                 onUnlink={() => {
                                   setRecentWalletState((prev) =>
@@ -410,7 +377,7 @@ export default function ConnectWalletToolbar() {
           <Box onClick={openConnectModal} button className={'w-[222px]'}>
             <Image
               src={WalletSvg}
-              alt={'wallet'}
+              alt={''}
               width={'24'}
               height={'24'}
               className={'mr-2'}

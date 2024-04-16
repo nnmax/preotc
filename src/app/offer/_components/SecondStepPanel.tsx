@@ -33,7 +33,7 @@ export default function SecondStepPanel(props: SecondStepPanelProps) {
         <span>{pricePerToken}</span>
         <span className={'flex text-[#9E9E9E]'}>
           {'USDB '}
-          <Image src={USDBSvg} alt={'USDB'} className={'ml-2.5'} />
+          <Image src={USDBSvg} alt={''} className={'ml-2.5'} />
         </span>
       </p>
       <span className={'mb-4 text-[#737373]'}>{'For'}</span>
@@ -51,7 +51,7 @@ export default function SecondStepPanel(props: SecondStepPanelProps) {
               src={InfoSVG}
               width={'24'}
               className={'cursor-pointer'}
-              alt={'info'}
+              alt={''}
             />
           </Tooltip>
         )}

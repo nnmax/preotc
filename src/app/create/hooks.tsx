@@ -20,7 +20,7 @@ export function useProjectSelectProps() {
             src={project.avatarUrl}
             width={'20'}
             height={'20'}
-            alt={project.name}
+            alt={''}
             className={'mr-4 rounded-full'}
           />
           <span>{project.name}</span>

@@ -53,7 +53,7 @@ export default function Filter(props: {
             <Image
               className={'rounded-full'}
               src={project.avatarUrl}
-              alt={project.name}
+              alt={''}
               width={'20'}
               height={'20'}
             />
@@ -97,7 +97,7 @@ export default function Filter(props: {
                           <Image
                             className={'rounded-full'}
                             src={project.avatarUrl}
-                            alt={project.name}
+                            alt={''}
                             width={'20'}
                             height={'20'}
                           />

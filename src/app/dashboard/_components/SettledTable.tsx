@@ -44,7 +44,7 @@ export default function SettledTable({
           <Image
             src={row.projectAvatarUrl}
             className={'mr-2.5 rounded-full'}
-            alt={row.projectName}
+            alt={''}
             width={'24'}
             height={'24'}
           />
@@ -149,7 +149,7 @@ export default function SettledTable({
         >
           <Image
             src={WalletBlackSvg}
-            alt={'next'}
+            alt={''}
             width={'20'}
             className={'mr-5'}
           />

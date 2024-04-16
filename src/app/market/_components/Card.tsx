@@ -22,7 +22,7 @@ export default function Card(props: { data: MarketOrderData }) {
       <div className={'flex gap-2'}>
         <Image
           src={data.projectAvatarUrl}
-          alt={data.projectName}
+          alt={''}
           width={'32'}
           height={'32'}
           className={'rounded-full'}
@@ -55,7 +55,7 @@ export default function Card(props: { data: MarketOrderData }) {
             'absolute left-1/2 top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2'
           }
         >
-          <Image src={RightSVG} alt={'right'} width={'24'} />
+          <Image src={RightSVG} alt={''} width={'24'} />
         </div>
         <div className={'flex flex-col items-end'}>
           <span className={'mb-4 text-[rgba(155,155,155,0.6)]'}>{'For'}</span>
@@ -66,7 +66,7 @@ export default function Card(props: { data: MarketOrderData }) {
             {numberFormatter.format(
               new Decimal(data.amount || 0).mul(data.price || 0).toNumber(),
             )}
-            <Image src={USDBSvg} alt={'USDB'} width={'14'} className={'ml-1'} />
+            <Image src={USDBSvg} alt={''} width={'14'} className={'ml-1'} />
           </span>
         </div>
       </div>

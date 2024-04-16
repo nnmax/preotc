@@ -20,7 +20,7 @@ export default function InsufficientBalanceDialog({
       }
     >
       <div className={'mb-4 flex items-center'}>
-        <Image src={ErrorSvg} width={'28'} height={'28'} alt={'check'} />
+        <Image src={ErrorSvg} width={'28'} height={'28'} alt={''} />
         <p className={'ml-4'}>{'Insufficient Balance!'}</p>
       </div>
       <p>

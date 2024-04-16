@@ -10,13 +10,13 @@ export default function Footer() {
         href={'https://twitter.com/preotc_xyz'}
         className={'flex items-center gap-2'}
       >
-        <Image src={WhiteLogo} alt={'PreOTC'} />
+        <Image src={WhiteLogo} alt={''} />
         <div
           className={
             'flex h-6 w-6 items-center justify-center rounded border border-white/50'
           }
         >
-          <Image src={XFilled} alt={'X'} />
+          <Image src={XFilled} alt={''} />
         </div>
       </Link>
     </footer>

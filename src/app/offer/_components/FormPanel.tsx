@@ -185,7 +185,7 @@ export default function FormPanel() {
             'flex items-center pl-10 text-xs leading-[30px] text-white'
           }
         >
-          <Image src={DangerSvg} alt={'danger'} className={'mr-[10px]'} />
+          <Image src={DangerSvg} alt={''} className={'mr-[10px]'} />
           {'The value of each order must be greater than $100.'}
         </p>
       )}
@@ -197,7 +197,7 @@ export default function FormPanel() {
           className={'mt-8'}
           onClick={openConnectModal}
         >
-          <Image src={WalletSvg} alt={'next'} width={'24'} className={'mr-5'} />
+          <Image src={WalletSvg} alt={''} width={'24'} className={'mr-5'} />
           {'Connect Wallet'}
         </Button>
       )}

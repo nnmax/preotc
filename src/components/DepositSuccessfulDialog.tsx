@@ -22,7 +22,7 @@ export default function DepositSuccessfulDialog({
       onClose={onClose}
       panelClassName={'!max-w-[412px] flex flex-col items-center'}
     >
-      <Image src={CheckGreenSvg} width={'24'} height={'24'} alt={'check'} />
+      <Image src={CheckGreenSvg} width={'24'} height={'24'} alt={''} />
       <p className={clsx('mt-4 text-xs leading-6', textClasses)}>{text}</p>
     </Dialog>
   )

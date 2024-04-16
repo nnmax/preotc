@@ -115,7 +115,7 @@ export default function Select<ValueType = any>(props: SelectProps<ValueType>) {
                   </span>
                   {state.selected && (
                     <Image
-                      alt={'check'}
+                      alt={''}
                       src={CheckIcon}
                       width={'20'}
                       height={'20'}

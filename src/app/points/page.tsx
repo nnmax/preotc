@@ -85,7 +85,7 @@ export default function Points() {
                 >
                   <Image
                     src={InfoBlackSvg}
-                    alt={'info'}
+                    alt={''}
                     width={'20'}
                     height={'20'}
                     tabIndex={0}

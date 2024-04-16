@@ -40,7 +40,7 @@ export default function DepositModal({
             <span className={'flex items-center'}>
               <Image
                 src={currentData?.projectAvatarUrl}
-                alt={currentData?.projectName}
+                alt={''}
                 width={'24'}
                 height={'24'}
                 className={'mr-2 rounded-full'}

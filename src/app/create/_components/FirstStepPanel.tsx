@@ -135,7 +135,7 @@ export function FirstStepPanel(props: FirstStepPanelProps) {
                       <>
                         <Image
                           src={USDBSvg}
-                          alt={'USDB'}
+                          alt={''}
                           width={'20'}
                           height={'20'}
                           className={'mr-4 rounded-full'}
@@ -150,7 +150,7 @@ export function FirstStepPanel(props: FirstStepPanelProps) {
                       <>
                         <Image
                           src={ETHSvg}
-                          alt={'ETH'}
+                          alt={''}
                           width={'20'}
                           height={'20'}
                           className={'mr-4 rounded-full'}

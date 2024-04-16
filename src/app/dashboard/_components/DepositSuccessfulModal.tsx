@@ -18,7 +18,7 @@ export default function DepositSuccessfulModal({
       panelClassName={'!max-w-[490px]'}
     >
       <div className={'flex flex-col items-center'}>
-        <Image src={CheckGreenSvg} width={'24'} height={'24'} alt={'check'} />
+        <Image src={CheckGreenSvg} width={'24'} height={'24'} alt={''} />
         <p className={'mb-10 mt-4 text-xs leading-6'}>
           {
             'Congratulations on completing the settlement, please be patient and '

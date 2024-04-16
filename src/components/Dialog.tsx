@@ -66,13 +66,9 @@ export default function Dialog(props: DialogBaseProps) {
                   type={'button'}
                   className={'absolute right-2 top-2 h-5 w-5'}
                   onClick={handleClose}
+                  aria-label={'Close dialog'}
                 >
-                  <Image
-                    src={CLoseSvg}
-                    width={'20'}
-                    height={'20'}
-                    alt={'Close'}
-                  />
+                  <Image src={CLoseSvg} width={'20'} height={'20'} alt={''} />
                 </button>
               )}
               {children}

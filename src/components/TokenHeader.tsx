@@ -32,11 +32,12 @@ export default function TokenHeader(props: TokenHeaderProps) {
           href={twitterUrl}
           target={'_blank'}
           rel={'noreferrer'}
+          aria-label={'X (Twitter)'}
           className={
             'flex w-5 items-center rounded-[3px] border border-solid border-[#737373] p-[2px]'
           }
         >
-          <Image src={XSvg} alt={'x'} width={'16'} height={'16'} />
+          <Image src={XSvg} alt={''} width={'16'} height={'16'} />
         </a>
       </div>
     </div>

@@ -139,7 +139,7 @@ export default function TelegramAlertButton({ type }: { type?: 1 | 2 }) {
           src={InfoSVG}
           width={'24'}
           className={'cursor-pointer'}
-          alt={'info'}
+          alt={''}
         />
       </Tooltip>
     </>

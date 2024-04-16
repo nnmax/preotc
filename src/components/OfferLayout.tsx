@@ -14,7 +14,7 @@ export default function Layout({
     <div className={'flex flex-col items-center py-4'}>
       <div className={'mr-auto'}>
         <Link href={'/market'} className={'flex items-center'}>
-          <Image className={'mr-2'} src={LeftSvg} alt={'left'} width={'32'} />
+          <Image className={'mr-2'} src={LeftSvg} alt={''} width={'32'} />
           {linkTitle}
         </Link>
       </div>
