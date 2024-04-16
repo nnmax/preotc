@@ -1,4 +1,5 @@
 import clsx from 'clsx'
+import Decimal from 'decimal.js'
 import { stepPanelClasses } from '@/constant'
 
 interface FirstStepPanelProps {
@@ -9,6 +10,14 @@ interface FirstStepPanelProps {
   min: number
   pricePerToken: number | undefined
   unit: string | undefined
+}
+
+function getStep(value: number) {
+  const places =
+    Math.floor(value) === value
+      ? 0
+      : value.toString().split('.')[1]?.length || 0
+  return 1 / Math.pow(10, places)
 }
 
 export default function FirstStepPanel({
@@ -24,9 +33,10 @@ export default function FirstStepPanel({
   const labelTextColor = type === 'buy' ? 'text-black' : 'text-white'
   const labelBg = type === 'buy' ? 'bg-[#FFC300]' : 'bg-[#EB2F96]'
   const rangeShdw = type === 'buy' ? '#FFC300' : '#EB2F96'
+  const step = getStep(max)
 
   const handleRangeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setRangeValue(Math.round(Number(e.target.value)))
+    setRangeValue(Number(e.target.value))
   }
 
   return (
@@ -54,7 +64,7 @@ export default function FirstStepPanel({
           className={'range flex-1'}
           min={min}
           max={max}
-          step={1}
+          step={step}
           onChange={handleRangeChange}
           value={rangeValue}
           style={{
@@ -75,7 +85,7 @@ export default function FirstStepPanel({
         <span className={'text-[#737373]'}>{'For'}</span>
         <span
           className={'text-[#FFC300]'}
-        >{`${((pricePerToken || 0) * rangeValue).toLocaleString()}`}</span>
+        >{`${new Decimal(pricePerToken || 0).mul(rangeValue).toNumber().toLocaleString()}`}</span>
       </div>
     </div>
   )
