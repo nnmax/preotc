@@ -20,12 +20,13 @@ export default function fetcher<ResponseData = unknown>(
     url = NEXT_PUBLIC_API_ENDPOINT + input
   }
   return fetch(url, {
+    credentials: 'include',
+    cache: 'no-store',
     ...rest,
     headers: {
       'Content-Type': 'application/json',
       ...rest?.headers,
     },
-    credentials: 'include',
   })
     .then<CommonResponse<ResponseData>>((response) => {
       if (response.ok) {
