@@ -1,19 +1,18 @@
-// 'use client'
+'use client'
 import clsx from 'clsx'
-// import { useAccount } from 'wagmi'
-// import TelegramAlertButton from '@/components/TelegramAlertButton'
-// import { useUser } from '@/api/query'
-// import { LoggedInLocalStorageKey } from '@/constant'
+import { useAccount } from 'wagmi'
+import TelegramAlertButton from '@/components/TelegramAlertButton'
+import { useUser } from '@/api/query'
+import useLoggedIn from '@/hooks/useLoggedIn'
 
 export default function OfferIntroduce({ className }: { className?: string }) {
-  // const address = useAccount().address
-  // const { data: user } = useUser({
-  //   query: {
-  //     enabled:
-  //       Boolean(address) &&
-  //       Boolean(window.localStorage.getItem(LoggedInLocalStorageKey)),
-  //   },
-  // })
+  const address = useAccount().address
+  const { loggedIn } = useLoggedIn()
+  const { data: user } = useUser({
+    query: {
+      enabled: Boolean(address) && loggedIn,
+    },
+  })
 
   return (
     <div
@@ -46,14 +45,14 @@ export default function OfferIntroduce({ className }: { className?: string }) {
         </a>
         {'.'}
       </p>
-      {/* {!user || user.tgStatus ? null : (
+      {!user || user.tgStatus ? null : (
         <p>
           {
             '4. Please connect your telegram to ensure that you can receive timely alerts such as settlement notifications, confirmation notifications and deals completion!'
           }
         </p>
       )}
-      <TelegramAlertButton type={2} /> */}
+      <TelegramAlertButton type={2} />
     </div>
   )
 }

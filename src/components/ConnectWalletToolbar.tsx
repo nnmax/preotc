@@ -21,7 +21,6 @@ import USDBSvg from '@/images/USDB.svg'
 import ArrowDown from '@/components/Icons/ArrowDown'
 import {
   ActiveWalletLocalStorageKey,
-  LoggedInLocalStorageKey,
   MessageLocalStorageKey,
   RecentWalletsLocalStorageKey,
   SignatureLocalStorageKey,
@@ -35,8 +34,9 @@ import BlastIcon from '@/images/blast-icon.svg'
 import isBlastChain from '@/utils/isBlastChain'
 import { useConnectWallet } from '@/api/mutation'
 import { useUsdbBalance } from '@/api/query'
+import useLoggedIn from '@/hooks/useLoggedIn'
 import type { WalletType } from '@/types'
-import type { Dispatch, SetStateAction } from 'react'
+import type { SetStateAction } from 'react'
 import type { StaticImport } from 'next/dist/shared/lib/get-img-props'
 import type { Hex } from 'viem'
 
@@ -140,7 +140,7 @@ function useRecentWallets(options: { walletType: WalletType | undefined }) {
 }
 
 export default function ConnectWalletToolbar() {
-  const [loggedIn, setLoggedIn] = useState<boolean>(false)
+  const { loggedIn, setLoggedIn } = useLoggedIn()
   useSign(setLoggedIn)
   const [walletType, setWalletType] = useState<WalletType>()
   const connections = useConnections()
@@ -169,10 +169,6 @@ export default function ConnectWalletToolbar() {
       handleDisconnect()
     },
   })
-
-  useEffect(() => {
-    setLoggedIn(Boolean(window.localStorage.getItem(LoggedInLocalStorageKey)))
-  }, [])
 
   useEffect(() => {
     if (connections.length === 0) return
@@ -427,7 +423,7 @@ export default function ConnectWalletToolbar() {
   )
 }
 
-function useSign(setLoggedIn: Dispatch<SetStateAction<boolean>>) {
+function useSign(setLoggedIn: (loggedIn: boolean) => void) {
   const { address } = useAccount()
   const { connectWalletAsync } = useConnectWallet()
   const { signMessageAsync } = useSignMessage()
@@ -463,14 +459,13 @@ function useSign(setLoggedIn: Dispatch<SetStateAction<boolean>>) {
         return null
       })
       if (!signature) return
-      window.localStorage.setItem(SignatureLocalStorageKey, signature)
-      window.localStorage.setItem(MessageLocalStorageKey, message)
-      connectWalletAsync({
+      await connectWalletAsync({
         address,
         signature,
         message,
       })
-      window.localStorage.setItem(LoggedInLocalStorageKey, 'true')
+      window.localStorage.setItem(SignatureLocalStorageKey, signature)
+      window.localStorage.setItem(MessageLocalStorageKey, message)
       setLoggedIn(true)
     }
 

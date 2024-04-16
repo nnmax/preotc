@@ -31,7 +31,6 @@ export function useUser<SelectData = UserData>(
     staleTime: 0,
     queryFn({ queryKey }) {
       return fetcher(queryKey[0], {
-        body: JSON.stringify(queryKey[1]),
         method: 'GET',
       })
     },

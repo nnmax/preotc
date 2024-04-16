@@ -4,13 +4,13 @@ import { useAccount } from 'wagmi'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
-import TelegramSVG from '@/images/telegram.svg'
+import dayjs from 'dayjs'
 import InfoSVG from '@/images/info.svg'
-import TelegramSvg from '@/images/telegram.svg'
+import Telegram from '@/components/Icons/Telegram'
 import Tooltip from '@/components/Tooltip'
 import { useGenTgLink } from '@/api/mutation'
 import { useTgLinkInfo, useUser } from '@/api/query'
-import { LoggedInLocalStorageKey } from '@/constant'
+import useLoggedIn from '@/hooks/useLoggedIn'
 
 const info =
   'Please connect your telegram to ensure that you can receive timely alerts such as settlement notifications and successful deals!'
@@ -20,14 +20,17 @@ export default function TelegramAlertButton({ type }: { type?: 1 | 2 }) {
   const { openConnectModal } = useConnectModal()
   const [code, setCode] = useState<string>('')
   const [connected, setConnected] = useState<boolean>(false)
+  const { loggedIn } = useLoggedIn()
   const { data: user } = useUser({
     query: {
-      enabled:
-        Boolean(address) &&
-        Boolean(window.localStorage.getItem(LoggedInLocalStorageKey)),
+      enabled: Boolean(address) && loggedIn,
     },
   })
-  const { genTgLinkAsync, isPending: fetchingLink } = useGenTgLink()
+  const {
+    genTgLinkAsync,
+    isPending: fetchingLink,
+    data: genTgLinkResponse,
+  } = useGenTgLink()
 
   // useQuery 返回的 isRefetching 不满足要求
   const [isRefetching, setIsRefetching] = useState(false)
@@ -40,8 +43,28 @@ export default function TelegramAlertButton({ type }: { type?: 1 | 2 }) {
           setIsRefetching(false)
           setConnected(true)
           setCode('')
-          toast.success('You have successfully linked to Telegram')
+          toast.success('You have successfully linked to Telegram', {
+            autoClose: false,
+          })
           return false
+        }
+        if (genTgLinkResponse && genTgLinkResponse.indate) {
+          if (
+            dayjs().isAfter(
+              dayjs(genTgLinkResponse.serverTime).add(
+                Number(genTgLinkResponse.indate),
+                'seconds',
+              ),
+            )
+          ) {
+            setIsRefetching(false)
+            setCode('')
+            toast.dismiss()
+            toast.error('The link has expired, please try again', {
+              autoClose: false,
+            })
+            return false
+          }
         }
         return 1000
       },
@@ -58,7 +81,6 @@ export default function TelegramAlertButton({ type }: { type?: 1 | 2 }) {
 
     if (response?.invitationLink) {
       setIsRefetching(true)
-      // cSpell:disable-next-line
       setCode(response.invitaitonCode)
       window.open(response.invitationLink)
     }
@@ -79,9 +101,9 @@ export default function TelegramAlertButton({ type }: { type?: 1 | 2 }) {
         {fetchingLink || isRefetching ? (
           <span className={'loading loading-dots'} />
         ) : (
-          <Image src={TelegramSvg} alt={'telegram'} width={'23'} />
+          <Telegram className={'text-white'} />
         )}
-        <span>{'Connect'}</span>
+        <span>{'Set Alert'}</span>
       </button>
     )
   }
@@ -90,18 +112,27 @@ export default function TelegramAlertButton({ type }: { type?: 1 | 2 }) {
     <>
       <button
         type={'button'}
-        className={'mr-2.5 flex items-center gap-3 rounded bg-[#0698D8] px-5'}
+        className={
+          'mr-2.5 flex h-9 w-9 items-center justify-center rounded bg-[#0698D8]'
+        }
         onClick={handleClick}
         disabled={fetchingLink || isRefetching}
       >
         {fetchingLink || isRefetching ? (
           <span className={'loading loading-dots'} />
         ) : (
-          <Image src={TelegramSVG} width={'24'} alt={'telegram'} />
+          <Telegram className={'text-white'} />
         )}
-        <span className={'whitespace-nowrap'}>{'Set Alert'}</span>
       </button>
-      <Tooltip placement={'bottom-end'} title={info}>
+      <Tooltip
+        placement={'bottom-end'}
+        title={
+          <p>
+            <Telegram className={'mr-2 inline text-[#0698D8]'} />
+            <span>{info}</span>
+          </p>
+        }
+      >
         <Image
           aria-label={info}
           tabIndex={0}
