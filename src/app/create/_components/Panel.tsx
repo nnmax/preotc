@@ -9,7 +9,7 @@ import DangerSvg from '@/images/danger.svg'
 import Button from '@/components/Button'
 import SecondStepPanel from '@/app/offer/_components/SecondStepPanel'
 import TokenHeader from '@/components/TokenHeader'
-import { useSelectProps } from '@/app/create/hooks'
+import { useProjectSelectProps } from '@/app/create/hooks'
 import useDepositTransaction from '@/hooks/useDepositTransaction'
 import DepositSuccessfulDialog from '@/components/DepositSuccessfulDialog'
 import InsufficientBalanceDialog from '@/components/InsufficientBalanceDialog'
@@ -29,7 +29,7 @@ export interface PanelProps {
 }
 
 export default function Panel({ tab, step, setStep }: PanelProps) {
-  const { selectOptions, selectedProject } = useSelectProps()
+  const { projectSelectOptions, selectedProject } = useProjectSelectProps()
   const { watch, handleSubmit } = useFormContext<FormValues>()
   const formId = useId()
   const router = useRouter()
@@ -108,7 +108,7 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
         formId={formId}
         onSubmit={handleSubmit(handleValid, handleInvalid)}
         tab={tab}
-        selectOptions={selectOptions}
+        projectSelectOptions={projectSelectOptions}
         selectedProject={selectedProject}
         price={price}
       />

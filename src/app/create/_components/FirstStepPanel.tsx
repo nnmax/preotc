@@ -3,6 +3,7 @@ import { Controller, useFormContext } from 'react-hook-form'
 import Image from 'next/image'
 import Select from '@/components/Select'
 import USDBSvg from '@/images/USDB.svg'
+import ETHSvg from '@/images/eth-yellow.png'
 import setMinNumber from '@/utils/setInputMinNumber'
 import type { ProjectsData } from '@/api/query'
 import type { PanelProps } from '@/app/create/_components/Panel'
@@ -12,13 +13,25 @@ import type { SelectOption } from '@/components/Select'
 interface FirstStepPanelProps extends Pick<PanelProps, 'tab'> {
   formId: string
   onSubmit: React.FormEventHandler<HTMLFormElement>
-  selectOptions: SelectOption<number>[]
+  projectSelectOptions: SelectOption<number>[]
   selectedProject?: ProjectsData
   price: number
 }
 
+const inputClasses =
+  'reset-input-number w-full rounded bg-[#2A3037] px-[14px] text-sm leading-9 text-white'
+
+const selectClasses = 'ml-auto w-fit min-w-[180px] self-end'
+
 export function FirstStepPanel(props: FirstStepPanelProps) {
-  const { formId, onSubmit, tab, selectOptions, selectedProject, price } = props
+  const {
+    formId,
+    onSubmit,
+    tab,
+    projectSelectOptions,
+    selectedProject,
+    price,
+  } = props
 
   const { register, setValue } = useFormContext<FormValues>()
   const amountLabelText = tab === 'buying' ? 'Buying' : 'Selling'
@@ -63,48 +76,32 @@ export function FirstStepPanel(props: FirstStepPanelProps) {
             autoComplete={'off'}
             type={'number'}
             placeholder={'Enter Amount'}
-            className={clsx(
-              'reset-input-number w-full rounded-[5px] bg-[#2A3037] px-[14px] text-sm leading-9 text-white',
-            )}
+            className={inputClasses}
           />
         </label>
 
         {
           <Controller<FormValues>
             name={'projectId'}
-            render={({ field }) => (
-              <Select<number>
-                className={'ml-auto w-fit min-w-[180px] self-end'}
-                options={selectOptions}
-                value={field.value}
-                name={field.name}
-                onChange={field.onChange}
-                displayValue={
-                  <>
-                    {selectedProject && (
-                      <Image
-                        src={selectedProject.avatarUrl}
-                        alt={''}
-                        width={'24'}
-                        height={'24'}
-                        className={'mr-4 h-6 w-6 rounded-full'}
-                      />
-                    )}
-                    <span>{selectedProject?.name}</span>
-                  </>
-                }
-              />
-            )}
+            render={({ field }) => {
+              return (
+                <Select<number>
+                  className={selectClasses}
+                  options={projectSelectOptions}
+                  value={field.value}
+                  name={field.name}
+                  onChange={field.onChange}
+                  displayValue={(_, option) => option?.name}
+                />
+              )
+            }}
           />
         }
       </div>
-      <label className={'mt-6 flex flex-col gap-y-2'}>
-        <span className={labelClasses}>{'Price Per Token'}</span>
-        <div
-          className={clsx(
-            'relative flex rounded-[5px] bg-[#2A3037] leading-9 text-[#9E9E9E]',
-          )}
-        >
+
+      <div className={'mt-6 flex justify-between gap-4'}>
+        <label className={'flex flex-1 flex-col items-center gap-y-2'}>
+          <span className={labelClasses}>{'Price Per Token'}</span>
           <input
             {...register('pricePerToken', {
               valueAsNumber: true,
@@ -120,20 +117,58 @@ export function FirstStepPanel(props: FirstStepPanelProps) {
             type={'number'}
             step={'any'}
             placeholder={'Enter Unit Price'}
-            className={clsx(
-              'reset-input-number w-full appearance-none bg-transparent pl-[14px] pr-[96] text-sm leading-9 text-white',
+            className={inputClasses}
+          />
+        </label>
+
+        {
+          <Controller<FormValues>
+            name={'tokenId'}
+            render={({ field }) => (
+              <Select<number>
+                className={selectClasses}
+                defaultValue={1}
+                options={[
+                  {
+                    value: 1,
+                    name: (
+                      <>
+                        <Image
+                          src={USDBSvg}
+                          alt={'USDB'}
+                          width={'20'}
+                          height={'20'}
+                          className={'mr-4 rounded-full'}
+                        />
+                        <span>{'USDB'}</span>
+                      </>
+                    ),
+                  },
+                  {
+                    value: 2,
+                    name: (
+                      <>
+                        <Image
+                          src={ETHSvg}
+                          alt={'ETH'}
+                          width={'20'}
+                          height={'20'}
+                          className={'mr-4 rounded-full'}
+                        />
+                        <span>{'ETH'}</span>
+                      </>
+                    ),
+                  },
+                ]}
+                value={field.value}
+                name={field.name}
+                onChange={field.onChange}
+                displayValue={(_, option) => option?.name}
+              />
             )}
           />
-          <div
-            className={
-              'absolute right-2 top-0 flex h-full items-center gap-2 text-sm'
-            }
-          >
-            <span>{'USDB'}</span>
-            <Image src={USDBSvg} alt={'USDB'} width={24} />
-          </div>
-        </div>
-      </label>
+        }
+      </div>
       <div className={'mt-6 flex flex-col gap-4 leading-5'}>
         <span className={' text-[#737373]'}>{'For'}</span>
         <span className={'text-[#FFC300]'}>

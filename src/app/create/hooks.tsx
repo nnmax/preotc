@@ -7,26 +7,28 @@ import { useProjects } from '@/api/query'
 import type { SelectOption } from '@/components/Select'
 import type { FormValues } from '@/app/create/types'
 
-export function useSelectProps() {
+export function useProjectSelectProps() {
   const { watch, setValue } = useFormContext<FormValues>()
   const [selectedProject, setSelectedProject] = useState<ProjectsData>()
   const { data: projects } = useProjects()
 
-  const selectOptions = projects.map<SelectOption<number>>((project) => ({
-    name: (
-      <>
-        <Image
-          src={project.avatarUrl}
-          width={'20'}
-          height={'20'}
-          alt={project.name}
-          className={'mr-2 rounded-full'}
-        />
-        <span>{project.name}</span>
-      </>
-    ),
-    value: project.id,
-  }))
+  const projectSelectOptions = projects.map<SelectOption<number>>(
+    (project) => ({
+      name: (
+        <>
+          <Image
+            src={project.avatarUrl}
+            width={'20'}
+            height={'20'}
+            alt={project.name}
+            className={'mr-4 rounded-full'}
+          />
+          <span>{project.name}</span>
+        </>
+      ),
+      value: project.id,
+    }),
+  )
 
   useEffect(() => {
     const { unsubscribe } = watch((value) => {
@@ -50,8 +52,8 @@ export function useSelectProps() {
   return useMemo(
     () => ({
       selectedProject,
-      selectOptions,
+      projectSelectOptions,
     }),
-    [selectOptions, selectedProject],
+    [projectSelectOptions, selectedProject],
   )
 }

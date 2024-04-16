@@ -1,5 +1,5 @@
 'use client'
-import { Fragment } from 'react'
+import { Fragment, useEffect } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import Image from 'next/image'
 import clsx from 'clsx'
@@ -18,7 +18,10 @@ interface SelectProps<ValueType = any> {
   onChange?: (value: ValueType) => void
   displayValue?:
     | React.ReactNode
-    | ((value: ValueType | undefined) => React.ReactNode)
+    | ((
+        value: ValueType | undefined,
+        option: SelectOption<ValueType> | undefined,
+      ) => React.ReactNode)
   buttonClassName?: string
   className?: string
   name?: string
@@ -49,13 +52,23 @@ export default function Select<ValueType = any>(props: SelectProps<ValueType>) {
   const renderDisplayValue = (
     _value: ValueType | undefined,
   ): React.ReactNode => {
+    const option: SelectOption<ValueType> | undefined = options.find(
+      (o) => o.value === _value,
+    )
+
     if (displayValue) {
       return typeof displayValue === 'function'
-        ? displayValue(_value)
+        ? displayValue(_value, option)
         : displayValue
     }
-    return _value as unknown as React.ReactNode
+    return option?.name
   }
+
+  useEffect(() => {
+    if (value === undefined && valueProp !== undefined) {
+      setValue(valueProp)
+    }
+  }, [setValue, valueProp, value])
 
   return (
     <Listbox
@@ -68,10 +81,10 @@ export default function Select<ValueType = any>(props: SelectProps<ValueType>) {
       <Listbox.Button
         className={clsx(
           buttonClassName,
-          'relative flex h-9 w-full items-center justify-between gap-2.5 rounded-[5px] bg-[#2A3037] px-2',
+          'relative flex h-9 w-full items-center justify-between gap-2.5 rounded bg-[#2A3037] px-2',
         )}
       >
-        <span className={'flex items-center truncate'}>
+        <span className={'flex items-center truncate text-xs'}>
           {renderDisplayValue(value)}
         </span>
         <ArrowDown className={'text-[#FFC300]'} />
@@ -84,7 +97,7 @@ export default function Select<ValueType = any>(props: SelectProps<ValueType>) {
       >
         <Listbox.Options
           className={
-            'absolute z-10 w-full translate-y-2 overflow-auto rounded-[5px] border border-solid border-aaa/50 bg-[#2A3037] px-4 py-2'
+            'absolute z-10 w-full translate-y-2 overflow-auto rounded border border-aaa/50 bg-[#2A3037] px-2 py-4'
           }
         >
           {options.map((option, index) => (
@@ -92,7 +105,7 @@ export default function Select<ValueType = any>(props: SelectProps<ValueType>) {
               key={index}
               value={option.value}
               className={
-                'relative flex h-9 cursor-pointer select-none items-center justify-between text-sm'
+                'relative flex h-9 cursor-pointer select-none items-center justify-between text-xs'
               }
             >
               {(state) => (
