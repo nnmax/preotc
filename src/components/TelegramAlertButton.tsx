@@ -13,7 +13,7 @@ import { useTgLinkInfo, useUser } from '@/api/query'
 import useLoggedIn from '@/hooks/useLoggedIn'
 
 const info =
-  'Please connect your telegram to ensure that you can receive timely alerts such as settlement notifications and successful deals!'
+  'Connect your telegram to ensure that you can receive timely alerts such as settlement notifications and successful deals!'
 
 export default function TelegramAlertButton({ type }: { type?: 1 | 2 }) {
   const { address } = useAccount()

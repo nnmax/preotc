@@ -48,7 +48,7 @@ export default function OfferIntroduce({ className }: { className?: string }) {
       {!user || user.tgStatus ? null : (
         <p>
           {
-            '4. Please connect your telegram to ensure that you can receive timely alerts such as settlement notifications, confirmation notifications and deals completion!'
+            '4. Connect your telegram to ensure that you can receive timely alerts such as settlement notifications, confirmation notifications and deals completion!'
           }
         </p>
       )}
