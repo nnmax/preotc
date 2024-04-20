@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Select from '@/components/Select'
 import USDBSvg from '@/images/USDB.svg'
 import setMinNumber from '@/utils/setInputMinNumber'
+import type Decimal from 'decimal.js'
 import type { ProjectsData } from '@/api/query'
 import type { PanelProps } from '@/app/create/_components/Panel'
 import type { FormValues } from '@/app/create/types'
@@ -14,7 +15,7 @@ interface FirstStepPanelProps extends Pick<PanelProps, 'tab'> {
   onSubmit: React.FormEventHandler<HTMLFormElement>
   selectOptions: SelectOption<number>[]
   selectedProject?: ProjectsData
-  price: number
+  price: Decimal
 }
 
 export function FirstStepPanel(props: FirstStepPanelProps) {
@@ -41,7 +42,6 @@ export function FirstStepPanel(props: FirstStepPanelProps) {
           <span className={labelClasses}>{amountLabelText}</span>
           <input
             {...register('amount', {
-              valueAsNumber: true,
               required: 'The amount is required',
               onBlur(event) {
                 if (selectedProject && selectedProject.decimals !== 0) return
@@ -70,7 +70,7 @@ export function FirstStepPanel(props: FirstStepPanelProps) {
         </label>
 
         {
-          <Controller<FormValues>
+          <Controller<FormValues, 'projectId'>
             name={'projectId'}
             render={({ field }) => (
               <Select<number>
@@ -107,7 +107,6 @@ export function FirstStepPanel(props: FirstStepPanelProps) {
         >
           <input
             {...register('pricePerToken', {
-              valueAsNumber: true,
               required: 'The unit price is required',
               min: {
                 value: 0,
@@ -138,7 +137,7 @@ export function FirstStepPanel(props: FirstStepPanelProps) {
         <span className={' text-[#737373]'}>{'For'}</span>
         <span className={'text-[#FFC300]'}>
           {'$ '}
-          {price.toLocaleString()}
+          {price.toDecimalPlaces(18).toString()}
         </span>
       </div>
     </form>

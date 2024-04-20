@@ -73,7 +73,7 @@ export default function FormPanel() {
     if (!(await checkChain())) return
 
     await takeOrderAsync({
-      amount: rangeValue,
+      amount: rangeValue.toString(),
       orderId: data!.id,
       type: type === 'buy' ? 'Buying' : 'Selling',
     }).catch((error) => {
@@ -98,10 +98,10 @@ export default function FormPanel() {
     if (!txHash) return
 
     await depositTakeOrderAsync({
-      amount: rangeValue,
+      amount: rangeValue.toString(),
       orderId: data!.id,
       type: type === 'buy' ? 'Buying' : 'Selling',
-      price: data!.price,
+      price: data!.price.toString(),
       txHash,
     })
     setSuccessfulDialogOpen(true)
@@ -146,15 +146,22 @@ export default function FormPanel() {
     )
   }
   if (step === 2) {
+    Decimal.set({ precision: 30 })
+    const price = new Decimal(
+      takeOrderResponse?.orderConfirmData.totalPrice ??
+        new Decimal(rangeValue)
+          .mul(data?.price ?? 0)
+          .toDecimalPlaces(18)
+          .toString(),
+    )
     stepPanel = (
       <SecondStepPanel
-        amount={takeOrderResponse?.orderConfirmData.amount ?? rangeValue}
-        pricePerToken={data!.price}
+        amount={String(
+          takeOrderResponse?.orderConfirmData.amount ?? rangeValue,
+        )}
+        pricePerToken={String(data?.price ?? 0)}
         type={type}
-        price={
-          takeOrderResponse?.orderConfirmData.totalPrice ??
-          rangeValue * data!.price
-        }
+        price={price}
         fee={data!.feePercent}
       />
     )

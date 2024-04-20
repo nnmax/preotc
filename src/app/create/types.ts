@@ -1,5 +1,5 @@
 export interface FormValues {
-  amount: number
-  pricePerToken: number
+  amount: string
+  pricePerToken: string
   projectId: number
 }

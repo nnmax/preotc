@@ -38,8 +38,9 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
     'pricePerToken',
     'projectId',
   ])
-  const price = new Decimal(amount || 0).mul(pricePerToken || 0).toNumber()
-  const invalid = price < USDB_LIMIT
+  Decimal.set({ precision: 30 })
+  const price = new Decimal(amount || 0).mul(pricePerToken || 0)
+  const invalid = price.comparedTo(new Decimal(USDB_LIMIT)) === -1
   const [successfulDialogOpen, setSuccessfulDialogOpen] = useState(false)
   const [balanceDialogOpen, setBalanceDialogOpen] = useState(false)
   const { depositTransaction, sendingTransaction } = useDepositTransaction()
@@ -152,7 +153,10 @@ export default function Panel({ tab, step, setStep }: PanelProps) {
         onClick={handleDeposit}
         loading={sendingTransaction || depositMakingOrder}
       >
-        {`Deposit ${new Decimal(price || 0).mul(tab === 'selling' ? 2 : 1).toNumber()} USDB`}
+        {`Deposit ${price
+          .mul(tab === 'selling' ? 2 : 1)
+          .toDecimalPlaces(18)
+          .toString()} USDB`}
       </Button>
     )
   }

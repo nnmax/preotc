@@ -4,12 +4,13 @@ import USDBSvg from '@/images/USDB.svg'
 import { stepPanelClasses } from '@/constant'
 import InfoSVG from '@/images/info.svg'
 import Tooltip from '@/components/Tooltip'
+import type Decimal from 'decimal.js'
 
 interface SecondStepPanelProps {
   type: 'buy' | 'sell'
-  amount: number
-  pricePerToken: number
-  price: number
+  amount: string
+  pricePerToken: string
+  price: Decimal
   fee: number
 }
 
@@ -39,7 +40,7 @@ export default function SecondStepPanel(props: SecondStepPanelProps) {
       <span className={'mb-4 text-[#737373]'}>{'For'}</span>
       <span
         className={'text-sm leading-[14px] text-[#FFC300]'}
-      >{`$ ${price.toLocaleString()}`}</span>
+      >{`$ ${price.toDecimalPlaces(18).toString()}`}</span>
       <p className={'mt-8 flex items-center justify-between leading-4'}>
         <span className={'text-[#737373]'}>{'PreOTC fee'}</span>
         <span className={'ml-auto mr-2'}>{`${fee * 100}%`}</span>

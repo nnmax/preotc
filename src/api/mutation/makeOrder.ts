@@ -9,8 +9,8 @@ export const makeOrderApi = '/pre-otc/make-order'
 export type MakeOrderParams = {
   type: 'Buying' | 'Selling'
   projectId: number
-  amount: number
-  price: number
+  amount: string
+  price: string
 }
 
 export type MakeOrderData = {
