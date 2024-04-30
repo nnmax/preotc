@@ -44,7 +44,6 @@ export function useProjects<SelectData = ProjectsData[]>(
     queryFn({ queryKey }) {
       return fetcher(queryKey[0], {
         method: 'GET',
-        cache: 'force-cache',
         next: {
           tags: [projectsApi],
         },
